@@ -1,0 +1,14 @@
+# Target labels
+ soxr_source-populate
+# Source files and their labels
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/CMakeFiles/soxr_source-populate
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/CMakeFiles/soxr_source-populate.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/CMakeFiles/soxr_source-populate-complete.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-build.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-configure.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-download.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-install.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-mkdir.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-patch.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-test.rule
+C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-update.rule

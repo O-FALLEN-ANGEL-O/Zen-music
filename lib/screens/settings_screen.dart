@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../main.dart';
@@ -12,14 +13,37 @@ import '../models/song.dart';
 import '../services/appearance_prefs.dart';
 import '../services/extension_bridge.dart';
 import '../services/listening_stats_service.dart';
+import '../services/storage_service.dart';
 import '../services/update_service.dart';
 import '../theme/spotify_theme.dart';
 import '../utilities/zen_transitions.dart';
 import '../widgets/source_picker_sheet.dart';
 import '../widgets/welcome_dialog.dart';
+import 'diagnostics_screen.dart';
 import 'equalizer_screen.dart';
 import 'extensions_screen.dart';
 import 'import_spotify_screen.dart';
+
+/// Addon lossless prefs — SharedPreferences-backed shim until
+/// StorageService gains native methods.
+extension AddonPrefsShim on StorageService {
+  static const _kUrl = 'addon_lossless_url';
+  static const _kEnabled = 'addon_lossless_enabled';
+
+  Future<String> getAddonUrl() async =>
+      (await SharedPreferences.getInstance()).getString(_kUrl) ?? '';
+
+  Future<void> setAddonUrl(String v) async {
+    final p = await SharedPreferences.getInstance();
+    v.isEmpty ? p.remove(_kUrl) : p.setString(_kUrl, v);
+  }
+
+  Future<bool> getAddonLossless() async =>
+      (await SharedPreferences.getInstance()).getBool(_kEnabled) ?? false;
+
+  Future<void> setAddonLossless(bool v) async =>
+      (await SharedPreferences.getInstance()).setBool(_kEnabled, v);
+}
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -37,11 +61,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<Map<String, dynamic>> _extensions = [];
   String? _activeSourceId;
   String _appVersion = '…';
+  final TextEditingController _addonUrlCtrl = TextEditingController();
+  bool _addonLossless = false;
 
   @override
   void initState() {
     super.initState();
     _load();
+  }
+
+  @override
+  void dispose() {
+    _addonUrlCtrl.dispose();
+    super.dispose();
   }
 
   String get _activeSourceName {
@@ -72,6 +104,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _checkUpdates = storage.getCheckUpdates();
       _extensions = extensions;
       _activeSourceId = activeId;
+    });
+    storage.getAddonUrl().then((v) {
+      if (mounted) setState(() => _addonUrlCtrl.text = v);
+    });
+    storage.getAddonLossless().then((v) {
+      if (mounted) setState(() => _addonLossless = v);
     });
     PackageInfo.fromPlatform().then((p) {
       if (!mounted) return;
@@ -213,6 +251,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     name: 'InnerTubeX',
     license: 'MIT (upstream)',
     url: 'https://github.com/MetrolistGroup/innertubex',
+    ),
+    (
+    name: 'LastWave (ported components)',
+    license: 'GPL-3.0',
+    url: 'https://github.com/lastwave',
     ),
     (
     name: 'just_audio / audio_service',
@@ -431,6 +474,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ),
       ),
     );
+  }
+
+  // ── Lossless addon URL editor ──
+
+  Future<void> _editAddonUrl() async {
+    final ctrl = TextEditingController(text: _addonUrlCtrl.text);
+    final saved = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: SpotifyColors.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: const Text('Lossless addon URL',
+            style: TextStyle(
+                color: SpotifyColors.textPrimary,
+                fontSize: 17,
+                fontWeight: FontWeight.w700)),
+        content: TextField(
+          controller: ctrl,
+          autocorrect: false,
+          keyboardType: TextInputType.url,
+          style: const TextStyle(
+              color: SpotifyColors.textPrimary, fontSize: 13),
+          decoration: const InputDecoration(
+            hintText: 'http://host:8787/a/<token>/',
+            hintStyle: TextStyle(color: SpotifyColors.textTertiary),
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel',
+                  style: TextStyle(color: SpotifyColors.textSecondary))),
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Save',
+                  style: TextStyle(
+                      color: SpotifyColors.green,
+                      fontWeight: FontWeight.w700))),
+        ],
+      ),
+    );
+    ctrl.dispose();
+    if (saved != true) return;
+    final trimmed = ctrl.text.trim();
+    if (trimmed.isNotEmpty) {
+      final url = Uri.tryParse(trimmed);
+      if (url == null || !url.hasScheme || url.host.isEmpty) {
+        _toast('Not a valid URL');
+        return;
+      }
+    }
+    await storage.setAddonUrl(trimmed);
+    if (!mounted) return;
+    setState(() => _addonUrlCtrl.text = trimmed);
+    _toast('Lossless source saved');
   }
 
   // ═══════════════════════════════════════════
@@ -906,7 +1004,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _prefRow(
               FluentIcons.options_24_regular,
               'Equalizer',
-              'Bass, treble & presets',
+              '15-band native DSP · presets',
                   () => pushSharedAxisY(context, const EqualizerScreen()),
             ),
             _prefRow(
@@ -943,6 +1041,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
               },
             ),
           ]),
+          //_category('Lossless', Icons.high_quality_rounded, [
+           // _prefRow(
+         //     FluentIcons.globe_24_regular,
+         //     'Lossless addon URL',
+          //    _addonUrlCtrl.text.isEmpty
+         //         ? 'Not set — e.g. http://host:8787/a/<token>/'
+         //         : _addonUrlCtrl.text,
+      //            () => _editAddonUrl(),
+      //      ),
+      //      _switchRow(
+       //       Icons.high_quality_rounded,
+      //        'Prefer FLAC (addon)',
+        //      'Lossless-first resolution before AAC tiers',
+       //       _addonLossless,
+         //         (v) async {
+          //      await storage.setAddonLossless(v);
+            //    if (mounted) setState(() => _addonLossless = v);
+            //    _toast(v ? 'FLAC preferred' : 'FLAC off');
+          //    },
+      //      ),
+   //       ]),
           _category('Import', FluentIcons.arrow_upload_24_regular, [
             _prefRow(
               FluentIcons.arrow_upload_24_regular,
@@ -1043,6 +1162,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               'Open-source licenses',
               'GPL-3.0 · the stack behind ZenMusic',
               _showLicenseSheet,
+            ),
+            _prefRow(
+              FluentIcons.data_usage_24_regular,
+              'Diagnostics',
+              'Live log — resolution, radio, cache, engine decisions',
+                  () => pushSharedAxisY(context, const DiagnosticsScreen()),
             ),
             _prefRow(
               FluentIcons.info_24_regular,

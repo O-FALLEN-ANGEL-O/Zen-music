@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:yt_extractor/yt_extractor.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart' as yt_explode;
 import '../models/song.dart';
@@ -79,6 +80,28 @@ class YoutubeService {
 
   DateTime? _lastRequestTime;
   static const _minRequestInterval = Duration(milliseconds: 1200);
+
+  /// Generic retry: [attempts] tries with short backoff. A transient
+  /// DNS reset / carrier hiccup (the recurring "Connection reset by
+  /// peer" + timeout pattern on this network) succeeds on attempt 2-3;
+  /// a single attempt turning every blip into a dead tier is what
+  /// caused the mass fallbacks.
+  Future<T> _withRetry<T>(Future<T> Function() action,
+      {int attempts = 3, String label = ''}) async {
+    Object? lastError;
+    for (var attempt = 1; attempt <= attempts; attempt++) {
+      try {
+        return await action();
+      } catch (e) {
+        lastError = e;
+        if (attempt < attempts) {
+          await Future.delayed(Duration(milliseconds: 400 * attempt));
+        }
+      }
+    }
+    print('↳ $label failed after $attempts attempts — $lastError');
+    throw Exception('$label failed after $attempts attempts: $lastError');
+  }
 
   Future<void> _throttle() async {
     final now = DateTime.now();
@@ -260,20 +283,23 @@ class YoutubeService {
     try {
       final uri =
       Uri.parse('$_ytmBase/next?key=$_ytmApiKey&prettyPrint=false');
-      final resp = await _ytmClient
-          .post(
-        uri,
-        headers: const {
-          'Content-Type': 'application/json',
-          'Referer': 'https://music.youtube.com/',
-        },
-        body: jsonEncode({
-          ..._ytmContext,
-          'videoId': videoId,
-          'params': 'wAEB',
-        }),
-      )
-          .timeout(const Duration(seconds: 6));
+      final resp = await _withRetry(
+            () => _ytmClient
+            .post(
+          uri,
+          headers: const {
+            'Content-Type': 'application/json',
+            'Referer': 'https://music.youtube.com/',
+          },
+          body: jsonEncode({
+            ..._ytmContext,
+            'videoId': videoId,
+            'params': 'wAEB',
+          }),
+        )
+            .timeout(const Duration(seconds: 10)),
+        label: 'YTM radio',
+      );
 
       if (resp.statusCode != 200) {
         print('📻 YTM radio: status ${resp.statusCode}');
@@ -394,9 +420,12 @@ class YoutubeService {
 
     try {
       await _ensureExtractorInit();
-      final page = await _extractor
-          .search(query, filter: SearchFilter.musicSongs)
-          .timeout(const Duration(seconds: 8));
+      final page = await _withRetry(
+            () => _extractor
+            .search(query, filter: SearchFilter.musicSongs)
+            .timeout(const Duration(seconds: 12)),
+        label: 'YTM search',
+      );
       for (final item in page.items) {
         final vid = _extractVideoId(item.url);
         if (vid == null) continue;
@@ -418,8 +447,10 @@ class YoutubeService {
 
   Future<List<Song>> _youtubeVideoSearch(String query) async {
     try {
-      final results =
-      await _yt.search.search(query).timeout(const Duration(seconds: 8));
+      final results = await _withRetry(
+            () => _yt.search.search(query).timeout(const Duration(seconds: 12)),
+        label: 'video search',
+      );
       final songs = <Song>[];
       for (final v in results) {
         songs.add(Song(
@@ -477,6 +508,27 @@ class YoutubeService {
       final url = await _jiosaavn.fetchStreamUrl(song.jiosaavnId!);
       if (url != null && url.isNotEmpty) {
         return VideoStreamResult(url, const {}, 'AAC', 320);
+      }
+    }
+
+    // ═══ LOSSLESS-FIRST (addon/Tidal resolver) ═══
+    // Every non-JioSaavn song gets a real FLAC attempt through the
+    // ported addon resolver before ANY lossy tier. Strict-match
+    // guarantees (version/language/duration gates in LosslessMusicApi)
+    // mean a wrong-song FLAC can never ship; no match = silent fall
+    // through. Budget-capped so a dead addon can't stall playback.
+    if (!song.isFromJiosaavn) {
+      final addonStream = await _addonLosslessAttempt(song);
+      if (addonStream != null) {
+        print('✅ Audio: FLAC via addon (${song.id}, '
+            '${addonStream['bitDepth']}bit/'
+            '${addonStream['samplingRate']}kHz)');
+        return VideoStreamResult(
+          addonStream['url'] as String,
+          const {},
+          'FLAC',
+          addonStream['bitrateKbps'] as int?,
+        );
       }
     }
 
@@ -553,6 +605,32 @@ class YoutubeService {
     }
 
     throw Exception('All audio extractors failed for ${song.title}');
+  }
+
+  /// Lossless-first attempt through the zen/addon channel (ported
+  /// LastWave Tidal resolver). Null on any failure — never throws into
+  /// the chain. Budget: 8s total so a dead addon can't stall playback.
+  /// ⚠️ Requires the addon URL configured (zen/addon "configure") —
+  /// until then resolveStream returns null instantly and playback
+  /// proceeds through the regular tiers.
+  Future<Map<String, dynamic>?> _addonLosslessAttempt(Song song) async {
+    try {
+      final result = await const MethodChannel('zen/addon')
+          .invokeMethod<Map<dynamic, dynamic>>('resolveStream', {
+        'title': song.title,
+        'artist': song.artist,
+        'durationSec': song.duration.inSeconds > 0
+            ? song.duration.inSeconds
+            : null,
+        'quality': 27,
+      }).timeout(const Duration(seconds: 8));
+      if (result == null) return null;
+      final url = result['url'] as String?;
+      if (url == null || url.isEmpty) return null;
+      return Map<String, dynamic>.from(result);
+    } catch (_) {
+      return null;
+    }
   }
 
   Future<VideoStreamResult?> _audioAttempt(
@@ -1072,9 +1150,12 @@ class YoutubeService {
 
     try {
       await _ensureExtractorInit();
-      final page = await _extractor
-          .search(query, filter: SearchFilter.musicVideos)
-          .timeout(const Duration(seconds: 8));
+      final page = await _withRetry(
+            () => _extractor
+            .search(query, filter: SearchFilter.musicVideos)
+            .timeout(const Duration(seconds: 12)),
+        label: 'videoId (yt_extractor)',
+      );
       for (final item in page.items) {
         final vid = _extractVideoId(item.url);
         if (vid != null) {
@@ -1089,8 +1170,10 @@ class YoutubeService {
 
     try {
       await _throttle();
-      final results =
-      await _yt.search.search(query).timeout(const Duration(seconds: 8));
+      final results = await _withRetry(
+            () => _yt.search.search(query).timeout(const Duration(seconds: 12)),
+        label: 'videoId (youtube_explode)',
+      );
       if (results.isNotEmpty) {
         final vid = results.first.id.value;
         _videoIdCache[song.id] = vid;
@@ -1133,9 +1216,12 @@ class YoutubeService {
     // Tier 2: yt_extractor related streams.
     try {
       await _ensureExtractorInit();
-      final related = await _extractor
-          .getRelatedStreams('https://www.youtube.com/watch?v=$youtubeId')
-          .timeout(const Duration(seconds: 8));
+      final related = await _withRetry(
+            () => _extractor
+            .getRelatedStreams('https://www.youtube.com/watch?v=$youtubeId')
+            .timeout(const Duration(seconds: 12)),
+        label: 'related streams',
+      );
       final songs = <Song>[];
       for (final item in related) {
         final vid = _extractVideoId(item.url);
@@ -1157,12 +1243,15 @@ class YoutubeService {
     // Tier 3: filtered search fallback.
     try {
       await _ensureExtractorInit();
-      final page = await _extractor
-          .search(
-        '${seedSong.title} ${seedSong.artist.split(',').first.trim()}',
-        filter: SearchFilter.musicSongs,
-      )
-          .timeout(const Duration(seconds: 8));
+      final page = await _withRetry(
+            () => _extractor
+            .search(
+          '${seedSong.title} ${seedSong.artist.split(',').first.trim()}',
+          filter: SearchFilter.musicSongs,
+        )
+            .timeout(const Duration(seconds: 12)),
+        label: 'related fallback search',
+      );
       final artistPart = seedSong.artist.split(',').first.trim();
       final artistWords = artistPart.toLowerCase()
           .replaceAll(RegExp(r'[^\w\s]'), ' ')

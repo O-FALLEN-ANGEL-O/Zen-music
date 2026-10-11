@@ -1,0 +1,21 @@
+# ninja log v5
+1	285	8133936798297151	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-mkdir	5ed9a2158b49950a
+1	285	8133936798297151	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-mkdir	5ed9a2158b49950a
+286	3697	8133936832412232	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-download	5af4ebf8742f4d5d
+286	3697	8133936832412232	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-download	5af4ebf8742f4d5d
+3777	3890	8133936834331959	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-update	d2617bd94863e53c
+3777	3890	8133936834331959	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-update	d2617bd94863e53c
+3890	3980	8133936835261978	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-patch	a27a8336ad515125
+3890	3980	8133936835261978	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-patch	a27a8336ad515125
+3981	4074	8133936836171979	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-configure	ebc4637cdd00e96b
+3981	4074	8133936836171979	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-configure	ebc4637cdd00e96b
+4074	4167	8133936837111981	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-build	1a39ae78fb5cd4e1
+4074	4167	8133936837111981	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-build	1a39ae78fb5cd4e1
+4167	5034	8133936845690182	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-install	9e5dc9cd34c0c370
+4167	5034	8133936845690182	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-install	9e5dc9cd34c0c370
+5034	5128	8133936846740399	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-test	ee6ab8ec7f87460c
+5034	5128	8133936846740399	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-test	ee6ab8ec7f87460c
+5183	5324	8133936848705263	CMakeFiles/soxr_source-populate-complete	b815f608cb43f74a
+5183	5324	8133936848705263	soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-done	b815f608cb43f74a
+5183	5324	8133936848705263	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/CMakeFiles/soxr_source-populate-complete	b815f608cb43f74a
+5183	5324	8133936848705263	C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/soxr_source-populate-prefix/src/soxr_source-populate-stamp/soxr_source-populate-done	b815f608cb43f74a

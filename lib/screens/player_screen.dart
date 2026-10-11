@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import '../services/audio_device_service.dart';
 import '../services/audio_output_service.dart';
+import '../ui/lw/lw_seek_chip.dart';
 import '../widgets/audio_device_sheet.dart';
 import '../widgets/cookie_play_button.dart';
 import '../widgets/player_backgrounds.dart';
@@ -56,6 +57,19 @@ class PlayerScreen extends StatefulWidget {
 
 class _PlayerScreenState extends State<PlayerScreen> {
   bool _showLyrics = false;
+
+  // ── LastWave player interactions ──
+  // Edge double-tap seek chips (accumulate ±5s per tap, 700ms reset).
+  int? _seekDir; // null = none, -1 = rewind, 1 = forward
+  int _seekSeconds = 0;
+  Timer? _seekReset;
+  // Center-third double-tap like (450ms window).
+  int _lastLikeTapMs = 0;
+  // Artwork horizontal drag (swipe-to-skip with rotation). Notifier so
+  // the rotation transform rebuilds without a full-screen setState.
+  final ValueNotifier<double> _artDragX = ValueNotifier(0);
+  // Dismiss drag (pull down to pop) — reserved for a later round.
+  double _dismissDragY = 0;
 
   // Video state (extracted stream, synchronized song-video mode).
   bool _showVideo = false;
@@ -171,11 +185,76 @@ class _PlayerScreenState extends State<PlayerScreen> {
     _lastSlideSongId = song.id;
   }
 
+  /// LastWave artwork taps: outer thirds = double-tap seek ±5s chips;
+  /// center third = double-tap Like (450ms window). A side tap resets
+  /// the like window and a center tap resets the seek sequence, so the
+  /// two gestures can never complete each other.
+  void _onArtworkTapFor(Song song, TapUpDetails d) {
+    final box = context.findRenderObject() as RenderBox?;
+    final w = box?.size.width ?? 1;
+    final x = d.localPosition.dx;
+    final now = DateTime.now().millisecondsSinceEpoch;
+
+    final int? side;
+    if (x < w * 0.34) {
+      side = -1;
+    } else if (x > w * 0.66) {
+      side = 1;
+    } else {
+      side = null;
+    }
+
+    if (side == null) {
+      _seekReset?.cancel();
+      _seekDir = null;
+      _seekSeconds = 0;
+      if (_lastLikeTapMs != 0 && now - _lastLikeTapMs < 450) {
+        _lastLikeTapMs = 0;
+        _maybeHaptic();
+        storage.setLiked(song, !storage.isLiked(song.id));
+        if (mounted) setState(() {});
+      } else {
+        _lastLikeTapMs = now;
+      }
+      return;
+    }
+
+    _lastLikeTapMs = 0;
+    if (_seekDir != side) {
+      _seekReset?.cancel();
+      _seekDir = side;
+      _seekSeconds = 0;
+    }
+    _seekSeconds += 5;
+    _maybeHaptic();
+    // Live position: PlaybackState position is as-of updateTime — add
+    // the elapsed play time (same correction the mini player uses).
+    final ps = audioHandler.playbackState.value;
+    final livePos = ps.position +
+        (ps.playing
+            ? DateTime.now().difference(ps.updateTime)
+            : Duration.zero);
+    audioHandler
+        .seek(livePos + Duration(seconds: side * _seekSeconds));
+    _seekReset?.cancel();
+    _seekReset = Timer(const Duration(milliseconds: 700), () {
+      if (mounted) {
+        setState(() {
+          _seekDir = null;
+          _seekSeconds = 0;
+        });
+      }
+    });
+    setState(() {});
+  }
+
   @override
   void dispose() {
     AppearancePrefs.keepScreenOn.removeListener(_applyKeepScreenOn);
     AppearancePrefs.hideStatusBarOnLyrics.removeListener(_applySystemUi);
     AppearancePrefs.canvasEnabled.removeListener(_onCanvasPrefChanged);
+    _seekReset?.cancel();
+    _artDragX.dispose();
     if (_videoFullscreen) {
       SystemChrome.setPreferredOrientations([
         DeviceOrientation.portraitUp,
@@ -730,59 +809,101 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   slideKey: song.id,
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
+                    onHorizontalDragStart: (d) => _artDragX.value = 0,
+                    onHorizontalDragUpdate: (d) =>
+                    _artDragX.value = _artDragX.value + d.delta.dx,
                     onHorizontalDragEnd: (d) {
+                      final drag = _artDragX.value;
+                      _artDragX.value = 0;
                       final v = d.primaryVelocity ?? 0;
-                      if (v < -300) {
+                      if (drag.abs() > 80 || v.abs() > 300) {
                         _maybeHaptic();
-                        _noteSlideIntent(true);
-                        handler.skipToNext();
-                      } else if (v > 300) {
-                        _maybeHaptic();
-                        _noteSlideIntent(false);
-                        handler.skipToPrevious();
+                        if (drag < 0 || v < 0) {
+                          _noteSlideIntent(true);
+                          handler.skipToNext();
+                        } else {
+                          _noteSlideIntent(false);
+                          handler.skipToPrevious();
+                        }
                       }
                     },
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: Hero(
-                        tag: 'artwork-${song.id}',
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                                AppearancePrefs.thumbRadius.value),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.45),
-                                blurRadius: 24,
-                                offset: const Offset(0, 12),
+                    onTapUp: (d) => _onArtworkTapFor(song, d),
+                    child: ValueListenableBuilder<double>(
+                      valueListenable: _artDragX,
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: Hero(
+                          tag: 'artwork-${song.id}',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  AppearancePrefs.thumbRadius.value),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.45),
+                                  blurRadius: 24,
+                                  offset: const Offset(0, 12),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  AppearancePrefs.thumbRadius.value),
+                              child: LayoutBuilder(
+                                builder: (context, box) {
+                                  final size = box.maxWidth;
+                                  return Image.network(
+                                    song.thumbnail,
+                                    width: size,
+                                    height: size,
+                                    fit: BoxFit.cover,
+                                    alignment: Alignment.center,
+                                    errorBuilder: (_, __, ___) => Container(
+                                      color: SpotifyColors.surfaceLight,
+                                      child: const Icon(
+                                          Icons.music_note_rounded,
+                                          size: 64,
+                                          color: SpotifyColors.textTertiary),
+                                    ),
+                                  );
+                                },
                               ),
-                            ],
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                                AppearancePrefs.thumbRadius.value),
-                            child: LayoutBuilder(
-                              builder: (context, box) {
-                                final size = box.maxWidth;
-                                return Image.network(
-                                  song.thumbnail,
-                                  width: size,
-                                  height: size,
-                                  fit: BoxFit.cover,
-                                  alignment: Alignment.center,
-                                  errorBuilder: (_, __, ___) => Container(
-                                    color: SpotifyColors.surfaceLight,
-                                    child: const Icon(
-                                        Icons.music_note_rounded,
-                                        size: 64,
-                                        color: SpotifyColors.textTertiary),
-                                  ),
-                                );
-                              },
                             ),
                           ),
                         ),
                       ),
+                      builder: (context, dx, artChild) {
+                        final showChip =
+                            _seekDir != null && _seekSeconds > 0;
+                        final chipWidth =
+                            (MediaQuery.sizeOf(context).width - 56) * 0.42;
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Transform.translate(
+                              offset: Offset(dx, 0),
+                              child: Transform.rotate(
+                                angle: dx / 80,
+                                child: artChild,
+                              ),
+                            ),
+                            if (showChip && _seekDir == -1)
+                              Positioned(
+                                left: 0,
+                                width: chipWidth,
+                                child: LwSeekChip(
+                                    seconds: _seekSeconds, forward: false),
+                              ),
+                            if (showChip && _seekDir == 1)
+                              Positioned(
+                                right: 0,
+                                width: chipWidth,
+                                child: LwSeekChip(
+                                    seconds: _seekSeconds, forward: true),
+                              ),
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -2081,6 +2202,26 @@ class _BlurBackground extends StatelessWidget {
         BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
           child: ColoredBox(color: Colors.black.withOpacity(0.45)),
+        ),
+        // Ambient radial glow (LastWave player bg geometry — center
+        // 25%/20%, radius 0.85·max, 0.58→0 alpha). Brass source for
+        // now; per-artwork palette extraction is a later round.
+        Positioned.fill(
+          child: IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  center: const Alignment(-0.5, -0.6),
+                  radius: 0.85,
+                  colors: [
+                    SpotifyColors.green.withValues(alpha: 0.58),
+                    SpotifyColors.green.withValues(alpha: 0.22),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ],
     );

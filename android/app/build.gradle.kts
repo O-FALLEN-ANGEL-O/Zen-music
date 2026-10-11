@@ -19,6 +19,14 @@ android {
         isCoreLibraryDesugaringEnabled = true
     }
 
+    packaging {
+        resources {
+            // libsoxr ships AL/LGPL META-INF metadata that breaks
+            // duplicate-resource merging.
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.zen.music.zenmusic"
         minSdk = 24
@@ -56,7 +64,7 @@ dependencies {
     // through ZenInnertubeResolver on the legacy 'zen/innertubex'
     // channel. Replaced the innertubex JitPack artifact (removed).
     implementation(project(":innertube"))
-
+    implementation(project(":lossless"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
     implementation("com.squareup.okhttp3:okhttp:5.1.0")

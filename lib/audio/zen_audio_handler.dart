@@ -8,6 +8,7 @@ import '../models/song.dart';
 import '../services/buffered_stream_source.dart';
 import '../services/downloads_service.dart';
 import '../services/listening_stats_service.dart';
+import '../services/lossless_dsp_service.dart';
 import '../services/song_source_resolver.dart';
 import '../services/storage_service.dart';
 import '../services/youtube_service.dart';
@@ -735,8 +736,123 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   // ═════════════════════════════════════════════
-  // EQUALIZER
+  // EQUALIZER — native engine first, system (session) EQ fallback.
+  // The native 15-band EQ broadcasts to every engine instance (main +
+  // crossfade player). When the native engine is unavailable, the
+  // legacy AndroidEqualizer session path is used exactly as before.
+  // NEVER both at once: while native is active the session EQ is held
+  // disabled (double-EQ guard).
   // ═════════════════════════════════════════════
+
+  final LosslessDspService _lossless = LosslessDspService.instance;
+  bool? _nativeEqAvailable;
+  List<double> _nativeGains =
+  List<double>.filled(LosslessDspService.bandCount, 0);
+  bool _nativeEqEnabled = false;
+
+  /// Unified parameters for the EQ screen: native 15-band when the
+  /// engine is available, session EQ otherwise.
+  Future<ZenEqParameters?> getEqParameters() async {
+    _nativeEqAvailable ??= await _lossless.available;
+    if (_nativeEqAvailable!) {
+      await _disableSessionEqualizer();
+      final centers = await _lossless.bandCenters;
+      return ZenEqParameters(
+        minDecibels: LosslessDspService.minDb,
+        maxDecibels: LosslessDspService.maxDb,
+        bands: [
+          for (var i = 0;
+          i < LosslessDspService.bandCount && i < centers.length;
+          i++)
+            ZenEqBand(centerFrequency: centers[i], gain: _nativeGains[i]),
+        ],
+        isNative: true,
+      );
+    }
+    final session = await getEqualizerParameters();
+    if (session == null) return null;
+    return ZenEqParameters(
+      minDecibels: session.minDecibels,
+      maxDecibels: session.maxDecibels,
+      bands: [
+        for (final b in session.bands)
+          ZenEqBand(centerFrequency: b.centerFrequency, gain: b.gain),
+      ],
+      isNative: false,
+    );
+  }
+
+  Future<void> setEqEnabled(bool enabled) async {
+    if (_nativeEqAvailable ?? false) {
+      _nativeEqEnabled = enabled;
+      await _lossless.setEqualizer(enabled: enabled, gains: _nativeGains);
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('eq_enabled', enabled);
+      return;
+    }
+    await setEqualizerEnabled(enabled);
+  }
+
+  Future<void> setEqBandGain(int index, double gain) async {
+    if (_nativeEqAvailable ?? false) {
+      if (index < 0 || index >= LosslessDspService.bandCount) return;
+      _nativeGains[index] =
+          gain.clamp(LosslessDspService.minDb, LosslessDspService.maxDb);
+      await _lossless.setEqualizer(
+          enabled: _nativeEqEnabled, gains: _nativeGains);
+      await _persistNativeGains();
+      return;
+    }
+    await setEqualizerBandGain(index, gain);
+  }
+
+  Future<void> resetEqBands() async {
+    if (_nativeEqAvailable ?? false) {
+      _nativeGains = List<double>.filled(LosslessDspService.bandCount, 0);
+      await _lossless.setEqualizer(
+          enabled: _nativeEqEnabled, gains: _nativeGains);
+      await _persistNativeGains();
+      return;
+    }
+    await resetEqualizerBands();
+  }
+
+  Future<void> _persistNativeGains() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setStringList(
+        'eq_native_gains',
+        [for (final g in _nativeGains) g.toString()],
+      );
+    } catch (_) {}
+  }
+
+  Future<void> _disableSessionEqualizer() async {
+    try {
+      await _equalizer.setEnabled(false);
+    } catch (_) {}
+  }
+
+  Future<void> _restoreEqualizer() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _nativeEqAvailable ??= await _lossless.available;
+      if (_nativeEqAvailable!) {
+        _nativeEqEnabled = prefs.getBool('eq_enabled') ?? false;
+        final stored = prefs.getStringList('eq_native_gains');
+        if (stored != null && stored.length == LosslessDspService.bandCount) {
+          _nativeGains = [
+            for (final s in stored) double.tryParse(s) ?? 0.0,
+          ];
+        }
+        await _lossless.setEqualizer(
+            enabled: _nativeEqEnabled, gains: _nativeGains);
+        await _disableSessionEqualizer();
+      } else if (prefs.getBool('eq_enabled') ?? false) {
+        await _equalizer.setEnabled(true);
+      }
+    } catch (_) {}
+  }
 
   Future<AndroidEqualizerParameters?> getEqualizerParameters() async {
     try {
@@ -768,15 +884,6 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
       final params = await _equalizer.parameters;
       for (final band in params.bands) {
         await band.setGain(0);
-      }
-    } catch (_) {}
-  }
-
-  Future<void> _restoreEqualizer() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (prefs.getBool('eq_enabled') ?? false) {
-        await _equalizer.setEnabled(true);
       }
     } catch (_) {}
   }
@@ -1043,7 +1150,11 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
               'next attempt resolves fresh');
         } else {
           _urlCache.remove(song.id);
-          if (attempt >= 4) _staleStreamIds.add(song.id);
+          // Bust the PERSISTED url cache from attempt 2 on: any repeat
+          // failure while replaying a stored URL means the stored URL is
+          // suspect (expired signed url, dead Qobuz token), and the
+          // platform-wrapped error text often defeats death detection.
+          if (attempt >= 2) _staleStreamIds.add(song.id);
         }
         if (attempt < maxAttempts) {
           print('🔁 Load attempt $attempt/$maxAttempts failed for '

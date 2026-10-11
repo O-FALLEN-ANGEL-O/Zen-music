@@ -21,6 +21,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import com.ryanheise.audioservice.AudioServiceActivity
+import com.zen.music.zenmusic.addon.AddonClient
+import com.zen.music.zenmusic.addon.LosslessMusicApi
 import com.zen.music.zenmusic.dsp.core.BiquadFilter
 import com.zen.music.zenmusic.dsp.core.models.FilterType
 import com.zen.music.zenmusic.dsp.core.models.ParametricEQ
@@ -28,8 +30,11 @@ import com.zen.music.zenmusic.dsp.core.models.ParametricEQBand
 import com.zen.music.zenmusic.dsp.core.parser.ParametricEQParser
 import com.zen.music.zenmusic.extensions.ZenExtensionManager
 import com.zen.music.zenmusic.innertube.ZenInnertubeResolver
+import com.zen.music.zenmusic.lossless.NativeAudioEngine
+import com.zen.music.zenmusic.lossless.broadcastNativeEqualizer
 import com.zen.music.zenmusic.potoken.ZenPoTokenBridge
 import com.zen.music.zenmusic.videoplayer.ZenVideoPlayerViewFactory
+import kotlinx.coroutines.runBlocking
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -78,6 +83,15 @@ class MainActivity : AudioServiceActivity() {
         registerAudioChannel(flutterEngine)
         registerInnertubexChannel(flutterEngine)
         registerDspChannel(flutterEngine)
+        // Diagnostics: streams the app's own logcat (all native +
+        // framework lines) to the in-app log viewer.
+        DiagnosticsLogCapture.register(flutterEngine)
+        // Native DSP engine control (15-band EQ broadcast to all engine
+        // instances — main + crossfade player).
+        registerLosslessChannel(flutterEngine)
+        // Lossless addon source (Tidal via user addon server) — ported
+        // from LastWave; config is pushed from Dart.
+        registerAddonChannel(flutterEngine)
         // In-app APK installer channel (OTA updates)
         InstallApkPlugin.register(flutterEngine, this)
         // Native merged-stream video player (video watch page) —
@@ -493,6 +507,123 @@ class MainActivity : AudioServiceActivity() {
         },
         "metadata" to eq.metadata,
     )
+
+    // ═══════════════════════════════════════════
+    // LOSSLESS — native DSP engine control. The 15-band equalizer fans
+    // out through the C++ instance registry, so every just_audio player
+    // (main + crossfade) receives updates. Band centers mirror the
+    // fixed ISO centers in DspProcessor.cpp (kEqFrequenciesHz).
+    // ═══════════════════════════════════════════
+
+    private fun registerLosslessChannel(flutterEngine: FlutterEngine) {
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "zen/lossless")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "available" -> result.success(NativeAudioEngine.libraryLoaded)
+                    "bandCenters" -> result.success(
+                        listOf(
+                            25.0, 40.0, 63.0, 100.0, 160.0,
+                            250.0, 400.0, 630.0, 1000.0, 1600.0,
+                            2500.0, 4000.0, 6300.0, 10000.0, 16000.0,
+                        )
+                    )
+                    "setEqualizer" -> {
+                        val enabled = call.argument<Boolean>("enabled") ?: false
+                        val gainsRaw: List<*> =
+                            call.argument("gains") ?: emptyList<Any?>()
+                        val gains = FloatArray(NativeAudioEngine.EQUALIZER_BAND_COUNT) { i ->
+                            (gainsRaw.getOrNull(i) as? Number)?.toFloat() ?: 0f
+                        }
+                        broadcastNativeEqualizer(enabled, gains)
+                        result.success(null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    // ═══════════════════════════════════════════
+    // ADDON — lossless source resolver (ported from LastWave, GPL-3.0).
+    // Config is pushed from Dart and held process-wide; persistence
+    // lives Dart-side. resolveStream returns the matched lossless
+    // stream (DASH data-URL / FLAC) or null — the strict-matching core
+    // (language gate, version gate, duration ceiling) runs in Kotlin.
+    // ═══════════════════════════════════════════
+
+    private val addonApi: LosslessMusicApi by lazy { LosslessMusicApi() }
+
+    private fun registerAddonChannel(flutterEngine: FlutterEngine) {
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "zen/addon")
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "configure" -> {
+                        addonApi.addonUrl =
+                            call.argument<String>("url")?.trim()?.ifBlank { null }
+                        addonApi.addonEnabled = call.argument<Boolean>("enabled") ?: false
+                        result.success(null)
+                    }
+                    "probe" -> {
+                        Thread {
+                            val info = try {
+                                runBlocking {
+                                    addonApi.getCredentials()?.let { creds ->
+                                        AddonClient(creds.baseUrl).manifest().getOrNull()?.let {
+                                            mapOf("name" to it.displayName, "version" to it.version)
+                                        }
+                                    }
+                                }
+                            } catch (_: Throwable) {
+                                null
+                            }
+                            mainHandler.post { result.success(info) }
+                        }.start()
+                    }
+                    "resolveStream" -> {
+                        val title = call.argument<String>("title") ?: ""
+                        val artist = call.argument<String>("artist") ?: ""
+                        val durationSec =
+                            (call.argument<Any?>("durationSec") as? Number)?.toInt()
+                        val album = call.argument<String>("album")
+                        val quality = (call.argument<Any?>("quality") as? Number)?.toInt() ?: 27
+                        Thread {
+                            val stream = try {
+                                if (!addonApi.isConfigured) null
+                                else runBlocking {
+                                    addonApi.resolveStream(
+                                        title = title,
+                                        artist = artist,
+                                        expectedDurationSeconds = durationSec,
+                                        expectedAlbum = album,
+                                        preferredQuality = quality,
+                                    )
+                                }
+                            } catch (_: Throwable) {
+                                null
+                            }
+                            mainHandler.post {
+                                if (stream == null) {
+                                    result.success(null)
+                                } else {
+                                    result.success(
+                                        mapOf(
+                                            "url" to stream.url,
+                                            "mimeType" to stream.mimeType,
+                                            "bitDepth" to stream.bitDepth,
+                                            "samplingRate" to stream.samplingRate,
+                                            "formatId" to stream.formatId,
+                                            "bitrateKbps" to stream.bitrateKbps,
+                                            "durationSeconds" to stream.durationSeconds,
+                                            "audioCodecOverride" to stream.audioCodecOverride,
+                                        )
+                                    )
+                                }
+                            }
+                        }.start()
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+    }
 
     // ═══════════════════════════════════════════
     // VOLUME EVENTS — STREAM_MUSIC {volume, max} on change + subscribe.

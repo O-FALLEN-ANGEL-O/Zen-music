@@ -1,0 +1,151 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.10.0"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"build" : "_deps/soxr_source-build",
+					"childIndexes" : 
+					[
+						2
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-_deps.soxr_source-build-Debug-fc83a98737fbd7d3f51e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.1"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-src",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				},
+				{
+					"build" : "_deps/soxr_source-build/src",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-_deps.soxr_source-build.src-Debug-dd390e836ceb87402630.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.1"
+					},
+					"parentIndex" : 1,
+					"projectIndex" : 1,
+					"source" : "C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a/_deps/soxr_source-src/src",
+					"targetIndexes" : 
+					[
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "zen_lossless",
+					"targetIndexes" : 
+					[
+						4
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1,
+						2
+					],
+					"name" : "soxr",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "check::@e3f57bb81d975911001b",
+					"jsonFile" : "target-check-Debug-b4a34bc6a7e4cc6a4133.json",
+					"name" : "check",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "deinstall::@e3f57bb81d975911001b",
+					"jsonFile" : "target-deinstall-Debug-eb245c6c052c47874784.json",
+					"name" : "deinstall",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "distclean::@e3f57bb81d975911001b",
+					"jsonFile" : "target-distclean-Debug-fafd007bc8bb1c5b8102.json",
+					"name" : "distclean",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "soxr::@936f2d33cf16c3c88973",
+					"jsonFile" : "target-soxr-Debug-f92e73943b7d599089d7.json",
+					"name" : "soxr",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "zen_lossless_audio::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-zen_lossless_audio-Debug-7bfe92a59aebe5a32daf.json",
+					"name" : "zen_lossless_audio",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/arm64-v8a",
+		"source" : "C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/cpp"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}

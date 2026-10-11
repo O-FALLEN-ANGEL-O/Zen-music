@@ -1,0 +1,24 @@
+# ninja log v5
+51	324	8133932552429702	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/dbesi0.c.o	c9566f15ba58d0bd
+42	637	8133932555399705	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/filter.c.o	2880f232b9f43bce
+23	666	8133932555629716	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/soxr.c.o	a7c8ceba272c4381
+325	735	8133932556239746	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/fft4g64.c.o	a7f0879066786e42
+33	758	8133932556299685	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/data-io.c.o	3251ff46f2291e25
+735	1012	8133932559426784	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/fft4g32.c.o	b7486631ec10cc9d
+667	1276	8133932561781560	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/cr.c.o	364fa8f79f4368e0
+638	1322	8133932562391570	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/cr32.c.o	91b529b51482a4cd
+758	1428	8133932563481550	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/cr64.c.o	d988be8c50760286
+1018	1595	8133932565061565	_deps/soxr_source-build/src/CMakeFiles/soxr.dir/vr32.c.o	b5f4307359a0f024
+1595	2200	8133932570961562	C:/Users/prata/AndroidStudioProjects/zenmusic/build/lossless/intermediates/cxx/Debug/2f536k2v/obj/arm64-v8a/libsoxr.so	b5feba3112f1daf0
+14	6186	8133932611098646	CMakeFiles/zen_lossless_audio.dir/DspProcessor.cpp.o	2785a6784d2ab795
+34	3603	8133935961564528	CMakeFiles/zen_lossless_audio.dir/NativeBridge.cpp.o	8bf706f7483fcbbc
+45	4686	8133935972634460	CMakeFiles/zen_lossless_audio.dir/AudioEngine.cpp.o	46fbaf93b409858a
+4686	6852	8133935994526491	C:/Users/prata/AndroidStudioProjects/zenmusic/build/lossless/intermediates/cxx/Debug/2f536k2v/obj/arm64-v8a/libzen_lossless_audio.so	638a2293ae54f6a1
+214	27624	8134030599785363	CMakeFiles/zen_lossless_audio.dir/NativeBridge.cpp.o	8bf706f7483fcbbc
+27626	29529	8134030619993640	C:/Users/prata/AndroidStudioProjects/zenmusic/build/lossless/intermediates/cxx/Debug/2f536k2v/obj/arm64-v8a/libzen_lossless_audio.so	638a2293ae54f6a1
+72	6960	8134072122414186	CMakeFiles/zen_lossless_audio.dir/DspProcessor.cpp.o	2785a6784d2ab795
+36	7050	8134072123394154	CMakeFiles/zen_lossless_audio.dir/NativeBridge.cpp.o	8bf706f7483fcbbc
+87	8788	8134072140738880	CMakeFiles/zen_lossless_audio.dir/AudioEngine.cpp.o	46fbaf93b409858a
+1206	10445	8134079609352555	CMakeFiles/zen_lossless_audio.dir/NativeBridge.cpp.o	8bf706f7483fcbbc
+11	2623	8134084295665373	CMakeFiles/zen_lossless_audio.dir/DspProcessor.cpp.o	2785a6784d2ab795
+2625	2883	8134084298765268	C:/Users/prata/AndroidStudioProjects/zenmusic/build/lossless/intermediates/cxx/Debug/2f536k2v/obj/arm64-v8a/libzen_lossless_audio.so	638a2293ae54f6a1

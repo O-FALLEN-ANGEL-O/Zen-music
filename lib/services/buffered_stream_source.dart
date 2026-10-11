@@ -115,7 +115,10 @@ class BufferedStreamAudioSource extends StreamAudioSource {
     if (_discarded) return;
     _discarded = true;
 
-    await _downloadIterator?.cancel();
+    try {
+      await _downloadIterator?.cancel();
+    } catch (_) {}
+    _downloadIterator = null;
     await _download;
 
     try {
@@ -197,7 +200,13 @@ class BufferedStreamAudioSource extends StreamAudioSource {
               _downloadedBytes += chunk.length;
               position += chunk.length;
             }
+            final finished = _downloadIterator;
             _downloadIterator = null;
+            if (finished != null) {
+              try {
+                await finished.cancel();
+              } catch (_) {}
+            }
 
             // If the server ignored the Range header and sent the whole
             // body, don't loop forever.
@@ -214,7 +223,19 @@ class BufferedStreamAudioSource extends StreamAudioSource {
             }
             windowDone = true;
           } on TimeoutException {
+            // Abandon the stalled stream — and CANCEL it. A dropped
+            // StreamIterator keeps its subscription alive (paused); the
+            // connection's later error ("unexpected end of stream",
+            // "No content even though contentLength...") then lands in
+            // the zone as an UNHANDLED async exception. Cancel (and
+            // swallow the cancel-time error) before retrying.
+            final abandoned = _downloadIterator;
             _downloadIterator = null;
+            if (abandoned != null) {
+              try {
+                await abandoned.cancel();
+              } catch (_) {}
+            }
             // Retry the same window (position unchanged). After 3
             // attempts the rethrow sets _downloadError — the read side
             // surfaces it as a playback error and the failure hook

@@ -1,0 +1,67 @@
+{
+  "buildFiles": [
+    "C:\\Users\\prata\\AndroidStudioProjects\\zenmusic\\lossless\\.cxx\\Debug\\2f536k2v\\x86_64\\_deps\\soxr_source-src\\CMakeLists.txt",
+    "C:\\Users\\prata\\AndroidStudioProjects\\zenmusic\\lossless\\.cxx\\Debug\\2f536k2v\\x86_64\\_deps\\soxr_source-src\\src\\CMakeLists.txt",
+    "C:\\Users\\prata\\AndroidStudioProjects\\zenmusic\\lossless\\cpp\\CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "C:\\Users\\prata\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+      "-C",
+      "C:\\Users\\prata\\AndroidStudioProjects\\zenmusic\\lossless\\.cxx\\Debug\\2f536k2v\\x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "C:\\Users\\prata\\AppData\\Local\\Android\\Sdk\\cmake\\3.22.1\\bin\\ninja.exe",
+    "-C",
+    "C:\\Users\\prata\\AndroidStudioProjects\\zenmusic\\lossless\\.cxx\\Debug\\2f536k2v\\x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {
+    "check::@e3f57bb81d975911001b": {
+      "toolchain": "toolchain",
+      "abi": "x86_64",
+      "artifactName": "check"
+    },
+    "deinstall::@e3f57bb81d975911001b": {
+      "toolchain": "toolchain",
+      "abi": "x86_64",
+      "artifactName": "deinstall"
+    },
+    "distclean::@e3f57bb81d975911001b": {
+      "toolchain": "toolchain",
+      "abi": "x86_64",
+      "artifactName": "distclean"
+    },
+    "soxr::@936f2d33cf16c3c88973": {
+      "toolchain": "toolchain",
+      "abi": "x86_64",
+      "artifactName": "soxr",
+      "output": "C:\\Users\\prata\\AndroidStudioProjects\\zenmusic\\build\\lossless\\intermediates\\cxx\\Debug\\2f536k2v\\obj\\x86_64\\libsoxr.so",
+      "runtimeFiles": []
+    },
+    "zen_lossless_audio::@6890427a1f51a3e7e1df": {
+      "toolchain": "toolchain",
+      "abi": "x86_64",
+      "artifactName": "zen_lossless_audio",
+      "output": "C:\\Users\\prata\\AndroidStudioProjects\\zenmusic\\build\\lossless\\intermediates\\cxx\\Debug\\2f536k2v\\obj\\x86_64\\libzen_lossless_audio.so",
+      "runtimeFiles": [
+        "C:\\Users\\prata\\.gradle\\caches\\9.3.1\\transforms\\c23e1f2aff88f72290fd6fd028d334bd\\workspace\\transformed\\oboe-1.10.0\\prefab\\modules\\oboe\\libs\\android.x86_64\\liboboe.so",
+        "C:\\Users\\prata\\AndroidStudioProjects\\zenmusic\\build\\lossless\\intermediates\\cxx\\Debug\\2f536k2v\\obj\\x86_64\\libsoxr.so"
+      ]
+    }
+  },
+  "toolchains": {
+    "toolchain": {
+      "cCompilerExecutable": "C:\\Users\\prata\\AppData\\Local\\Android\\Sdk\\ndk\\28.2.13676358\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe",
+      "cppCompilerExecutable": "C:\\Users\\prata\\AppData\\Local\\Android\\Sdk\\ndk\\28.2.13676358\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe"
+    }
+  },
+  "cFileExtensions": [
+    "c"
+  ],
+  "cppFileExtensions": [
+    "cpp"
+  ]
+}
