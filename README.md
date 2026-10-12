@@ -27,11 +27,11 @@
 > [!NOTE]
 > **Regional availability** - If YouTube Music or JioSaavn is unavailable in your region, that source may not work without a **VPN or proxy** connecting to a supported region.
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">
 
-<h1><a id="screenshots"></a>Screenshots</h1>
+<a id="screenshots"></a><img src="assets/banners/screenshots.svg" alt="Screenshots" width="720" />
 
 <img src="screenshots/home.png" alt="Home screen" width="30%" />
 <img src="screenshots/player.png" alt="Player screen" width="30%" />
@@ -46,11 +46,11 @@
 
 </div>
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">
 
-<h1><a id="features"></a>Features</h1>
+<a id="features"></a><img src="assets/banners/features.svg" alt="Features" width="720" />
 
 <table>
   <tr>
@@ -111,11 +111,11 @@
 
 </div>
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">
 
-<h1><a id="download-now"></a>Download Now</h1>
+<a id="download-now"></a><img src="assets/banners/download-now.svg" alt="Download Now" width="720" />
 
 <h2>Stable Release</h2>
 
@@ -173,9 +173,13 @@
 
 </div>
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
-<h1 align="center"><a id="building-from-source"></a>Building from Source</h1>
+<div align="center">
+
+<a id="building-from-source"></a><img src="assets/banners/building-from-source.svg" alt="Building from Source" width="720" />
+
+</div>
 
 ZenMusic targets **Android only**.
 
@@ -195,11 +199,11 @@ flutter build apk --release                   # universal APK
 
 If no keystore is configured, release builds fall back to debug signing so the build still works. Use your own release keystore for any APK you distribute, because Android only installs updates signed with the same key.
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">
 
-<h1><a id="contributing"></a>Contributing</h1>
+<a id="contributing"></a><img src="assets/banners/contributing.svg" alt="Contributing" width="720" />
 
 <h3>Contributions are welcome!</h3>
 
@@ -215,11 +219,11 @@ If no keystore is configured, release builds fall back to debug signing so the b
 
 Please keep pull requests focused on a single change, and test on a real device before submitting.
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">
 
-<h1>Special Thanks</h1>
+<img src="assets/banners/special-thanks.svg" alt="Special Thanks" width="720" />
 
 <h3>ZenMusic stands on the shoulders of incredible open-source work.</h3>
 
@@ -293,11 +297,11 @@ Please keep pull requests focused on a single change, and test on a real device 
 
 </div>
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">
 
-<h1>Contributors</h1>
+<img src="assets/banners/contributing.svg" alt="Contributors" width="720" />
 
 <h3>This project wouldn't exist without these amazing people!</h3>
 
@@ -307,11 +311,11 @@ Please keep pull requests focused on a single change, and test on a real device 
 
 </div>
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">
 
-<h1><a id="legal"></a>Legal</h1>
+<a id="legal"></a><img src="assets/banners/legal.svg" alt="Legal" width="720" />
 
 ZenMusic is a fully open-source project created for educational purposes and personal use. It is not monetized in any way: there are no advertisements, premium features or subscriptions.
 
@@ -325,7 +329,7 @@ Licensed under [GPL-3.0](LICENSE)
 
 </div>
 
----
+<div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">
 
