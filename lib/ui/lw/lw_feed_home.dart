@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../models/song.dart';
@@ -5,14 +7,18 @@ import '../../screens/listen_together_screen.dart';
 import '../../services/home_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/spotify_theme.dart';
+import '../../widgets/wave_spinner.dart';
 import 'lw_feed_section.dart';
 
-/// FeedScreen port. Section order and geometry follow FeedScreen.kt;
-/// data comes from ZenMusic's HomeService (same shelves the existing
-/// HomeTab loads) + played history. Header row restores the old
-/// HomeTab masthead with Listen Together + Settings entry points.
+/// FeedScreen port with YouTube-Music-style infinite feed:
+///  - Pulsing skeleton while the first load runs.
+///  - Fresh trending at top on every load/refresh (hero seeds from the
+///    latest fetched hits).
+///  - Endless "More for you" chart shelves appended on scroll
+///    (deduped, end-after-2-empty-fetches), like the old HomeTab.
 class LwFeedHome extends StatefulWidget {
-  const LwFeedHome({super.key, required this.onOpenSearch, required this.onOpenSettings});
+  const LwFeedHome(
+      {super.key, required this.onOpenSearch, required this.onOpenSettings});
   final VoidCallback onOpenSearch;
   final VoidCallback onOpenSettings;
 
@@ -20,8 +26,16 @@ class LwFeedHome extends StatefulWidget {
   State<LwFeedHome> createState() => _LwFeedHomeState();
 }
 
-class _LwFeedHomeState extends State<LwFeedHome> {
+class _LwFeedHomeState extends State<LwFeedHome>
+    with SingleTickerProviderStateMixin {
   final _homeService = HomeService();
+  final _scroll = ScrollController();
+  late final AnimationController _pulse = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 900),
+    value: 0.45,
+  );
+
   List<Song> _biggestHits = [];
   List<Song> _trendingNow = [];
   List<Song> _ytmHot = [];
@@ -30,20 +44,56 @@ class _LwFeedHomeState extends State<LwFeedHome> {
   List<Song> _recent = [];
   bool _loading = true;
 
+  // ── Infinite append state (old HomeTab contract) ──
+  final List<({String title, List<Song> songs})> _chartShelves = [];
+  final Set<String> _shownSongIds = {};
+  bool _loadingMore = false;
+  bool _endReached = false;
+  int _failedFetches = 0;
+
+  static const _chartTitles = [
+    'Chart mix',
+    'Throwback chart',
+    'Mood chart',
+    'Regional chart',
+    'Fresh picks',
+    'On repeat',
+    'Discover',
+  ];
+
   @override
   void initState() {
     super.initState();
-    _load();
+    _scroll.addListener(_onScroll);
+    _pulse.repeat(reverse: true);
+    _loadAll();
   }
 
   @override
   void dispose() {
+    _scroll.removeListener(_onScroll);
+    _scroll.dispose();
     _homeService.dispose();
+    _pulse.dispose();
     super.dispose();
   }
 
-  Future<void> _load() async {
-    setState(() => _loading = true);
+  void _onScroll() {
+    if (_loading || _loadingMore || _endReached) return;
+    if (!_scroll.hasClients) return;
+    if (_scroll.position.extentAfter < 800) _loadMore();
+  }
+
+  String _chartTitle(int index) =>
+      _chartTitles[index % _chartTitles.length];
+
+  Future<void> _loadAll() async {
+    setState(() {
+      _loading = true;
+      _endReached = false;
+      _loadingMore = false;
+    });
+    if (!_pulse.isAnimating) _pulse.repeat(reverse: true);
     try {
       final hits = _homeService.getBiggestHits();
       final trending = _homeService.getTrendingNow();
@@ -60,7 +110,62 @@ class _LwFeedHomeState extends State<LwFeedHome> {
     setState(() {
       _recent = storage.getPlayedHistory().take(12).toList();
       _loading = false;
+      // Dedupe seed: everything already on screen never re-appears in
+      // an appended shelf.
+      _shownSongIds
+        ..clear()
+        ..addAll(_biggestHits.map((s) => s.id))
+        ..addAll(_trendingNow.map((s) => s.id))
+        ..addAll(_ytmHot.map((s) => s.id))
+        ..addAll(_ytmFresh.map((s) => s.id))
+        ..addAll(_topCharts.map((s) => s.id));
+      _chartShelves.clear();
     });
+    _pulse.stop();
+  }
+
+  /// Appends the next chart shelf while scrolling. Stops after the
+  /// rotation pool fails to add genuinely-new content twice in a row.
+  Future<void> _loadMore() async {
+    if (_loadingMore || _endReached) return;
+    setState(() => _loadingMore = true);
+    try {
+      final songs = await _homeService.getNextChartShelf();
+      if (!mounted) return;
+      final fresh = songs.where((s) => _shownSongIds.add(s.id)).toList();
+      if (fresh.length < 5) {
+        _failedFetches++;
+        if (_failedFetches >= 2) {
+          setState(() {
+            _endReached = true;
+            _loadingMore = false;
+          });
+          return;
+        }
+        setState(() => _loadingMore = false);
+        unawaited(_loadMore());
+        return;
+      }
+      _failedFetches = 0;
+      setState(() {
+        _chartShelves.add((
+        title: 'More for you · ${_chartTitle(_chartShelves.length)}',
+        songs: fresh,
+        ));
+        _loadingMore = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      _failedFetches++;
+      if (_failedFetches >= 3) {
+        setState(() {
+          _endReached = true;
+          _loadingMore = false;
+        });
+      } else {
+        setState(() => _loadingMore = false);
+      }
+    }
   }
 
   void _playQueue(List<Song> songs, int index) {
@@ -71,15 +176,14 @@ class _LwFeedHomeState extends State<LwFeedHome> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: _load,
+      onRefresh: _loadAll,
       child: _loading
-          ? const Center(
-          child: CircularProgressIndicator(color: SpotifyColors.highlight))
+          ? _FeedSkeleton(pulse: _pulse)
           : ListView(
+        controller: _scroll,
         padding: const EdgeInsets.only(top: 12, bottom: 190),
         children: [
-          // Header row: masthead + Listen Together + Settings — the
-          // old HomeTab header entry points, restored.
+          // Header row: masthead + Listen Together + Settings.
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 14, 16, 10),
             child: Row(
@@ -102,12 +206,14 @@ class _LwFeedHomeState extends State<LwFeedHome> {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (_) => const ListenTogetherScreen()));
                   },
-                  child: const _RingedCircle(icon: Icons.people_outline),
+                  child: const _RingedCircle(
+                      icon: Icons.people_outline),
                 ),
                 const SizedBox(width: 10),
                 GestureDetector(
                   onTap: widget.onOpenSettings,
-                  child: const _RingedCircle(icon: Icons.settings_outlined),
+                  child: const _RingedCircle(
+                      icon: Icons.settings_outlined),
                 ),
               ],
             ),
@@ -115,7 +221,9 @@ class _LwFeedHomeState extends State<LwFeedHome> {
           _InfiniteRadioHero(
             seed: _biggestHits.isNotEmpty
                 ? _biggestHits.first
-                : (_trendingNow.isNotEmpty ? _trendingNow.first : null),
+                : (_trendingNow.isNotEmpty
+                ? _trendingNow.first
+                : null),
             onPlay: () {
               final seed = _biggestHits.isNotEmpty
                   ? _biggestHits.first
@@ -124,8 +232,6 @@ class _LwFeedHomeState extends State<LwFeedHome> {
             },
           ),
           const SizedBox(height: 24),
-          // Jump back in (played history) — RecentTrackCard row:
-          // 148dp squares, ago badge top-left.
           if (_recent.isNotEmpty) ...[
             LwFeedSectionHeader(
                 title: 'Jump back in',
@@ -134,23 +240,7 @@ class _LwFeedHomeState extends State<LwFeedHome> {
                 actionIcon: Icons.play_arrow_rounded,
                 onAction: () => _playQueue(_recent, 0)),
             const SizedBox(height: 12),
-            SizedBox(
-              height: 210,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: _recent.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (_, i) => LwMediaCard(
-                  songId: _recent[i].id,
-                  artworkUrl: _recent[i].thumbnail,
-                  title: _recent[i].title,
-                  subtitle: _recent[i].artist,
-                  onTap: () => _playQueue(_recent, i),
-                  onPlay: () => _playQueue(_recent, i),
-                ),
-              ),
-            ),
+            _shelf(_recent, (i) => _playQueue(_recent, i)),
           ],
           const SizedBox(height: 24),
           if (_biggestHits.isNotEmpty) ...[
@@ -158,30 +248,15 @@ class _LwFeedHomeState extends State<LwFeedHome> {
               child: Column(children: [
                 LwFeedSectionHeader(
                     title: 'Popular right now',
-                    subtitle: 'Most popular right now · tap a rank to play',
+                    subtitle: 'Most popular right now · up to date',
                     actionText: 'Play all',
                     actionIcon: Icons.play_arrow_rounded,
                     onAction: () => _playQueue(_biggestHits, 0),
                     onShuffle: () => _playQueue(
                         List<Song>.from(_biggestHits)..shuffle(), 0)),
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 210,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _biggestHits.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (_, i) => LwMediaCard(
-                      songId: _biggestHits[i].id,
-                      artworkUrl: _biggestHits[i].thumbnail,
-                      title: _biggestHits[i].title,
-                      subtitle: _biggestHits[i].artist,
-                      onTap: () => _playQueue(_biggestHits, i),
-                      onPlay: () => _playQueue(_biggestHits, i),
-                    ),
-                  ),
-                ),
+                _shelf(_biggestHits,
+                        (i) => _playQueue(_biggestHits, i)),
               ]),
             ),
           ],
@@ -195,23 +270,7 @@ class _LwFeedHomeState extends State<LwFeedHome> {
                     actionIcon: Icons.play_arrow_rounded,
                     onAction: () => _playQueue(_ytmHot, 0)),
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 210,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _ytmHot.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (_, i) => LwMediaCard(
-                      songId: _ytmHot[i].id,
-                      artworkUrl: _ytmHot[i].thumbnail,
-                      title: _ytmHot[i].title,
-                      subtitle: _ytmHot[i].artist,
-                      onTap: () => _playQueue(_ytmHot, i),
-                      onPlay: () => _playQueue(_ytmHot, i),
-                    ),
-                  ),
-                ),
+                _shelf(_ytmHot, (i) => _playQueue(_ytmHot, i)),
               ]),
             ),
           ],
@@ -226,23 +285,7 @@ class _LwFeedHomeState extends State<LwFeedHome> {
                     actionIcon: Icons.play_arrow_rounded,
                     onAction: () => _playQueue(_topCharts, 0)),
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 210,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _topCharts.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (_, i) => LwMediaCard(
-                      songId: _topCharts[i].id,
-                      artworkUrl: _topCharts[i].thumbnail,
-                      title: _topCharts[i].title,
-                      subtitle: _topCharts[i].artist,
-                      onTap: () => _playQueue(_topCharts, i),
-                      onPlay: () => _playQueue(_topCharts, i),
-                    ),
-                  ),
-                ),
+                _shelf(_topCharts, (i) => _playQueue(_topCharts, i)),
               ]),
             ),
           ],
@@ -252,41 +295,77 @@ class _LwFeedHomeState extends State<LwFeedHome> {
               child: Column(children: [
                 LwFeedSectionHeader(
                     title: 'Fresh finds',
-                    subtitle: 'New tracks beyond your usual rotation',
+                    subtitle:
+                    'New tracks beyond your usual rotation',
                     actionText: 'Play all',
                     actionIcon: Icons.play_arrow_rounded,
                     onAction: () => _playQueue(_ytmFresh, 0)),
                 const SizedBox(height: 12),
-                SizedBox(
-                  height: 210,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: _ytmFresh.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 12),
-                    itemBuilder: (_, i) => LwMediaCard(
-                      songId: _ytmFresh[i].id,
-                      artworkUrl: _ytmFresh[i].thumbnail,
-                      title: _ytmFresh[i].title,
-                      subtitle: _ytmFresh[i].artist,
-                      badgeText: 'NEW',
-                      onTap: () => _playQueue(_ytmFresh, i),
-                      onPlay: () => _playQueue(_ytmFresh, i),
-                    ),
-                  ),
-                ),
+                _shelf(_ytmFresh, (i) => _playQueue(_ytmFresh, i),
+                    badge: 'NEW'),
               ]),
             ),
           ],
           const SizedBox(height: 24),
-          Center(
-            child: Text('Made for you from your taste',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: SpotifyColors.textTertiary,
-                )),
-          ),
+
+          // ── Infinite chart shelves (appended on scroll) ──
+          for (final shelf in _chartShelves) ...[
+            LwSectionCard(
+              child: Column(children: [
+                LwFeedSectionHeader(
+                    title: shelf.title,
+                    actionText: 'Play all',
+                    actionIcon: Icons.play_arrow_rounded,
+                    onAction: () => _playQueue(shelf.songs, 0),
+                    onShuffle: () => _playQueue(
+                        List<Song>.from(shelf.songs)..shuffle(), 0)),
+                const SizedBox(height: 12),
+                _shelf(shelf.songs, (i) => _playQueue(shelf.songs, i)),
+              ]),
+            ),
+            const SizedBox(height: 24),
+          ],
+
+          if (_loadingMore)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: WaveSpinner(size: 22)),
+            )
+          else if (_endReached)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 28),
+              child: Center(
+                child: Text(
+                  'You\'re all caught up — pull to refresh',
+                  style: TextStyle(
+                      color: SpotifyColors.textTertiary,
+                      fontSize: 13),
+                ),
+              ),
+            ),
         ],
+      ),
+    );
+  }
+
+  Widget _shelf(List<Song> songs, ValueChanged<int> onTap,
+      {String? badge}) {
+    return SizedBox(
+      height: 210,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: songs.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        itemBuilder: (_, i) => LwMediaCard(
+          songId: songs[i].id,
+          artworkUrl: songs[i].thumbnail,
+          title: songs[i].title,
+          subtitle: songs[i].artist,
+          badgeText: badge,
+          onTap: () => onTap(i),
+          onPlay: () => onTap(i),
+        ),
       ),
     );
   }
@@ -350,7 +429,8 @@ class _InfiniteRadioHero extends StatelessWidget {
                       color: scheme.primary.withValues(alpha: 0.16),
                     ),
                     child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.auto_awesome, size: 12, color: scheme.primary),
+                      Icon(Icons.auto_awesome,
+                          size: 12, color: scheme.primary),
                       const SizedBox(width: 5),
                       Text('MADE FOR YOU',
                           style: TextStyle(
@@ -408,6 +488,97 @@ class _InfiniteRadioHero extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Pulsing skeleton matching the feed layout: masthead bar, hero block,
+/// tile row, three shelf groups (title bar + 148dp squares). LastWave's
+/// FeedLoadingSkeleton geometry with the Zen palette.
+class _FeedSkeleton extends StatelessWidget {
+  const _FeedSkeleton({required this.pulse});
+  final Animation<double> pulse;
+
+  Widget _box({double? w, double? h, double r = 18}) {
+    return Container(
+      width: w,
+      height: h,
+      decoration: BoxDecoration(
+        color: SpotifyColors.surfaceLight
+            .withValues(alpha: 0.35 + 0.45 * pulse.value),
+        borderRadius: BorderRadius.circular(r),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(top: 12, bottom: 190),
+      children: [
+        // Masthead: title bar + two action circles.
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 14, 16, 10),
+          child: Row(
+            children: [
+              _box(w: 140, h: 26, r: 8),
+              const Spacer(),
+              _box(w: 42, h: 42, r: 21),
+              const SizedBox(width: 10),
+              _box(w: 42, h: 42, r: 21),
+            ],
+          ),
+        ),
+        // Hero block.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: _box(h: 208, r: 28),
+        ),
+        const SizedBox(height: 24),
+        // Quick tiles row.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            children: [
+              for (var i = 0; i < 2; i++) ...[
+                if (i > 0) const SizedBox(width: 10),
+                Expanded(child: _box(h: 64, r: 18)),
+              ],
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+        // Three shelf groups.
+        for (var g = 0; g < 3; g++) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+            child: _box(w: 140.0 + g * 30, h: 18, r: 8),
+          ),
+          SizedBox(
+            height: 190,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              children: [
+                for (var i = 0; i < 4; i++) ...[
+                  if (i > 0) const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _box(w: 148, h: 148),
+                      const SizedBox(height: 8),
+                      _box(w: 110, h: 12, r: 6),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ],
     );
   }
 }

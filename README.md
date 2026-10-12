@@ -1,6 +1,8 @@
 <div align="center">
 
-<img src="screenshots/logo.png" alt="ZenMusic app icon" width="200" />
+<video src="screenshots/garden-jessica.mp4" autoplay loop muted playsinline width="720">
+  <img src="screenshots/garden.png" alt="ZenMusic" width="720" />
+</video>
 
 # ZenMusic
 
@@ -8,9 +10,9 @@
 
 <br/>
 
-[![Latest release](https://img.shields.io/github/v/release/vorlon-dev/Zen-music?style=for-the-badge&labelColor=0d1117)](https://github.com/vorlon-dev/Zen-music/releases)
-[![License](https://img.shields.io/github/license/vorlon-dev/Zen-music?style=for-the-badge&labelColor=0d1117)](https://github.com/vorlon-dev/Zen-music/blob/main/LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/vorlon-dev/Zen-music/total?style=for-the-badge&labelColor=0d1117)](https://github.com/vorlon-dev/Zen-music/releases)
+[![Latest release](https://img.shields.io/github/v/release/vorlon-dev/Zen-music?style=for-the-badge&labelColor=140A1F&color=E63CFF)](https://github.com/vorlon-dev/Zen-music/releases)
+[![License](https://img.shields.io/github/license/vorlon-dev/Zen-music?style=for-the-badge&labelColor=140A1F&color=2FB8A6)](https://github.com/vorlon-dev/Zen-music/blob/main/LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/vorlon-dev/Zen-music/total?style=for-the-badge&labelColor=140A1F&color=E63CFF)](https://github.com/vorlon-dev/Zen-music/releases)
 
 <br/>
 
@@ -44,6 +46,7 @@
 <img src="screenshots/search.png" alt="Search screen" width="30%" />
 <img src="screenshots/library.png" alt="Library screen" width="30%" />
 <img src="screenshots/ytvideo.png" alt="YouTube video screen" width="30%" />
+<img src="screenshots/videoscreen.png" alt="Video player screen" width="30%" />
 <br/>
 <img src="screenshots/fullscreen.png" alt="Fullscreen player screen" width="91%" />
 

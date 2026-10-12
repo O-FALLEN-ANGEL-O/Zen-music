@@ -82,3 +82,16 @@ Desktop.ini
 # Kotlin DSP modules (root-level Gradle subprojects — build output)
 /dsp-core/build/
 /audio-dsp/build/
+
+# ZenMusic native engine (:lossless module — build + CMake caches)
+/lossless/build/
+/lossless/.cxx/
+
+# Vendored just_audio build output
+/packages/just_audio/android/.gradle/
+/packages/just_audio/build/
+/packages/just_audio/example/
+
+# Flutter ephemeral (per-project)
+**/.flutter-plugins-dependencies
+.flutter-plugins

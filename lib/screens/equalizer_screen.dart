@@ -7,9 +7,10 @@ import '../services/dsp_service.dart';
 import '../services/lossless_dsp_service.dart';
 import '../theme/spotify_theme.dart';
 
-/// LastWave-style EQ: all 15 bands as vertical sliders in one row,
-/// curve preview above, presets + parametric import below. Native
-/// engine first (15 fixed ISO bands, ±8 dB), session-EQ fallback.
+/// LastWave-style EQ: all 15 bands as vertical sliders in a swipeable
+/// page-snapping row (no overflow at any screen width), curve preview
+/// above, presets + AutoEq import below. Native engine first (15 fixed
+/// ISO bands, ±8 dB), session-EQ fallback.
 class EqualizerScreen extends StatefulWidget {
   const EqualizerScreen({super.key});
 
@@ -79,7 +80,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
           ? '${(hz / 1000).toStringAsFixed(0)}k'
           : '${(hz / 1000).toStringAsFixed(1)}k';
     }
-    return hz.round() >= 1000 ? '${hz.round()}' : '${hz.round()}';
+    return '${hz.round()}';
   }
 
   @override
@@ -184,7 +185,9 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
         ),
         const SizedBox(height: 20),
 
-        // Vertical band sliders — all bands visible at once.
+        // Vertical band sliders — 15 fixed-width bands in a
+        // horizontally scrollable, page-snapping row: ~7 bands per
+        // screen, swipe for the rest. No overflow at any width.
         Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
@@ -195,8 +198,10 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
               ? const SizedBox(height: 200)
               : SizedBox(
             height: 240,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: PageView(
+              controller: PageController(viewportFraction: 0.13),
+              physics: const PageScrollPhysics(),
+              padEnds: false,
               children: [
                 for (var i = 0; i < _params!.bands.length; i++)
                   _BandSlider(
@@ -243,9 +248,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
               onSelected: (_) => _applyPreset(name),
               selectedColor: SpotifyColors.green,
               labelStyle: TextStyle(
-                color: isActive
-                    ? Colors.black
-                    : SpotifyColors.textPrimary,
+                color: isActive ? Colors.black : SpotifyColors.textPrimary,
                 fontWeight: FontWeight.w600,
               ),
               backgroundColor: SpotifyColors.surface,
@@ -320,8 +323,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
     textCtrl.dispose();
     if (saved != true) return;
 
-    final preset = await DspService.instance
-        .parsePresetText(textCtrl.text);
+    final preset = await DspService.instance.parsePresetText(textCtrl.text);
     if (!mounted || preset == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Could not read that preset — check the text')));
@@ -343,8 +345,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
     }
     final min = _params!.minDecibels;
     final max = _params!.maxDecibels;
-    final gains =
-    db.map((d) => d.clamp(min, max).toDouble()).toList();
+    final gains = db.map((d) => d.clamp(min, max).toDouble()).toList();
     for (var i = 0; i < gains.length; i++) {
       await audioHandler.setEqBandGain(i, gains[i]);
     }
@@ -359,7 +360,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
 }
 
 /// One vertical band: drag anywhere on the track to set gain. The thumb
-/// renders at the current value; the label reads out below.
+/// renders at the current value; the readout sits above, the label below.
 class _BandSlider extends StatelessWidget {
   const _BandSlider({
     required this.label,
@@ -382,8 +383,7 @@ class _BandSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final active = isDragging;
-    final color =
-    active ? SpotifyColors.highlight : SpotifyColors.green;
+    final color = active ? SpotifyColors.highlight : SpotifyColors.green;
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -469,8 +469,7 @@ class _BandPainter extends CustomPainter {
       ..color = color
       ..strokeWidth = 4
       ..strokeCap = StrokeCap.round;
-    canvas.drawLine(
-        Offset(centerX, thumbY), Offset(centerX, size.height - 4),
+    canvas.drawLine(Offset(centerX, thumbY), Offset(centerX, size.height - 4),
         activePaint);
     canvas.drawCircle(Offset(centerX, thumbY), 7, Paint()..color = color);
   }
