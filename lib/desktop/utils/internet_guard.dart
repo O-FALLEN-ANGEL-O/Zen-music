@@ -1,0 +1,138 @@
+// ZenMusic Desktop — ported from Echo Music (GPL-3.0). ZenMusic remains GPL-3.0.
+// PORT DEVIATIONS: S.of(...) -> English literals. KNOWN GAP (verbatim policy):
+// the offline screen's "Go to Downloads" routes to /saved/downloads, which
+// does not exist until the library round — tapping it while offline will
+// error. Flagged, arrives with R8.
+
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+
+import 'package:zenmusic/desktop/themes/colors.dart';
+import 'package:zenmusic/desktop/utils/adaptive_widgets/buttons.dart';
+import 'package:zenmusic/desktop/utils/adaptive_widgets/icons.dart';
+import 'package:zenmusic/desktop/ytmusic/ytmusic.dart';
+
+class InternetGuard extends StatefulWidget {
+  final Widget child;
+  final VoidCallback? onInternetLost;
+  final VoidCallback? onInternetRestored;
+
+  const InternetGuard({
+    super.key,
+    required this.child,
+    this.onInternetLost,
+    this.onInternetRestored,
+  });
+
+  @override
+  State<InternetGuard> createState() => _InternetGuardState();
+}
+
+class _InternetGuardState extends State<InternetGuard> {
+  int _lastHandledError = 0;
+  bool _isOfflineMode = false;
+  ValueNotifier<int> get lastConnectionError =>
+      GetIt.I<YTMusic>().lastConnectionError;
+  StreamSubscription<InternetStatus>? _networkSubscription;
+  final InternetConnection _internetConnection = InternetConnection();
+
+  @override
+  void initState() {
+    super.initState();
+    lastConnectionError.addListener(_onConnectionErrorDetected);
+    _lastHandledError = lastConnectionError.value;
+  }
+
+  @override
+  void dispose() {
+    _networkSubscription?.cancel();
+    lastConnectionError.removeListener(_onConnectionErrorDetected);
+    super.dispose();
+  }
+
+  void _onConnectionErrorDetected() {
+    if (!mounted) return;
+    final currentErrorTime = lastConnectionError.value;
+    if (currentErrorTime > _lastHandledError) {
+      _lastHandledError = currentErrorTime;
+      _enterOfflineMode();
+    }
+  }
+
+  void _enterOfflineMode() {
+    if (_isOfflineMode) return;
+    setState(() {
+      _isOfflineMode = true;
+    });
+    widget.onInternetLost?.call();
+    _startMonitoringNetwork();
+  }
+
+  void _startMonitoringNetwork() async {
+    _networkSubscription?.cancel();
+    // Prevent flickering loops: only auto-restore if we transition from Offline to Online.
+    // If we are already connected (API error), we wait for manual retry.
+    InternetStatus lastKnownStatus = await _internetConnection.internetStatus;
+    _networkSubscription = _internetConnection.onStatusChange.listen((status) {
+      if (lastKnownStatus == InternetStatus.disconnected &&
+          status == InternetStatus.connected) {
+        _tryRestoreConnection();
+      }
+    });
+  }
+
+  void _tryRestoreConnection() {
+    if (!mounted || !_isOfflineMode) return;
+    setState(() {
+      _isOfflineMode = false;
+    });
+    _networkSubscription?.cancel();
+    _networkSubscription = null;
+    widget.onInternetRestored?.call();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        widget.child,
+        if (_isOfflineMode)
+          Scaffold(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(AdaptiveIcons.wifi_off_rounded,
+                      size: 80, color: greyColor),
+                  const SizedBox(height: 20),
+                  Text(
+                    'No Internet Connection',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 20),
+                  AdaptiveFilledButton(
+                    onPressed: () => context.go('/saved/downloads'),
+                    child: const Text('Go to Downloads'),
+                  ),
+                  const SizedBox(height: 20),
+                  OutlinedButton.icon(
+                    icon: const Icon(Icons.refresh),
+                    label: const Text('Retry'),
+                    onPressed: () {
+                      _tryRestoreConnection();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
