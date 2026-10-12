@@ -1,8 +1,6 @@
 <div align="center">
 
-<video src="screenshots/garden-jessica.gif" autoplay loop muted playsinline width="720">
-  <img src="screenshots/garden.png" alt="ZenMusic" width="720" />
-</video>
+<img src="screenshots/garden-jessica.gif" alt="ZenMusic" width="720" />
 
 <br/>
 
