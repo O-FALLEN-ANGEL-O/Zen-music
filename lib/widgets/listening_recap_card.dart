@@ -41,11 +41,11 @@ class ListeningRecapCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(FluentIcons.data_trending_24_filled,
+              Icon(FluentIcons.data_trending_24_filled,
                   color: SpotifyColors.green, size: 18),
               const SizedBox(width: 8),
               Text(periodLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       color: SpotifyColors.textSecondary)),
@@ -54,7 +54,7 @@ class ListeningRecapCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             '$minutes minutes listened',
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
                 color: SpotifyColors.textPrimary),
@@ -78,7 +78,7 @@ class ListeningRecapCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Text('${i + 1}.',
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w800,
                             color: SpotifyColors.green)),
@@ -105,7 +105,7 @@ class ListeningRecapCard extends StatelessWidget {
                           width: 38,
                           height: 38,
                           color: SpotifyColors.surfaceLight,
-                          child: const Icon(Icons.music_note_rounded,
+                          child: Icon(Icons.music_note_rounded,
                               size: 18, color: SpotifyColors.textTertiary),
                         ),
                       ),
@@ -115,13 +115,13 @@ class ListeningRecapCard extends StatelessWidget {
                       child: Text(song.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 13.5,
                               fontWeight: FontWeight.w600,
                               color: SpotifyColors.textPrimary)),
                     ),
                     Text('$plays plays',
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 11,
                             color: SpotifyColors.textSecondary)),
                   ],

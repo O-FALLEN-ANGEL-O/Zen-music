@@ -33,7 +33,7 @@ class AutoFormatText extends StatelessWidget {
     final boldExp = RegExp(r'\*\*(.*?)\*\*');
     final matches = boldExp.allMatches(text);
     final base = style ??
-        const TextStyle(
+        TextStyle(
           fontSize: 13.5,
           height: 1.4,
           color: SpotifyColors.textSecondary,

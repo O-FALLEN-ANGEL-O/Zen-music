@@ -68,23 +68,23 @@ class _NewReleaseScreenState extends State<NewReleaseScreen> {
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.album_rounded,
+              leading: Icon(Icons.album_rounded,
                   color: SpotifyColors.textPrimary),
               title: Text(album.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.textPrimary,
                       fontWeight: FontWeight.w600)),
               subtitle: Text(album.subtitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.textSecondary)),
             ),
             const Divider(height: 1, color: Colors.white10),
             ListTile(
-              leading: const Icon(Icons.play_arrow_rounded,
+              leading: Icon(Icons.play_arrow_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Play',
+              title: Text('Play',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
@@ -111,8 +111,8 @@ class _NewReleaseScreenState extends State<NewReleaseScreen> {
       appBar: AppBar(
         backgroundColor: SpotifyColors.background,
         elevation: 0,
-        iconTheme: const IconThemeData(color: SpotifyColors.textPrimary),
-        title: const Text('New release albums',
+        iconTheme: IconThemeData(color: SpotifyColors.textPrimary),
+        title: Text('New release albums',
             style: TextStyle(
                 color: SpotifyColors.textPrimary,
                 fontSize: 18,
@@ -199,7 +199,7 @@ class _NewReleaseScreenState extends State<NewReleaseScreen> {
                       Text(album.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w600,
                               color:
@@ -207,7 +207,7 @@ class _NewReleaseScreenState extends State<NewReleaseScreen> {
                       Text(album.subtitle,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 11,
                               color:
                               SpotifyColors.textSecondary)),

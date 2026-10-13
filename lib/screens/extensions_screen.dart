@@ -149,7 +149,7 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
       backgroundColor: SpotifyColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Extensions',
+        title: Text('Extensions',
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -173,7 +173,7 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
 
           // ── Installed ──
           Text('Installed (${_extensions.length})',
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
                   color: SpotifyColors.textSecondary)),
@@ -187,23 +187,23 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
             ),
           for (final ext in _extensions)
             ListTile(
-              leading: const Icon(FluentIcons.puzzle_piece_20_regular,
+              leading: Icon(FluentIcons.puzzle_piece_20_regular,
                   color: SpotifyColors.textSecondary),
               title: Text(ext['name']?.toString() ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.textPrimary,
                       fontSize: 14,
                       fontWeight: FontWeight.w600)),
               subtitle: Text(
                   'v${ext['version'] ?? ''} · ${ext['author'] ?? ''}',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.textSecondary, fontSize: 12)),
               trailing: _selectedId == ext['id']
-                  ? const Icon(Icons.check_circle_rounded,
+                  ? Icon(Icons.check_circle_rounded,
                   color: SpotifyColors.green)
                   : TextButton(
                 onPressed: () => _select(ext['id'].toString()),
-                child: const Text('Activate',
+                child: Text('Activate',
                     style: TextStyle(
                         color: SpotifyColors.green, fontSize: 13)),
               ),
@@ -214,11 +214,11 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
           // ── Search via the selected extension ──
           if (_selectedId != null) ...[
             TextField(
-              style: const TextStyle(color: SpotifyColors.textPrimary),
+              style: TextStyle(color: SpotifyColors.textPrimary),
               textInputAction: TextInputAction.search,
               decoration: InputDecoration(
                 hintText: 'Search via extension...',
-                hintStyle: const TextStyle(color: SpotifyColors.textTertiary),
+                hintStyle: TextStyle(color: SpotifyColors.textTertiary),
                 prefixIcon: _searching
                     ? Padding(
                   padding: const EdgeInsets.all(13),
@@ -228,7 +228,7 @@ class _ExtensionsScreenState extends State<ExtensionsScreen> {
                     child: WaveSpinner(size: 20, strokeWidth: 2.2),
                   ),
                 )
-                    : const Icon(Icons.search_rounded,
+                    : Icon(Icons.search_rounded,
                     color: SpotifyColors.textSecondary),
                 filled: true,
                 fillColor: SpotifyColors.surfaceLight,

@@ -78,7 +78,7 @@ class _ExtensionDetailScreenState extends State<ExtensionDetailScreen> {
           children: [
             _header(),
             if (_detail!.tracks.isEmpty && _detail!.shelves.isEmpty)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(vertical: 32),
                 child: Center(
                   child: Text(
@@ -111,7 +111,7 @@ class _ExtensionDetailScreenState extends State<ExtensionDetailScreen> {
       padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
       child: Column(
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline_rounded,
             size: 40,
             color: SpotifyColors.textTertiary,
@@ -120,7 +120,7 @@ class _ExtensionDetailScreenState extends State<ExtensionDetailScreen> {
           Text(
             _error!,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: SpotifyColors.textSecondary,
               fontSize: 14,
             ),
@@ -162,7 +162,7 @@ class _ExtensionDetailScreenState extends State<ExtensionDetailScreen> {
             children: [
               Text(
                 media.kind.toUpperCase(),
-                style: const TextStyle(
+                style: TextStyle(
                   color: SpotifyColors.textTertiary,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
@@ -172,7 +172,7 @@ class _ExtensionDetailScreenState extends State<ExtensionDetailScreen> {
               const SizedBox(height: 4),
               Text(
                 media.title,
-                style: const TextStyle(
+                style: TextStyle(
                   color: SpotifyColors.textPrimary,
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -183,7 +183,7 @@ class _ExtensionDetailScreenState extends State<ExtensionDetailScreen> {
                 const SizedBox(height: 4),
                 Text(
                   media.subtitle!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: SpotifyColors.textSecondary,
                     fontSize: 13,
                   ),

@@ -23,6 +23,10 @@ import 'diagnostics_screen.dart';
 import 'equalizer_screen.dart';
 import 'extensions_screen.dart';
 import 'import_spotify_screen.dart';
+import 'theme_picker_screen.dart';
+import 'car_mode_screen.dart';
+import '../services/car_mode_service.dart';
+import '../services/free_sources/free_sources_settings.dart';
 
 /// Addon lossless prefs — SharedPreferences-backed shim until
 /// StorageService gains native methods.
@@ -197,17 +201,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         content: Text(message,
             textAlign: TextAlign.center,
             style:
-            const TextStyle(color: SpotifyColors.textSecondary, fontSize: 14)),
+            TextStyle(color: SpotifyColors.textSecondary, fontSize: 14)),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
           OutlinedButton(
             onPressed: () => Navigator.pop(context),
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: SpotifyColors.surfaceLighter),
+              side: BorderSide(color: SpotifyColors.surfaceLighter),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text('Cancel',
+            child: Text('Cancel',
                 style: TextStyle(color: SpotifyColors.textSecondary)),
           ),
           FilledButton(
@@ -285,7 +289,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
               child: Align(
                 alignment: Alignment.centerLeft,
@@ -306,19 +310,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 itemBuilder: (context, i) {
                   final l = _licenses[i];
                   return ListTile(
-                    leading: const Icon(
+                    leading: Icon(
                         FluentIcons.document_24_regular,
                         color: SpotifyColors.textSecondary),
                     title: Text(l.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: SpotifyColors.textPrimary,
                             fontSize: 14.5,
                             fontWeight: FontWeight.w600)),
                     subtitle: Text(l.license,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: SpotifyColors.textSecondary,
                             fontSize: 12)),
-                    trailing: const Icon(
+                    trailing: Icon(
                         Icons.chevron_right_rounded,
                         color: SpotifyColors.textTertiary),
                     onTap: () => launchUrl(
@@ -329,7 +333,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.fromLTRB(20, 0, 20, 12),
               child: Text(
                 'ZenMusic is free software under GPL-3.0. '
@@ -459,9 +463,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           itemBuilder: (context, i) => ListTile(
             leading: Icon(icons[i], color: SpotifyColors.textSecondary),
             title: Text(names[i],
-                style: const TextStyle(color: SpotifyColors.textPrimary)),
+                style: TextStyle(color: SpotifyColors.textPrimary)),
             trailing: _audioQuality == qualities[i]
-                ? const Icon(Icons.check_rounded, color: SpotifyColors.highlight)
+                ? Icon(Icons.check_rounded, color: SpotifyColors.highlight)
                 : null,
             onTap: () {
               storage.setAudioQuality(qualities[i]);
@@ -485,7 +489,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: SpotifyColors.surface,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('Lossless addon URL',
+        title: Text('Lossless addon URL',
             style: TextStyle(
                 color: SpotifyColors.textPrimary,
                 fontSize: 17,
@@ -494,9 +498,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           controller: ctrl,
           autocorrect: false,
           keyboardType: TextInputType.url,
-          style: const TextStyle(
+          style: TextStyle(
               color: SpotifyColors.textPrimary, fontSize: 13),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'http://host:8787/a/<token>/',
             hintStyle: TextStyle(color: SpotifyColors.textTertiary),
           ),
@@ -504,11 +508,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel',
+              child: Text('Cancel',
                   style: TextStyle(color: SpotifyColors.textSecondary))),
           TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Save',
+              child: Text('Save',
                   style: TextStyle(
                       color: SpotifyColors.green,
                       fontWeight: FontWeight.w700))),
@@ -557,7 +561,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               return Padding(
                 padding: const EdgeInsets.fromLTRB(24, 6, 24, 10),
                 child: Text(title,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: SpotifyColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.w700)),
@@ -569,9 +573,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Icon(item.icon, color: SpotifyColors.textSecondary),
               title: Text(item.label,
                   style:
-                  const TextStyle(color: SpotifyColors.textPrimary)),
+                  TextStyle(color: SpotifyColors.textPrimary)),
               trailing: current == item.value
-                  ? const Icon(Icons.check_rounded,
+                  ? Icon(Icons.check_rounded,
                   color: SpotifyColors.highlight)
                   : null,
               onTap: () {
@@ -604,7 +608,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
           title: Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                   color: SpotifyColors.textPrimary,
                   fontSize: 17,
                   fontWeight: FontWeight.w700)),
@@ -612,7 +616,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(label(temp),
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.highlight,
                       fontSize: 15,
                       fontWeight: FontWeight.w700)),
@@ -632,14 +636,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             if (resetTo != null)
               TextButton(
                   onPressed: () => setDialogState(() => temp = resetTo),
-                  child: const Text('Reset',
+                  child: Text('Reset',
                       style: TextStyle(color: SpotifyColors.textSecondary))),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextButton(
                     onPressed: () => Navigator.pop(ctx),
-                    child: const Text('Cancel',
+                    child: Text('Cancel',
                         style:
                         TextStyle(color: SpotifyColors.textSecondary))),
                 TextButton(
@@ -647,7 +651,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       Navigator.pop(ctx);
                       onOk(temp);
                     },
-                    child: const Text('OK',
+                    child: Text('OK',
                         style: TextStyle(
                             color: SpotifyColors.highlight,
                             fontWeight: FontWeight.w700))),
@@ -665,6 +669,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _appearanceCategory() {
     return _category(
         'Appearance & Player', Icons.palette_rounded, [
+      _prefRow(
+        Icons.color_lens_rounded,
+        'Theme',
+        ZenThemeController.selectedId.value == ZenPalettes.albumId
+            ? 'Match album art'
+            : ZenPalettes.byId(ZenThemeController.selectedId.value).name,
+        () async {
+          await Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => const ThemePickerScreen()));
+          if (mounted) setState(() {});
+        },
+      ),
+      _prefRow(
+        Icons.space_dashboard_rounded,
+        'Navigation bar',
+        AppearancePrefs.navStyle.value == 'dock'
+            ? 'Floating glass dock'
+            : 'Classic bottom bar',
+            () => _showPickerSheet(
+          title: 'Navigation bar',
+          current: AppearancePrefs.navStyle.value,
+          items: const [
+            (value: 'spotify', label: 'Classic bottom bar', icon: Icons.view_day_rounded),
+            (value: 'dock', label: 'Floating glass dock', icon: Icons.blur_circular_rounded),
+          ],
+          onSelect: (v) async {
+            await AppearancePrefs.setNavStyle(v);
+            setState(() {});
+          },
+        ),
+      ),
       _prefRow(
         Icons.gradient_rounded,
         'Player background',
@@ -718,15 +753,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _prefRow(
         Icons.picture_in_picture_rounded,
         'Mini-player background',
-        AppearancePrefs.miniPlayerBackground.value == 'surface'
-            ? 'Surface'
-            : AppearancePrefs.miniPlayerBackground.value == 'blur'
-            ? 'Blurred artwork'
-            : 'Gradient',
+        switch (AppearancePrefs.miniPlayerBackground.value) {
+          'tint' => 'Album colour',
+          'surface' => 'Surface',
+          'blur' => 'Blurred artwork',
+          _ => 'Gradient',
+        },
             () => _showPickerSheet(
           title: 'Mini-player background',
           current: AppearancePrefs.miniPlayerBackground.value,
           items: const [
+            (value: 'tint', label: 'Album colour', icon: Icons.palette_rounded),
             (value: 'surface', label: 'Surface', icon: Icons.square_rounded),
             (value: 'blur', label: 'Blurred artwork', icon: Icons.blur_on_rounded),
             (value: 'gradient', label: 'Gradient', icon: Icons.gradient_rounded),
@@ -973,7 +1010,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: SpotifyColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Settings',
+        title: Text('Settings',
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -983,6 +1020,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
         children: [
           _appearanceCategory(),
+          _carCategory(),
           _category('Sources', Icons.extension_rounded, [
             _prefRow(
               Icons.music_note_rounded,
@@ -1215,6 +1253,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  // ── Car ──
+
+  Widget _carCategory() {
+    final car = CarModeService.instance;
+    return _category('Driving', Icons.directions_car_rounded, [
+      _prefRow(
+        Icons.directions_car_filled_rounded,
+        'Open Car Mode',
+        'Big buttons, voice-friendly, distraction-free',
+        () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => const CarModeScreen())),
+      ),
+      _switchRow(
+        Icons.bluetooth_audio_rounded,
+        'Auto-open on car Bluetooth',
+        'Switch to Car Mode when your phone connects to the car',
+        car.autoOpenOnBluetooth.value,
+        (v) async {
+          await car.setAutoOpenOnBluetooth(v);
+          setState(() {});
+        },
+      ),
+      _switchRow(
+        Icons.play_circle_outline_rounded,
+        'Auto-play when connected',
+        'Resume your music as soon as you get in',
+        car.autoPlayOnConnect.value,
+        (v) async {
+          await car.setAutoPlayOnConnect(v);
+          setState(() {});
+        },
+      ),
+      _prefRow(
+        Icons.library_music_rounded,
+        'Free music sources',
+        'Audius, Internet Archive, radio, Jamendo',
+        () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => const FreeSourcesSettingsScreen())),
+      ),
+    ]);
+  }
+
   // ── Preference building blocks ──
 
   Widget _category(String title, IconData icon, List<Widget> rows) {
@@ -1228,7 +1308,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Icon(icon, size: 15, color: SpotifyColors.textSecondary),
               const SizedBox(width: 6),
               Text(title,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.5,
@@ -1299,7 +1379,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 if (enabled)
-                  const Icon(Icons.chevron_right_rounded,
+                  Icon(Icons.chevron_right_rounded,
                       color: SpotifyColors.textTertiary),
               ],
             ),

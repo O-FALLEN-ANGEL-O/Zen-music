@@ -10,12 +10,12 @@ class Spinner extends StatelessWidget {
     super.key,
     this.size = 28,
     this.strokeWidth = 2.5,
-    this.color = SpotifyColors.green,
+    this.color,
   });
 
   final double size;
   final double strokeWidth;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class Spinner extends StatelessWidget {
       child: WaveSpinner(
         size: size,
         strokeWidth: strokeWidth,
-        color: color,
+        color: color ?? SpotifyColors.green,
       ),
     );
   }

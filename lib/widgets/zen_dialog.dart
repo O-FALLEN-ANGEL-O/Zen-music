@@ -29,13 +29,13 @@ Future<bool> showZenConfirm(
       content: message == null
           ? null
           : Text(message,
-          style: const TextStyle(
+          style: TextStyle(
               color: SpotifyColors.textSecondary, fontSize: 14)),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),
           child: Text(cancelLabel,
-              style: const TextStyle(color: SpotifyColors.textSecondary)),
+              style: TextStyle(color: SpotifyColors.textSecondary)),
         ),
         TextButton(
           onPressed: () => Navigator.pop(ctx, true),

@@ -320,7 +320,7 @@ class UpdateService {
               backgroundColor: SpotifyColors.surface,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(24)),
-              title: const Text('Downloading update',
+              title: Text('Downloading update',
                   style: TextStyle(
                       color: SpotifyColors.textPrimary,
                       fontSize: 17,
@@ -329,7 +329,7 @@ class UpdateService {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('v${info.latestVersion}',
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: SpotifyColors.green,
                           fontSize: 14,
                           fontWeight: FontWeight.w700)),
@@ -340,13 +340,13 @@ class UpdateService {
                       value: progress / 100,
                       minHeight: 8,
                       backgroundColor: SpotifyColors.surfaceLighter,
-                      valueColor: const AlwaysStoppedAnimation<Color>(
+                      valueColor: AlwaysStoppedAnimation<Color>(
                           SpotifyColors.green),
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text('$progress%',
-                      style: const TextStyle(
+                      style: TextStyle(
                           color: SpotifyColors.textSecondary,
                           fontSize: 12)),
                 ],
@@ -358,7 +358,7 @@ class UpdateService {
                       dialogOpen = false;
                       Navigator.pop(ctx);
                     },
-                    child: const Text('Cancel',
+                    child: Text('Cancel',
                         style: TextStyle(
                             color: SpotifyColors.textSecondary))),
               ],
@@ -511,7 +511,7 @@ class UpdateService {
                             ready
                                 ? 'Ready to install'
                                 : 'Update available',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: SpotifyColors.textPrimary,
                                 fontSize: 17,
                                 fontWeight: FontWeight.w700),
@@ -522,7 +522,7 @@ class UpdateService {
                                 ? 'Version ${info.latestVersion} · '
                                 'already downloaded'
                                 : 'Version ${info.latestVersion}',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: SpotifyColors.textSecondary,
                                 fontSize: 12.5,
                                 fontWeight: FontWeight.w500),
@@ -535,7 +535,7 @@ class UpdateService {
               ),
 
               // ── WHAT'S NEW label ──
-              const Padding(
+              Padding(
                 padding: EdgeInsets.fromLTRB(22, 18, 22, 10),
                 child: Text(
                   'WHAT\'S NEW',
@@ -582,11 +582,11 @@ class UpdateService {
                         onPressed: () => Navigator.pop(ctx),
                         style: TextButton.styleFrom(
                           minimumSize: const Size(0, 48),
-                          shape: const StadiumBorder(
+                          shape: StadiumBorder(
                               side: BorderSide(
                                   color: SpotifyColors.surfaceLighter)),
                         ),
-                        child: const Text('Later',
+                        child: Text('Later',
                             style: TextStyle(
                                 color: SpotifyColors.textSecondary,
                                 fontWeight: FontWeight.w600,
@@ -633,10 +633,10 @@ class UpdateService {
 
   // ── Changelog parsing ─────────────────────────────────────────
 
-  static const _clBase = TextStyle(
+  static final _clBase = TextStyle(
       fontSize: 13.5, height: 1.45, color: SpotifyColors.textSecondary);
 
-  static const _clHeading = TextStyle(
+  static final _clHeading = TextStyle(
       fontSize: 14, fontWeight: FontWeight.w700,
       height: 1.35, color: SpotifyColors.textPrimary);
 
@@ -680,7 +680,7 @@ class UpdateService {
   /// - Markdown tables render as joined rows instead of raw pipes.
   List<Widget> _changelogContent(String body) {
     if (body.trim().isEmpty) {
-      return const [
+      return [
         Text('Bug fixes and improvements.', style: _clBase),
       ];
     }
@@ -779,7 +779,7 @@ class UpdateService {
                 margin: const EdgeInsets.only(top: 7),
                 width: 5,
                 height: 5,
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                     color: SpotifyColors.green,
                     shape: BoxShape.circle),
               ),
@@ -808,7 +808,7 @@ class UpdateService {
               SizedBox(
                 width: 22,
                 child: Text('${numbered.group(1)}.',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: SpotifyColors.green)),
@@ -837,7 +837,7 @@ class UpdateService {
     }
 
     if (widgets.isEmpty) {
-      return const [
+      return [
         Text('Bug fixes and improvements.', style: _clBase),
       ];
     }
@@ -857,7 +857,7 @@ class UpdateService {
         .replaceAll('`', '');
     final spans = <InlineSpan>[];
     final parts = clean.split('**');
-    final emphasis = b.merge(const TextStyle(
+    final emphasis = b.merge(TextStyle(
         fontWeight: FontWeight.w700,
         color: SpotifyColors.textPrimary));
     for (var i = 0; i < parts.length; i++) {

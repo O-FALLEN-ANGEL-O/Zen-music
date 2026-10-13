@@ -81,7 +81,7 @@ class _SourcePickerBody extends StatelessWidget {
                     onTap: () => _pick(context, ext['id']?.toString()),
                   ),
                 if (extensions.isEmpty)
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(top: 4, bottom: 8, left: 4),
                     child: Text(
                       'Install extensions to add more sources',
@@ -108,7 +108,7 @@ class _SourcePickerBody extends StatelessWidget {
         child: Stack(
           alignment: Alignment.center,
           children: [
-            const Text(
+            Text(
               'Music Extensions',
               style: TextStyle(
                 color: SpotifyColors.textPrimary,
@@ -119,7 +119,7 @@ class _SourcePickerBody extends StatelessWidget {
             Positioned(
               left: 0,
               child: IconButton(
-                icon: const Icon(Icons.close_rounded,
+                icon: Icon(Icons.close_rounded,
                     color: SpotifyColors.textSecondary),
                 onPressed: () => Navigator.of(context).pop(),
               ),

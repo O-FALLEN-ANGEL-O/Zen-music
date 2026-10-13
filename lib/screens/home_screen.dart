@@ -17,8 +17,10 @@ import '../theme/spotify_theme.dart';
 import '../ui/lw/lw_feed_home.dart';
 import '../ui/lw/lw_nav_dock.dart';
 import '../utilities/zen_transitions.dart';
+import '../widgets/art_tint.dart';
 import '../widgets/marquee.dart';
 import '../widgets/playlist_sheets.dart';
+import '../widgets/spotify_nav_bar.dart';
 import '../widgets/wave_spinner.dart';
 import '../widgets/welcome_dialog.dart';
 import '../widgets/youtube_thumbnail.dart';
@@ -117,15 +119,41 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const MiniPlayer(),
-                  LwNavDock(
-                    tabs: const [
-                      LwNavItemSpec(label: 'Home', icon: Icons.home_outlined),
-                      LwNavItemSpec(label: 'Search', icon: Icons.search_rounded),
-                      LwNavItemSpec(label: 'Library', icon: Icons.library_music_outlined),
-                      LwNavItemSpec(label: 'Videos', icon: Icons.play_circle_outline_rounded),
-                    ],
-                    selectedIndex: _currentTab,
-                    onSelect: _selectTab,
+                  ValueListenableBuilder<String>(
+                    valueListenable: AppearancePrefs.navStyle,
+                    builder: (context, style, _) => style == 'dock'
+                        ? LwNavDock(
+                            tabs: const [
+                              LwNavItemSpec(label: 'Home', icon: Icons.home_outlined),
+                              LwNavItemSpec(label: 'Search', icon: Icons.search_rounded),
+                              LwNavItemSpec(label: 'Library', icon: Icons.library_music_outlined),
+                              LwNavItemSpec(label: 'Videos', icon: Icons.play_circle_outline_rounded),
+                            ],
+                            selectedIndex: _currentTab,
+                            onSelect: _selectTab,
+                          )
+                        : SpotifyNavBar(
+                            items: const [
+                              SpotifyNavItem(
+                                  label: 'Home',
+                                  icon: Icons.home_outlined,
+                                  selectedIcon: Icons.home_rounded),
+                              SpotifyNavItem(
+                                  label: 'Search',
+                                  icon: Icons.search_rounded,
+                                  selectedIcon: Icons.manage_search_rounded),
+                              SpotifyNavItem(
+                                  label: 'Your Library',
+                                  icon: Icons.library_music_outlined,
+                                  selectedIcon: Icons.library_music_rounded),
+                              SpotifyNavItem(
+                                  label: 'Videos',
+                                  icon: Icons.play_circle_outline_rounded,
+                                  selectedIcon: Icons.play_circle_rounded),
+                            ],
+                            selectedIndex: _currentTab,
+                            onSelect: _selectTab,
+                          ),
                   ),
                 ],
               ),
@@ -413,10 +441,13 @@ class _MiniPlayerBodyState extends State<_MiniPlayerBody>
             onTap: widget.onOpen,
             child: ValueListenableBuilder<String>(
               valueListenable: AppearancePrefs.miniPlayerBackground,
-              builder: (context, miniBg, _) => Container(
+              builder: (context, miniBg, _) {
+                final box = Container(
                 height: MiniPlayer._playerHeight,
                 decoration: BoxDecoration(
-                  color: SpotifyColors.surface,
+                  color: miniBg == 'tint'
+                      ? Colors.transparent
+                      : SpotifyColors.surface,
                   gradient: miniBg == 'gradient'
                       ? LinearGradient(
                     begin: Alignment.topLeft,
@@ -483,11 +514,54 @@ class _MiniPlayerBodyState extends State<_MiniPlayerBody>
                           ],
                         ),
                       ),
+                      // Spotify-style hairline progress along the bottom.
+                      Positioned(
+                        left: 12,
+                        right: 12,
+                        bottom: 0,
+                        child: _MiniProgress(
+                            total: metadata.duration ?? Duration.zero),
+                      ),
                     ],
                   ),
                 ),
-              ),
+              );
+                if (miniBg != 'tint') return box;
+                return ArtTintedBox(
+                  imageUrl: metadata.artUri?.toString() ?? '',
+                  fallback: SpotifyColors.surfaceLight,
+                  borderRadius:
+                      BorderRadius.circular(MiniPlayer._borderRadius),
+                  child: box,
+                );
+              },
             ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _MiniProgress extends StatelessWidget {
+  const _MiniProgress({required this.total});
+  final Duration total;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Duration>(
+      stream: audioHandler.positionStream,
+      builder: (context, snap) {
+        final t = total.inMilliseconds;
+        if (t <= 0) return const SizedBox.shrink();
+        final v = ((snap.data?.inMilliseconds ?? 0) / t).clamp(0.0, 1.0);
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(2),
+          child: LinearProgressIndicator(
+            value: v,
+            minHeight: 2,
+            backgroundColor: Colors.white.withValues(alpha: 0.18),
+            color: Colors.white,
           ),
         );
       },
@@ -511,7 +585,7 @@ class _Artwork extends StatelessWidget {
           width: MiniPlayer._artworkSize,
           height: MiniPlayer._artworkSize,
           color: SpotifyColors.surfaceLight,
-          child: const Icon(
+          child: Icon(
             Icons.music_note_rounded,
             size: 24,
             color: SpotifyColors.textTertiary,
@@ -534,7 +608,7 @@ class _Artwork extends StatelessWidget {
             width: MiniPlayer._artworkSize,
             height: MiniPlayer._artworkSize,
             color: SpotifyColors.surfaceLight,
-            child: const Icon(
+            child: Icon(
               Icons.music_note_rounded,
               size: 24,
               color: SpotifyColors.textTertiary,
@@ -567,7 +641,7 @@ class _Metadata extends StatelessWidget {
             pauseDuration: const Duration(seconds: 2),
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 color: SpotifyColors.textPrimary,
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
@@ -581,7 +655,7 @@ class _Metadata extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               artist,
-              style: const TextStyle(
+              style: TextStyle(
                 color: SpotifyColors.textSecondary,
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
@@ -627,7 +701,7 @@ class _Controls extends StatelessWidget {
             },
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
-            icon: const Icon(
+            icon: Icon(
               FluentIcons.next_24_filled,
               color: SpotifyColors.textSecondary,
               size: 24,
@@ -753,7 +827,7 @@ class _CircularPlayButtonState extends State<_CircularPlayButton>
                     ),
                   ),
                   if (isLoading)
-                    const SizedBox(
+                    SizedBox(
                       width: 24,
                       height: 24,
                       child: CircularProgressIndicator(
@@ -845,7 +919,7 @@ class _LibraryTabState extends State<LibraryTab> {
             padding: const EdgeInsets.fromLTRB(20, 16, 12, 12),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
                     'Your library',
                     style: TextStyle(
@@ -853,12 +927,12 @@ class _LibraryTabState extends State<LibraryTab> {
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.3,
                       color: SpotifyColors.textPrimary,
-                      fontFamily: 'PlayfairDisplay',
+                      fontFamily: 'Inter',
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.history_rounded,
                     color: SpotifyColors.textSecondary,
                   ),
@@ -867,7 +941,7 @@ class _LibraryTabState extends State<LibraryTab> {
                       pushSharedAxisY(context, const HistoryScreen()),
                 ),
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.radio_rounded,
                     color: SpotifyColors.textSecondary,
                   ),
@@ -876,7 +950,7 @@ class _LibraryTabState extends State<LibraryTab> {
                       pushSharedAxisY(context, const RadioScreen()),
                 ),
                 IconButton(
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.tune_rounded,
                     color: SpotifyColors.textSecondary,
                   ),
@@ -891,7 +965,7 @@ class _LibraryTabState extends State<LibraryTab> {
             padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
                     'Your playlists',
                     maxLines: 1,
@@ -925,12 +999,12 @@ class _LibraryTabState extends State<LibraryTab> {
                       _load();
                     }
                   },
-                  icon: const Icon(
+                  icon: Icon(
                     FluentIcons.delete_24_regular,
                     size: 16,
                     color: SpotifyColors.textTertiary,
                   ),
-                  label: const Text(
+                  label: Text(
                     'Clear downloads',
                     style: TextStyle(
                         fontSize: 12, color: SpotifyColors.textTertiary),
@@ -941,12 +1015,12 @@ class _LibraryTabState extends State<LibraryTab> {
                     context,
                     const ImportSpotifyScreen(),
                   ).then((_) => _load()),
-                  icon: const Icon(
+                  icon: Icon(
                     FluentIcons.arrow_upload_24_regular,
                     size: 16,
                     color: SpotifyColors.highlight,
                   ),
-                  label: const Text(
+                  label: Text(
                     'Import',
                     style:
                     TextStyle(fontSize: 13, color: SpotifyColors.highlight),
@@ -976,7 +1050,7 @@ class _LibraryTabState extends State<LibraryTab> {
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Row(
+                      child: Row(
                         children: [
                           Icon(FluentIcons.heart_24_filled,
                               color: SpotifyColors.background, size: 22),
@@ -1014,7 +1088,7 @@ class _LibraryTabState extends State<LibraryTab> {
                       color: SpotifyColors.surface,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Icon(Icons.add_rounded,
+                    child: Icon(Icons.add_rounded,
                         color: SpotifyColors.textPrimary, size: 26),
                   ),
                 ),
@@ -1047,7 +1121,7 @@ class _LibraryTabState extends State<LibraryTab> {
                       ),
                       child: Text(
                         '${p.name} · ${p.count}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: SpotifyColors.textPrimary,
@@ -1064,12 +1138,12 @@ class _LibraryTabState extends State<LibraryTab> {
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
               child: Row(
                 children: [
-                  const Icon(Icons.download_rounded,
+                  Icon(Icons.download_rounded,
                       size: 16, color: SpotifyColors.highlight),
                   const SizedBox(width: 6),
                   Text(
                     'Downloads · ${_downloads.length}',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
                       color: SpotifyColors.textPrimary,
@@ -1114,14 +1188,14 @@ class _LibraryTabState extends State<LibraryTab> {
                           Text(song.title,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
                                   color: SpotifyColors.textPrimary)),
                           Text(song.artist,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 11,
                                   color: SpotifyColors.textSecondary)),
                         ],
@@ -1145,7 +1219,7 @@ class _LibraryTabState extends State<LibraryTab> {
                     color: SpotifyColors.textTertiary.withOpacity(0.6),
                   ),
                   const SizedBox(height: 16),
-                  const Text(
+                  Text(
                     'Nothing here yet',
                     style: TextStyle(
                       color: SpotifyColors.textSecondary,
@@ -1203,7 +1277,7 @@ class _LibraryTabState extends State<LibraryTab> {
                                 song.title,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: SpotifyColors.textPrimary,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14,
@@ -1214,7 +1288,7 @@ class _LibraryTabState extends State<LibraryTab> {
                                 song.artist,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: SpotifyColors.textSecondary,
                                   fontSize: 12,
                                 ),
@@ -1222,7 +1296,7 @@ class _LibraryTabState extends State<LibraryTab> {
                             ],
                           ),
                         ),
-                        const Icon(
+                        Icon(
                           Icons.play_circle_outline_rounded,
                           size: 22,
                           color: SpotifyColors.textTertiary,

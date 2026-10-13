@@ -11,8 +11,8 @@ class AppearancePrefs {
   static final playerBackground = ValueNotifier<String>('gradient');
   // slim | wavy | bar
   static final sliderStyle = ValueNotifier<String>('slim');
-  // surface | blur | gradient
-  static final miniPlayerBackground = ValueNotifier<String>('surface');
+  // tint | surface | blur | gradient  (tint = colour from album art)
+  static final miniPlayerBackground = ValueNotifier<String>('tint');
   // 0..24 dp — player artwork + thumbnails corner radius
   static final thumbRadius = ValueNotifier<double>(14);
   static final hideThumbnail = ValueNotifier<bool>(false);
@@ -26,6 +26,8 @@ class AppearancePrefs {
   static final hideStatusBarOnLyrics = ValueNotifier<bool>(false);
   static final keepScreenOn = ValueNotifier<bool>(false);
   static final haptics = ValueNotifier<bool>(false);
+  // spotify (full-width bar) | dock (floating glass dock)
+  static final navStyle = ValueNotifier<String>('spotify');
   // 0 home · 1 search · 2 library
   static final defaultTab = ValueNotifier<int>(0);
   // Ambient mode.
@@ -46,7 +48,7 @@ class AppearancePrefs {
     final p = await SharedPreferences.getInstance();
     playerBackground.value = p.getString('ap_player_bg') ?? 'gradient';
     sliderStyle.value = p.getString('ap_slider') ?? 'slim';
-    miniPlayerBackground.value = p.getString('ap_mini_bg') ?? 'surface';
+    miniPlayerBackground.value = p.getString('ap_mini_bg') ?? 'tint';
     thumbRadius.value = p.getDouble('ap_thumb_radius') ?? 14;
     hideThumbnail.value = p.getBool('ap_hide_thumb') ?? false;
     showQualityBadge.value = p.getBool('ap_show_badge') ?? true;
@@ -57,6 +59,7 @@ class AppearancePrefs {
     keepScreenOn.value = p.getBool('ap_keep_on') ?? false;
     haptics.value = p.getBool('ap_haptics') ?? false;
     defaultTab.value = p.getInt('ap_default_tab') ?? 0;
+    navStyle.value = p.getString('ap_nav_style') ?? 'spotify';
     ambientArtScale.value = p.getDouble('ap_amb_scale') ?? 0.85;
     ambientShowTitle.value = p.getBool('ap_amb_title') ?? false;
     ambientShowArtist.value = p.getBool('ap_amb_artist') ?? false;
@@ -139,6 +142,11 @@ class AppearancePrefs {
   static Future<void> setHaptics(bool v) async {
     haptics.value = v;
     await _write('ap_haptics', v);
+  }
+
+  static Future<void> setNavStyle(String v) async {
+    navStyle.value = v;
+    await _write('ap_nav_style', v);
   }
 
   static Future<void> setDefaultTab(int v) async {

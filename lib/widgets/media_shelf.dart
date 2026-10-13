@@ -461,7 +461,7 @@ class ExtTrackRow extends StatelessWidget {
               width: 26,
               child: Text(
                 '$index',
-                style: const TextStyle(
+                style: TextStyle(
                   color: SpotifyColors.textTertiary,
                   fontSize: 13,
                 ),
@@ -483,7 +483,7 @@ class ExtTrackRow extends StatelessWidget {
                     track.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: SpotifyColors.textPrimary,
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -495,7 +495,7 @@ class ExtTrackRow extends StatelessWidget {
                       track.subtitle!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: SpotifyColors.textSecondary,
                         fontSize: 12,
                       ),
@@ -509,13 +509,13 @@ class ExtTrackRow extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8),
                 child: Text(
                   formatExtDuration(track.durationMs!),
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: SpotifyColors.textTertiary,
                     fontSize: 12,
                   ),
                 ),
               ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 8),
               child: Icon(
                 FluentIcons.play_16_filled,
@@ -578,7 +578,7 @@ class ShelfHeaderBar extends StatelessWidget {
                     title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: SpotifyColors.textPrimary,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -601,7 +601,7 @@ class ShelfHeaderBar extends StatelessWidget {
             if (onShuffle != null)
               IconButton(
                 onPressed: onShuffle,
-                icon: const Icon(Icons.shuffle_rounded,
+                icon: Icon(Icons.shuffle_rounded,
                     size: 20, color: SpotifyColors.textSecondary),
               ),
           ],
@@ -646,7 +646,7 @@ class MediaCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: centered ? TextAlign.center : TextAlign.start,
-              style: const TextStyle(
+              style: TextStyle(
                 color: SpotifyColors.textPrimary,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
@@ -709,7 +709,7 @@ class VideoCard extends StatelessWidget {
               item.title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: SpotifyColors.textPrimary,
@@ -814,7 +814,7 @@ class _Tile extends StatelessWidget {
                 '$number. ${item.title}',
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   color: SpotifyColors.textPrimary,
                   fontSize: 13.5,
                   fontWeight: FontWeight.w600,

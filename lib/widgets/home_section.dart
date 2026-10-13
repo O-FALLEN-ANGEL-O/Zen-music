@@ -34,7 +34,7 @@ class HomeSection extends StatelessWidget {
               if (subtitle != null) ...[
                 Text(
                   subtitle!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     color: SpotifyColors.textSecondary,
                   ),
@@ -43,7 +43,7 @@ class HomeSection extends StatelessWidget {
               ],
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: SpotifyColors.textPrimary,
@@ -80,7 +80,7 @@ class HomeSection extends StatelessWidget {
                         song.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: SpotifyColors.textPrimary,
@@ -92,7 +92,7 @@ class HomeSection extends StatelessWidget {
                         song.artist,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: SpotifyColors.textSecondary,
                         ),

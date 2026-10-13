@@ -84,7 +84,7 @@ class YoutubeThumbnail extends StatelessWidget {
             width: w,
             height: h,
             color: SpotifyColors.surfaceLight,
-            child: const Icon(
+            child: Icon(
               Icons.music_note_rounded,
               size: 24,
               color: SpotifyColors.textTertiary,

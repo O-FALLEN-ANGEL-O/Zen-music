@@ -126,7 +126,7 @@ class _WelcomeBodyState extends State<_WelcomeBody> {
                           borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: () => _open(WelcomeDialog._repoUrl),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.star_rounded,
@@ -177,7 +177,7 @@ class _WelcomeBodyState extends State<_WelcomeBody> {
       ),
       child: Column(
         children: [
-          const Text('ZenMusic',
+          Text('ZenMusic',
               style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -191,7 +191,7 @@ class _WelcomeBodyState extends State<_WelcomeBody> {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(_version.isEmpty ? '…' : 'v$_version',
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: SpotifyColors.green)),
@@ -203,7 +203,7 @@ class _WelcomeBodyState extends State<_WelcomeBody> {
               color: Colors.orangeAccent.withOpacity(0.10),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Row(
+            child: Row(
               children: [
                 Icon(Icons.construction_rounded,
                     size: 18, color: Colors.orangeAccent),
@@ -234,7 +234,7 @@ class _WelcomeBodyState extends State<_WelcomeBody> {
         Padding(
           padding: const EdgeInsets.only(left: 6, bottom: 8),
           child: Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
                   color: SpotifyColors.green)),
@@ -276,7 +276,7 @@ class _WelcomeBodyState extends State<_WelcomeBody> {
                   Text(title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: SpotifyColors.textPrimary)),

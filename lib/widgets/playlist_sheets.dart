@@ -27,7 +27,7 @@ Future<String?> showCreatePlaylistSheet(BuildContext context,
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 'New playlist',
                 style: TextStyle(
                   color: SpotifyColors.textPrimary,
@@ -40,12 +40,12 @@ Future<String?> showCreatePlaylistSheet(BuildContext context,
                 controller: controller,
                 autofocus: initialName == null || initialName.isEmpty,
                 maxLength: 60,
-                style: const TextStyle(
+                style: TextStyle(
                     color: SpotifyColors.textPrimary, fontSize: 15),
                 decoration: InputDecoration(
                   hintText: 'Playlist name',
                   hintStyle:
-                  const TextStyle(color: SpotifyColors.textTertiary),
+                  TextStyle(color: SpotifyColors.textTertiary),
                   filled: true,
                   fillColor: SpotifyColors.surfaceLight,
                   border: OutlineInputBorder(
@@ -112,7 +112,7 @@ Future<void> showAddToPlaylistSheet(
           mainAxisSize: MainAxisSize.min,
           children: [
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Add to playlist',
               style: TextStyle(
                 color: SpotifyColors.textPrimary,
@@ -134,10 +134,10 @@ Future<void> showAddToPlaylistSheet(
                         color: SpotifyColors.surfaceLight,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.add_rounded,
+                      child: Icon(Icons.add_rounded,
                           color: SpotifyColors.textPrimary),
                     ),
-                    title: const Text('New playlist',
+                    title: Text('New playlist',
                         style: TextStyle(
                             color: SpotifyColors.textPrimary,
                             fontWeight: FontWeight.w600)),
@@ -160,15 +160,15 @@ Future<void> showAddToPlaylistSheet(
                           color: SpotifyColors.surfaceLight,
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(
+                        child: Icon(
                             FluentIcons.music_note_1_24_filled,
                             color: SpotifyColors.textSecondary),
                       ),
                       title: Text(p.name,
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: SpotifyColors.textPrimary)),
                       subtitle: Text('${p.count} songs',
-                          style: const TextStyle(
+                          style: TextStyle(
                               color: SpotifyColors.textSecondary,
                               fontSize: 12)),
                       onTap: () async {

@@ -23,6 +23,7 @@ import '../models/song.dart';
 import '../services/appearance_prefs.dart';
 import '../services/apple_canvas_service.dart';
 import '../services/downloads_service.dart';
+import '../services/free_sources/free_sources.dart';
 import '../services/listen_together_service.dart';
 import '../services/video_preference_service.dart';
 import '../services/youtube_service.dart';
@@ -330,6 +331,8 @@ class _PlayerScreenState extends State<PlayerScreen> {
   // ── Video prefetch ──
 
   Future<void> _prefetchVideoFor(Song song) async {
+    // Free-catalogue tracks have no YouTube video to look up.
+    if (FreeSources.isFreeSong(song)) return;
     if (_videoPrefetch.containsKey(song.id) ||
         _videoPrefetchFailed.contains(song.id) ||
         _prefetchInFlight == song.id) {
@@ -496,7 +499,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     final handler = audioHandler;
 
     if (song == null) {
-      return const Scaffold(
+      return Scaffold(
         backgroundColor: SpotifyColors.background,
         body: Center(
           child: Text(
@@ -860,7 +863,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                     alignment: Alignment.center,
                                     errorBuilder: (_, __, ___) => Container(
                                       color: SpotifyColors.surfaceLight,
-                                      child: const Icon(
+                                      child: Icon(
                                           Icons.music_note_rounded,
                                           size: 64,
                                           color: SpotifyColors.textTertiary),
@@ -943,7 +946,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                             Flexible(
                               child: MarqueeText(
                                 text: song.title,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 21,
                                   fontWeight: FontWeight.w700,
                                   letterSpacing: -0.3,
@@ -968,14 +971,14 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                   song.artist,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     color: SpotifyColors.textSecondary,
                                   ),
                                 ),
                               ),
                               const SizedBox(width: 2),
-                              const Icon(
+                              Icon(
                                 Icons.chevron_right_rounded,
                                 size: 16,
                                 color: SpotifyColors.textTertiary,
@@ -1011,7 +1014,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                                         child: Text(
                                           '${type.toUpperCase()}'
                                               '${bitrate != null && bitrate.isNotEmpty ? ' · $bitrate kbps' : ''}',
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               fontSize: 11,
                                               fontWeight: FontWeight.w700,
                                               color: SpotifyColors.green),
@@ -1085,7 +1088,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                           color: SpotifyColors.green.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Text(
+                        child: Text(
                           'Host controls playback',
                           style: TextStyle(
                               fontSize: 11.5,
@@ -1157,7 +1160,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
       child: Row(
         children: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.expand_more_rounded,
               size: 30,
               color: SpotifyColors.textPrimary,
@@ -1182,7 +1185,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
                   song.artist,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: SpotifyColors.textPrimary,
@@ -1195,7 +1198,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             IconButton(
               tooltip: 'Fullscreen video',
               splashRadius: 22,
-              icon: const Icon(
+              icon: Icon(
                 Icons.fullscreen_rounded,
                 size: 28,
                 color: SpotifyColors.textPrimary,
@@ -1229,7 +1232,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           const SleepTimerButton(),
           IconButton(
             splashRadius: 20,
-            icon: const Icon(
+            icon: Icon(
               FluentIcons.text_quote_24_regular,
               color: SpotifyColors.textSecondary,
               size: 22,
@@ -1240,7 +1243,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           IconButton(
             splashRadius: 20,
             tooltip: 'Ambient mode',
-            icon: const Icon(
+            icon: Icon(
               Icons.auto_awesome,
               color: SpotifyColors.textSecondary,
               size: 22,
@@ -1253,7 +1256,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           IconButton(
             splashRadius: 20,
             tooltip: 'Listen together',
-            icon: const Icon(
+            icon: Icon(
               Icons.people_outline,
               color: SpotifyColors.textSecondary,
               size: 22,
@@ -1265,7 +1268,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
           ),
           IconButton(
             splashRadius: 20,
-            icon: const Icon(
+            icon: Icon(
               FluentIcons.apps_list_24_filled,
               color: SpotifyColors.textSecondary,
               size: 22,
@@ -1286,7 +1289,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             alignment: Alignment.centerRight,
             child: IconButton(
               splashRadius: 20,
-              icon: const Icon(
+              icon: Icon(
                 FluentIcons.album_24_regular,
                 color: SpotifyColors.textSecondary,
                 size: 22,
@@ -1301,7 +1304,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
             children: [
               IconButton(
                 iconSize: 32,
-                icon: const Icon(
+                icon: Icon(
                   FluentIcons.previous_24_regular,
                   color: SpotifyColors.textPrimary,
                 ),
@@ -1343,7 +1346,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
               const SizedBox(width: 12),
               IconButton(
                 iconSize: 32,
-                icon: const Icon(
+                icon: Icon(
                   FluentIcons.next_24_regular,
                   color: SpotifyColors.textPrimary,
                 ),
@@ -1385,7 +1388,7 @@ class _SliderTimeRow extends StatelessWidget {
     required this.right,
   });
 
-  static const _timeStyle = TextStyle(
+  static final _timeStyle = TextStyle(
     fontSize: 11.5,
     fontWeight: FontWeight.w600,
     color: SpotifyColors.textSecondary,
@@ -2336,7 +2339,7 @@ class _DownloadButtonState extends State<_DownloadButton> {
               valueColor: AlwaysStoppedAnimation(SpotifyColors.green),
             ),
             Text('$_progress%',
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 9, color: SpotifyColors.textSecondary)),
           ],
         ),

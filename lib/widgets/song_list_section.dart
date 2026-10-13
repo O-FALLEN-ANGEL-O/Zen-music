@@ -37,7 +37,7 @@ class SongListSection extends StatelessWidget {
           actionButton: showPlayButton && songs.isNotEmpty
               ? IconButton(
             onPressed: () => _playAll(context),
-            icon: const Icon(
+            icon: Icon(
               Icons.play_circle_fill_rounded,
               color: SpotifyColors.green,
               size: 30,

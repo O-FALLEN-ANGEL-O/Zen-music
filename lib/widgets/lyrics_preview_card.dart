@@ -84,7 +84,7 @@ class _LyricsPreviewCardState extends State<LyricsPreviewCard> {
   Widget build(BuildContext context) {
     if (_loading) {
       return _card(
-        child: const Padding(
+        child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 22),
           child: Row(
             children: [
@@ -129,7 +129,7 @@ class _LyricsPreviewCardState extends State<LyricsPreviewCard> {
                     color: SpotifyColors.textSecondary.withOpacity(0.9),
                   ),
                   const SizedBox(width: 8),
-                  const Text(
+                  Text(
                     'Lyrics',
                     style: TextStyle(
                       fontSize: 13,
@@ -157,7 +157,7 @@ class _LyricsPreviewCardState extends State<LyricsPreviewCard> {
                       entry.value,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         height: 1.3,
                         color: SpotifyColors.textPrimary,

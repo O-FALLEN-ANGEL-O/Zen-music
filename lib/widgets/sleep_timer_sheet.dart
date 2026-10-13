@@ -79,7 +79,7 @@ class _SleepTimerSheetState extends State<_SleepTimerSheet> {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(FluentIcons.timer_24_regular,
                         color: SpotifyColors.green),
                     SizedBox(width: 10),
@@ -97,7 +97,7 @@ class _SleepTimerSheetState extends State<_SleepTimerSheet> {
                     state == Duration.zero
                         ? 'Stops at the end of this song'
                         : 'Music stops in ${_fmt(state)}',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                         color: SpotifyColors.textPrimary),
@@ -131,7 +131,7 @@ class _SleepTimerSheetState extends State<_SleepTimerSheet> {
                         ActionChip(
                           label: Text('$mins min'),
                           backgroundColor: SpotifyColors.surfaceLight,
-                          labelStyle: const TextStyle(
+                          labelStyle: TextStyle(
                               fontSize: 12,
                               color: SpotifyColors.textPrimary),
                           onPressed: () => setState(() {
@@ -142,7 +142,7 @@ class _SleepTimerSheetState extends State<_SleepTimerSheet> {
                       ActionChip(
                         label: const Text('End of song'),
                         backgroundColor: SpotifyColors.surfaceLight,
-                        labelStyle: const TextStyle(
+                        labelStyle: TextStyle(
                             fontSize: 12, color: SpotifyColors.textPrimary),
                         onPressed: () {
                           audioHandler.setSleepTimerEndOfSong();
@@ -189,14 +189,14 @@ class _SleepTimerSheetState extends State<_SleepTimerSheet> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,
                   color: SpotifyColors.textPrimary)),
           Row(
             children: [
               IconButton(
-                icon: const Icon(Icons.remove_rounded,
+                icon: Icon(Icons.remove_rounded,
                     color: SpotifyColors.textSecondary),
                 onPressed: value > 0 ? () => onChanged(value - 1) : null,
               ),
@@ -204,13 +204,13 @@ class _SleepTimerSheetState extends State<_SleepTimerSheet> {
                 width: 44,
                 child: Text('$value',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: SpotifyColors.textPrimary)),
               ),
               IconButton(
-                icon: const Icon(Icons.add_rounded,
+                icon: Icon(Icons.add_rounded,
                     color: SpotifyColors.textSecondary),
                 onPressed: () => onChanged(value + 1),
               ),

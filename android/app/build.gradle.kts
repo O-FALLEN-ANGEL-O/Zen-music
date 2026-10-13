@@ -75,6 +75,8 @@ dependencies {
     // datasource/extractor transitively (ZenVideoPlayerView uses
     // DefaultHttpDataSource + ProgressiveMediaSource/MergingMediaSource);
     // media3-ui is NOT needed — the player renders into a TextureView.
+    // Android Auto connection state for Car Mode auto-launch.
+    implementation("androidx.car.app:app:1.4.0")
     implementation("androidx.media3:media3-common:1.4.1")
     implementation("androidx.media3:media3-exoplayer:1.4.1")
 

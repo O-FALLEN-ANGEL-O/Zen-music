@@ -13,12 +13,12 @@ class WaveSpinner extends StatefulWidget {
     super.key,
     this.size = 22,
     this.strokeWidth = 2.2,
-    this.color = SpotifyColors.green,
+    this.color,
   });
 
   final double size;
   final double strokeWidth;
-  final Color color;
+  final Color? color;
 
   @override
   State<WaveSpinner> createState() => _WaveSpinnerState();
@@ -64,7 +64,7 @@ class _WaveSpinnerState extends State<WaveSpinner>
               phase: t * 2 * math.pi,
               startAngle: t * 2 * math.pi,
               sweepAngle: 2 * math.pi, // full expressive wavy ring
-              color: widget.color,
+              color: widget.color ?? SpotifyColors.green,
               strokeWidth: widget.strokeWidth,
               amplitude: maxAmp * envelope,
             ),

@@ -116,7 +116,7 @@ class _LyricsViewState extends State<LyricsView> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Center(
+      return Center(
         child: SizedBox(
           width: 26,
           height: 26,
@@ -141,7 +141,7 @@ class _LyricsViewState extends State<LyricsView> {
                 size: 44,
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 'Lyrics not available',
                 style: TextStyle(
                   color: SpotifyColors.textPrimary,
@@ -229,7 +229,7 @@ class _LyricsViewState extends State<LyricsView> {
                   height: 1.4,
                 ),
                 // ── Translation line (unused for now, but styled) ──
-                translationStyle: const TextStyle(
+                translationStyle: TextStyle(
                   fontSize: 14,
                   color: SpotifyColors.textTertiary,
                   fontWeight: FontWeight.w400,
@@ -272,7 +272,7 @@ class _LyricsViewState extends State<LyricsView> {
                     widget.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                       color: SpotifyColors.textPrimary,

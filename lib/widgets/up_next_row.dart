@@ -20,7 +20,7 @@ class UpNextRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 12),
           child: Text(
             'Recommended for you',
@@ -59,7 +59,7 @@ class UpNextRow extends StatelessWidget {
                         song.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                           color: SpotifyColors.textPrimary,
@@ -71,7 +71,7 @@ class UpNextRow extends StatelessWidget {
                         song.artist,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 11,
                           color: SpotifyColors.textSecondary,
                         ),

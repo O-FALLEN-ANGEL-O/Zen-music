@@ -119,7 +119,7 @@ class _ExtensionHomeFeedState extends State<ExtensionHomeFeed> {
         padding: const EdgeInsets.fromLTRB(20, 32, 20, 32),
         child: Column(
           children: [
-            const Icon(
+            Icon(
               Icons.error_outline_rounded,
               size: 40,
               color: SpotifyColors.textTertiary,
@@ -128,7 +128,7 @@ class _ExtensionHomeFeedState extends State<ExtensionHomeFeed> {
             Text(
               _error!,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 color: SpotifyColors.textSecondary,
                 fontSize: 14,
               ),
@@ -140,7 +140,7 @@ class _ExtensionHomeFeedState extends State<ExtensionHomeFeed> {
       );
     }
     if (_shelves.isEmpty) {
-      return const Padding(
+      return Padding(
         padding: EdgeInsets.fromLTRB(20, 32, 20, 32),
         child: Center(
           child: Text(
@@ -166,7 +166,7 @@ class _ExtensionHomeFeedState extends State<ExtensionHomeFeed> {
               child: Center(child: WaveSpinner(size: 22)),
             )
           else if (_endReached)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Center(
                 child: Text(
@@ -341,7 +341,7 @@ class ExtensionShelfList extends StatelessWidget {
                         visible[i].title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: SpotifyColors.textPrimary,
                           fontSize: 11.5,
                           fontWeight: FontWeight.w600,
@@ -399,7 +399,7 @@ class ExtensionShelfList extends StatelessWidget {
           media.title,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w700,
             color: SpotifyColors.textPrimary,

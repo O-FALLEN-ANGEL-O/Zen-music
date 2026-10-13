@@ -82,7 +82,7 @@ class ArtistHeroHeader extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 errorBuilder: (_, __, ___) => Container(
                   color: SpotifyColors.surfaceLight,
-                  child: const Center(
+                  child: Center(
                     child: Icon(Icons.person_rounded,
                         size: 64, color: SpotifyColors.textTertiary),
                   ),
@@ -138,7 +138,7 @@ class ArtistHeroHeader extends StatelessWidget {
                       name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w700,
                         height: 1.1,

@@ -108,7 +108,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
         behavior: SnackBarBehavior.floating,
         backgroundColor: SpotifyColors.surfaceLight,
         content: Text(message,
-            style: const TextStyle(color: SpotifyColors.textPrimary)),
+            style: TextStyle(color: SpotifyColors.textPrimary)),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -177,12 +177,12 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel',
+              child: Text('Cancel',
                   style: TextStyle(color: SpotifyColors.textSecondary))),
           TextButton(
               onPressed: () => Navigator.pop(ctx, true),
               child: Text(confirmLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.green,
                       fontWeight: FontWeight.w700))),
         ],
@@ -198,8 +198,8 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
       appBar: AppBar(
         backgroundColor: SpotifyColors.background,
         elevation: 0,
-        iconTheme: const IconThemeData(color: SpotifyColors.textPrimary),
-        title: const Text(
+        iconTheme: IconThemeData(color: SpotifyColors.textPrimary),
+        title: Text(
           'Listen Together',
           style: TextStyle(
             color: SpotifyColors.textPrimary,
@@ -287,7 +287,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
       ),
       child: Column(
         children: [
-          const Text(
+          Text(
             'ROOM CODE',
             style: TextStyle(
               fontSize: 11,
@@ -304,7 +304,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
             },
             child: Text(
               room.roomCode,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 34,
                 fontWeight: FontWeight.w800,
                 letterSpacing: 6,
@@ -315,7 +315,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
           const SizedBox(height: 6),
           Text(
             isHost ? 'You control the zen' : 'Following the host',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: SpotifyColors.green,
@@ -329,9 +329,9 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                 await Clipboard.setData(ClipboardData(text: room.roomCode));
                 _snack('Room code copied');
               },
-              icon: const Icon(Icons.content_copy_rounded,
+              icon: Icon(Icons.content_copy_rounded,
                   size: 15, color: SpotifyColors.textSecondary),
-              label: const Text(
+              label: Text(
                 'Copy code',
                 style: TextStyle(
                     fontSize: 12.5, color: SpotifyColors.textSecondary),
@@ -347,7 +347,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
     final song = room.currentTrack;
     if (song == null) {
       return _panel(
-        child: const Row(
+        child: Row(
           children: [
             Icon(Icons.music_note_rounded,
                 size: 20, color: SpotifyColors.textTertiary),
@@ -381,7 +381,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                 width: 52,
                 height: 52,
                 color: SpotifyColors.surfaceLight,
-                child: const Icon(Icons.music_note_rounded,
+                child: Icon(Icons.music_note_rounded,
                     color: SpotifyColors.textTertiary),
               ),
             )
@@ -389,7 +389,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
               width: 52,
               height: 52,
               color: SpotifyColors.surfaceLight,
-              child: const Icon(Icons.music_note_rounded,
+              child: Icon(Icons.music_note_rounded,
                   color: SpotifyColors.textTertiary),
             ),
           ),
@@ -400,7 +400,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
               children: [
                 Text(
                   'NOW PLAYING · ${room.isPlaying ? "PLAYING" : "PAUSED"}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.8,
@@ -411,14 +411,14 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                 Text(song.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 14.5,
                         fontWeight: FontWeight.w700,
                         color: SpotifyColors.textPrimary)),
                 Text(song.artist,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 12.5,
                         color: SpotifyColors.textSecondary)),
               ],
@@ -434,7 +434,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Join requests',
             style: TextStyle(
                 fontSize: 15,
@@ -453,7 +453,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                     child: Text(req.username,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                             color: SpotifyColors.textPrimary)),
@@ -465,7 +465,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                       setState(() => _pendingJoins
                           .removeWhere((j) => j.userId == req.userId));
                     },
-                    icon: const Icon(Icons.check_rounded,
+                    icon: Icon(Icons.check_rounded,
                         color: SpotifyColors.green, size: 24),
                   ),
                   IconButton(
@@ -494,7 +494,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
         children: [
           Text(
             'In the room · ${users.length}',
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: SpotifyColors.textPrimary),
@@ -518,13 +518,13 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                       child: Text.rich(
                         TextSpan(
                           text: user.username,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontSize: 14.5,
                               fontWeight: FontWeight.w600,
                               color: SpotifyColors.textPrimary),
                           children: [
                             if (user.isHost)
-                              const TextSpan(
+                              TextSpan(
                                 text: '  ·  host',
                                 style: TextStyle(
                                     fontSize: 12.5,
@@ -569,9 +569,9 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.swap_horiz_rounded,
+              leading: Icon(Icons.swap_horiz_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Make host',
+              title: Text('Make host',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
@@ -585,7 +585,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
             ListTile(
               leading:
               const Icon(Icons.person_remove_rounded, color: Colors.redAccent),
-              title: const Text('Remove from room',
+              title: Text('Remove from room',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
@@ -609,7 +609,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Suggested songs',
             style: TextStyle(
                 fontSize: 15,
@@ -622,7 +622,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
               padding: const EdgeInsets.symmetric(vertical: 6),
               child: Row(
                 children: [
-                  const Icon(Icons.queue_music_rounded,
+                  Icon(Icons.queue_music_rounded,
                       size: 22, color: SpotifyColors.textSecondary),
                   const SizedBox(width: 12),
                   Expanded(
@@ -632,14 +632,14 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                         Text(s.song.title,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 13.5,
                                 fontWeight: FontWeight.w600,
                                 color: SpotifyColors.textPrimary)),
                         Text('by ${s.fromUsername}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontSize: 12,
                                 color: SpotifyColors.textSecondary)),
                       ],
@@ -652,7 +652,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                       setState(() => _pendingSuggestions.removeWhere(
                               (x) => x.suggestionId == s.suggestionId));
                     },
-                    icon: const Icon(Icons.check_rounded,
+                    icon: Icon(Icons.check_rounded,
                         color: SpotifyColors.green, size: 24),
                   ),
                   IconButton(
@@ -683,7 +683,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.info_outline_rounded,
+          Icon(Icons.info_outline_rounded,
               size: 20, color: SpotifyColors.textSecondary),
           const SizedBox(width: 12),
           Expanded(
@@ -691,7 +691,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
               isHost
                   ? 'You control playback for everyone — play, pause, seek and skips are mirrored to the room.'
                   : 'Playback is controlled by the host. Your player follows along automatically.',
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 13, color: SpotifyColors.textSecondary),
             ),
           ),
@@ -745,13 +745,13 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
       width: size,
       height: size,
       alignment: Alignment.center,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: SpotifyColors.surfaceLight,
         shape: BoxShape.circle,
       ),
       child: Text(
         letter,
-        style: const TextStyle(
+        style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w800,
             color: SpotifyColors.textPrimary),
@@ -870,7 +870,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
                 color: SpotifyColors.surfaceLight,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Row(
+              child: Row(
                 children: [
                   SizedBox(
                     width: 18,
@@ -952,12 +952,12 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
       controller: controller,
       maxLength: maxLength,
       onChanged: (v) => onChanged(uppercase ? v.toUpperCase() : v),
-      style: const TextStyle(
+      style: TextStyle(
           color: SpotifyColors.textPrimary, fontSize: 15),
       decoration: InputDecoration(
         counterText: '',
         hintText: hint,
-        hintStyle: const TextStyle(color: SpotifyColors.textTertiary),
+        hintStyle: TextStyle(color: SpotifyColors.textTertiary),
         prefixIcon:
         Icon(icon, size: 20, color: SpotifyColors.textSecondary),
         filled: true,
@@ -971,7 +971,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide:
-          const BorderSide(color: SpotifyColors.green, width: 1.4),
+          BorderSide(color: SpotifyColors.green, width: 1.4),
         ),
       ),
     );
@@ -984,7 +984,7 @@ class _ListenTogetherScreenState extends State<ListenTogetherScreen> {
         color: SpotifyColors.surface,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('How it works',
@@ -1018,13 +1018,13 @@ class _Step extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: SpotifyColors.textPrimary)),
           const SizedBox(height: 3),
           Text(description,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 13, color: SpotifyColors.textSecondary)),
         ],
       ),

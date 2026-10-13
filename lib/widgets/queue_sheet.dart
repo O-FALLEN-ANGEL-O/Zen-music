@@ -9,7 +9,7 @@ class QueueSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: SpotifyColors.background,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),

@@ -49,7 +49,7 @@ class _RadioScreenState extends State<RadioScreen> {
       backgroundColor: SpotifyColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Radio stations',
+        title: Text('Radio stations',
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -60,11 +60,11 @@ class _RadioScreenState extends State<RadioScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
             child: TextField(
-              style: const TextStyle(color: SpotifyColors.textPrimary),
+              style: TextStyle(color: SpotifyColors.textPrimary),
               decoration: InputDecoration(
                 hintText: 'Search stations or genres...',
-                hintStyle: const TextStyle(color: SpotifyColors.textTertiary),
-                prefixIcon: const Icon(Icons.search_rounded,
+                hintStyle: TextStyle(color: SpotifyColors.textTertiary),
+                prefixIcon: Icon(Icons.search_rounded,
                     color: SpotifyColors.textSecondary),
                 filled: true,
                 fillColor: SpotifyColors.surfaceLight,
@@ -78,7 +78,7 @@ class _RadioScreenState extends State<RadioScreen> {
           ),
           Expanded(
             child: _stations.isEmpty
-                ? const Center(
+                ? Center(
                 child: Text('No stations found',
                     style: TextStyle(color: SpotifyColors.textSecondary)))
                 : ListView.separated(
@@ -122,7 +122,7 @@ class _RadioScreenState extends State<RadioScreen> {
                               width: 56,
                               height: 56,
                               color: SpotifyColors.surfaceLight,
-                              child: const Icon(Icons.radio_rounded,
+                              child: Icon(Icons.radio_rounded,
                                   color: SpotifyColors.textTertiary),
                             ),
                           ),
@@ -136,7 +136,7 @@ class _RadioScreenState extends State<RadioScreen> {
                               Text(s.name,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                       color: SpotifyColors.textPrimary,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14)),
@@ -149,7 +149,7 @@ class _RadioScreenState extends State<RadioScreen> {
                             ],
                           ),
                         ),
-                        const Icon(FluentIcons.speaker_2_24_filled,
+                        Icon(FluentIcons.speaker_2_24_filled,
                             size: 20, color: SpotifyColors.green),
                       ],
                     ),

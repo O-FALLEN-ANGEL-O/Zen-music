@@ -79,8 +79,8 @@ class _RecognizeScreenState extends State<RecognizeScreen>
       appBar: AppBar(
         backgroundColor: SpotifyColors.background,
         elevation: 0,
-        iconTheme: const IconThemeData(color: SpotifyColors.textPrimary),
-        title: const Text('Recognize',
+        iconTheme: IconThemeData(color: SpotifyColors.textPrimary),
+        title: Text('Recognize',
             style: TextStyle(
                 color: SpotifyColors.textPrimary,
                 fontSize: 18,
@@ -96,7 +96,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
             case RecognitionPhase.processing:
               _pulse.stop();
               return _orb('Identifying…', null,
-                  child: const SizedBox(
+                  child: SizedBox(
                     width: 30,
                     height: 30,
                     child: CircularProgressIndicator(
@@ -157,7 +157,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
           ),
           const SizedBox(height: 24),
           Text(title,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: SpotifyColors.textPrimary)),
@@ -183,7 +183,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('IDENTIFIED',
+            Text('IDENTIFIED',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 11,
@@ -206,7 +206,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 19,
                     fontWeight: FontWeight.w800,
                     color: SpotifyColors.textPrimary)),
@@ -214,7 +214,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
                 textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 14,
                     color: SpotifyColors.textSecondary)),
             if (r.album != null && r.album!.isNotEmpty) ...[
@@ -223,7 +223,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 12,
                       color: SpotifyColors.textTertiary)),
             ],
@@ -254,7 +254,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
                 ),
               )
             else
-              const Text(
+              Text(
                   'No playable stream found for this match',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -262,7 +262,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
             const SizedBox(height: 12),
             TextButton(
               onPressed: _start,
-              child: const Text('Recognize another song',
+              child: Text('Recognize another song',
                   style: TextStyle(
                       fontSize: 13.5,
                       fontWeight: FontWeight.w700,
@@ -278,7 +278,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
     height: 180,
     width: 180,
     color: SpotifyColors.surfaceLight,
-    child: const Icon(Icons.music_note_rounded,
+    child: Icon(Icons.music_note_rounded,
         size: 56, color: SpotifyColors.textTertiary),
   );
 
@@ -293,7 +293,7 @@ class _RecognizeScreenState extends State<RecognizeScreen>
             const SizedBox(height: 14),
             Text(title,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: SpotifyColors.textPrimary)),

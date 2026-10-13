@@ -52,7 +52,7 @@ class SongRow extends StatelessWidget {
                         song.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: SpotifyColors.textPrimary,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
@@ -63,7 +63,7 @@ class SongRow extends StatelessWidget {
                         song.artist,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: SpotifyColors.textSecondary,
                           fontSize: 12,
                         ),

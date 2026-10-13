@@ -69,7 +69,7 @@ class StatusChip extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(
+                    Icon(
                       FluentIcons.arrow_sync_24_regular,
                       size: 11,
                       color: SpotifyColors.textSecondary,
@@ -96,7 +96,7 @@ class StatusChip extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const SizedBox(
+                        SizedBox(
                           width: 10,
                           height: 10,
                           child: CircularProgressIndicator(
@@ -145,12 +145,12 @@ class StatusChip extends StatelessWidget {
     return '$m:${s.toString().padLeft(2, '0')}';
   }
 
-  TextStyle _chipStyle({Color color = SpotifyColors.textSecondary}) =>
+  TextStyle _chipStyle({Color? color}) =>
       TextStyle(
         fontSize: 10,
         fontWeight: FontWeight.w700,
         letterSpacing: 0.5,
-        color: color,
+        color: color ?? SpotifyColors.textSecondary,
       );
 
   Widget _chip({required Widget child}) {

@@ -135,7 +135,7 @@ class _AudioDeviceSheetState extends State<_AudioDeviceSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Audio output',
               style: TextStyle(
                 fontSize: 17,
@@ -147,7 +147,7 @@ class _AudioDeviceSheetState extends State<_AudioDeviceSheet> {
             if (_active != null)
               _DeviceCard(device: _active!, volume: _out.volume)
             else
-              const Text(
+              Text(
                 'No audio devices found',
                 style: TextStyle(
                   fontSize: 13,
@@ -250,7 +250,7 @@ class _DeviceCard extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
                     color: SpotifyColors.textPrimary,
@@ -264,7 +264,7 @@ class _DeviceCard extends StatelessWidget {
                     color: Colors.white.withOpacity(0.08),
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: const Text(
+                  child: Text(
                     'Connected',
                     style: TextStyle(
                       fontSize: 11.5,
@@ -290,12 +290,12 @@ class _DeviceCard extends StatelessWidget {
                 return Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.volume_up_rounded,
+                    Icon(Icons.volume_up_rounded,
                         size: 14, color: SpotifyColors.textSecondary),
                     const SizedBox(width: 4),
                     Text(
                       '$pct%',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                         color: SpotifyColors.textSecondary,
@@ -338,7 +338,7 @@ class _BatteryRing extends StatelessWidget {
           ),
           Text(
             '$level%',
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 10.5,
               fontWeight: FontWeight.w800,
               color: SpotifyColors.textPrimary,
@@ -497,7 +497,7 @@ class _VolumeRowState extends State<_VolumeRow> {
                             color: SpotifyColors.textPrimary,
                           ),
                           const SizedBox(width: 14),
-                          const Text(
+                          Text(
                             'Volume',
                             style: TextStyle(
                               fontSize: 15,

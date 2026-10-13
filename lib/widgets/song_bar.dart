@@ -56,7 +56,7 @@ class ArtistBar extends StatelessWidget {
                       name,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
                         color: SpotifyColors.textPrimary,
@@ -65,7 +65,7 @@ class ArtistBar extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       subtitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: SpotifyColors.textSecondary,
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
@@ -74,7 +74,7 @@ class ArtistBar extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.chevron_right_rounded,
                 color: SpotifyColors.textSecondary,
                 size: 20,
@@ -91,7 +91,7 @@ class ArtistBar extends StatelessWidget {
       width: 52,
       height: 52,
       color: SpotifyColors.surfaceLight,
-      child: const Icon(
+      child: Icon(
         FluentIcons.person_24_filled,
         size: 26,
         color: SpotifyColors.textTertiary,

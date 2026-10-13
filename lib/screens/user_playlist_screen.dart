@@ -45,7 +45,7 @@ class _UserPlaylistScreenState extends State<UserPlaylistScreen> {
         backgroundColor: Colors.transparent,
         title: Text(
           widget.name,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 17,
             fontWeight: FontWeight.w700,
             color: SpotifyColors.textPrimary,
@@ -53,7 +53,7 @@ class _UserPlaylistScreenState extends State<UserPlaylistScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_outline_rounded,
+            icon: Icon(Icons.delete_outline_rounded,
                 color: SpotifyColors.textSecondary),
             tooltip: 'Delete playlist',
             onPressed: () async {
@@ -61,11 +61,11 @@ class _UserPlaylistScreenState extends State<UserPlaylistScreen> {
                 context: context,
                 builder: (context) => AlertDialog(
                   backgroundColor: SpotifyColors.surface,
-                  title: const Text('Delete playlist',
+                  title: Text('Delete playlist',
                       style: TextStyle(color: SpotifyColors.textPrimary)),
                   content: Text('Delete "${widget.name}"?',
                       style:
-                      const TextStyle(color: SpotifyColors.textSecondary)),
+                      TextStyle(color: SpotifyColors.textSecondary)),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context, false),
@@ -88,7 +88,7 @@ class _UserPlaylistScreenState extends State<UserPlaylistScreen> {
         ],
       ),
       body: _songs.isEmpty
-          ? const Center(
+          ? Center(
           child: Text('No songs matched in this playlist',
               style: TextStyle(color: SpotifyColors.textSecondary)))
           : Column(
@@ -98,7 +98,7 @@ class _UserPlaylistScreenState extends State<UserPlaylistScreen> {
             child: Row(
               children: [
                 Text('${_songs.length} songs',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 13,
                         color: SpotifyColors.textSecondary)),
                 const Spacer(),

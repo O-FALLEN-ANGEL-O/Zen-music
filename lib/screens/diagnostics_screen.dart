@@ -75,7 +75,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
       backgroundColor: SpotifyColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Diagnostics',
+        title: Text('Diagnostics',
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -83,7 +83,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
         actions: [
           IconButton(
             tooltip: 'Clear',
-            icon: const Icon(Icons.delete_outline_rounded,
+            icon: Icon(Icons.delete_outline_rounded,
                 color: SpotifyColors.textPrimary),
             onPressed: svc.clear,
           ),
@@ -112,7 +112,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
             ),
           ),
           if (!svc.logcatActive)
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(bottom: 4),
               child: Text('native logcat stream unavailable on this device',
                   style: TextStyle(
@@ -125,7 +125,7 @@ class _DiagnosticsScreenState extends State<DiagnosticsScreen> {
                 final lines =
                 svc.lines.where(_passes).toList().reversed.toList();
                 if (lines.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text('No log lines yet — play something.',
                         style:
                         TextStyle(color: SpotifyColors.textSecondary)),

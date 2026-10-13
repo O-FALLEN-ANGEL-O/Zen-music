@@ -246,11 +246,11 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   _displayName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: SpotifyColors.textPrimary,
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
-                    fontFamily: 'PlayfairDisplay',
+                    fontFamily: 'Inter',
                   ),
                 ),
               ),
@@ -302,7 +302,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             FluentIcons.person_24_regular,
             size: 44,
             color: SpotifyColors.textTertiary,
@@ -311,7 +311,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
           Text(
             'Artist page unavailable for "${widget.artistName}"',
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               color: SpotifyColors.textSecondary,
               fontSize: 14,
             ),
@@ -336,7 +336,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) => Container(
               color: SpotifyColors.surfaceLight,
-              child: const Icon(
+              child: Icon(
                 FluentIcons.person_24_filled,
                 size: 64,
                 color: SpotifyColors.textTertiary,
@@ -346,7 +346,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
         else
           Container(
             color: SpotifyColors.surfaceLight,
-            child: const Icon(
+            child: Icon(
               FluentIcons.person_24_filled,
               size: 64,
               color: SpotifyColors.textTertiary,
@@ -397,7 +397,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.4,
-                  fontFamily: 'PlayfairDisplay',
+                  fontFamily: 'Inter',
                   height: 1.1,
                 ),
               ),
@@ -423,7 +423,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
           if (_resolvedFromVideo)
             Text(
               '${_topSongs.length} videos · YouTube channel',
-              style: const TextStyle(
+              style: TextStyle(
                 color: SpotifyColors.textSecondary,
                 fontSize: 12,
               ),
@@ -431,7 +431,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
           else if (_topSongs.isNotEmpty)
             Text(
               '${_topSongs.length} top songs · YouTube Music',
-              style: const TextStyle(
+              style: TextStyle(
                 color: SpotifyColors.textSecondary,
                 fontSize: 12,
               ),
@@ -616,7 +616,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
           const SizedBox(width: 6),
           Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
               color: SpotifyColors.textPrimary,
               fontSize: 12.5,
               fontWeight: FontWeight.w600,
@@ -636,7 +636,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'About',
             style: TextStyle(
               color: SpotifyColors.textPrimary,
@@ -655,7 +655,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
               overflow: _aboutExpanded
                   ? TextOverflow.visible
                   : TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 color: SpotifyColors.textSecondary,
                 fontSize: 13,
                 height: 1.35,
@@ -670,7 +670,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(
                   _aboutExpanded ? 'Less' : 'More',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: SpotifyColors.highlight,
                     fontSize: 12.5,
                     fontWeight: FontWeight.w700,
@@ -718,13 +718,13 @@ class _ArtistScreenState extends State<ArtistScreen> {
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 6),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   FluentIcons.music_note_2_24_filled,
                   size: 16,
                   color: SpotifyColors.highlight,
                 ),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'Top songs',
                   style: TextStyle(
                     color: SpotifyColors.textPrimary,
@@ -774,7 +774,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 10),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 FluentIcons.cd_16_regular,
                 size: 16,
                 color: SpotifyColors.highlight,
@@ -782,7 +782,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
               const SizedBox(width: 8),
               Text(
                 title,
-                style: const TextStyle(
+                style: TextStyle(
                   color: SpotifyColors.textPrimary,
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
@@ -819,7 +819,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                             width: 140,
                             height: 140,
                             color: SpotifyColors.surfaceLight,
-                            child: const Icon(Icons.album_rounded,
+                            child: Icon(Icons.album_rounded,
                                 size: 40,
                                 color: SpotifyColors.textTertiary),
                           ),
@@ -828,7 +828,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                           width: 140,
                           height: 140,
                           color: SpotifyColors.surfaceLight,
-                          child: const Icon(Icons.album_rounded,
+                          child: Icon(Icons.album_rounded,
                               size: 40,
                               color: SpotifyColors.textTertiary),
                         ),
@@ -838,7 +838,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                         card.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: SpotifyColors.textPrimary,
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -848,7 +848,7 @@ class _ArtistScreenState extends State<ArtistScreen> {
                         card.subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: SpotifyColors.textSecondary,
                           fontSize: 11,
                         ),
@@ -934,13 +934,13 @@ class _AlbumScreenState extends State<_AlbumScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
+            Icon(
               Icons.album_rounded,
               size: 44,
               color: SpotifyColors.textTertiary,
             ),
             const SizedBox(height: 12),
-            const Text(
+            Text(
               'Album unavailable',
               style: TextStyle(
                 color: SpotifyColors.textSecondary,
@@ -966,7 +966,7 @@ class _AlbumScreenState extends State<_AlbumScreen> {
                   child: InkWell(
                     customBorder: const CircleBorder(),
                     onTap: () => Navigator.pop(context),
-                    child: const SizedBox(
+                    child: SizedBox(
                       width: 40,
                       height: 40,
                       child: Icon(Icons.arrow_back_rounded,
@@ -993,7 +993,7 @@ class _AlbumScreenState extends State<_AlbumScreen> {
                     width: 200,
                     height: 200,
                     color: SpotifyColors.surfaceLight,
-                    child: const Icon(Icons.album_rounded,
+                    child: Icon(Icons.album_rounded,
                         size: 56,
                         color: SpotifyColors.textTertiary),
                   ),
@@ -1002,7 +1002,7 @@ class _AlbumScreenState extends State<_AlbumScreen> {
                   width: 200,
                   height: 200,
                   color: SpotifyColors.surfaceLight,
-                  child: const Icon(Icons.album_rounded,
+                  child: Icon(Icons.album_rounded,
                       size: 56,
                       color: SpotifyColors.textTertiary),
                 ),
@@ -1018,19 +1018,19 @@ class _AlbumScreenState extends State<_AlbumScreen> {
                   widget.card.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: SpotifyColors.textPrimary,
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.4,
-                    fontFamily: 'PlayfairDisplay',
+                    fontFamily: 'Inter',
                   ),
                 ),
                 if (widget.card.subtitle.isNotEmpty) ...[
                   const SizedBox(height: 4),
                   Text(
                     widget.card.subtitle,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: SpotifyColors.textSecondary,
                       fontSize: 13,
                     ),
@@ -1061,7 +1061,7 @@ class _AlbumScreenState extends State<_AlbumScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20),
                           alignment: Alignment.center,
-                          child: const Row(
+                          child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(Icons.play_arrow_rounded,
@@ -1087,7 +1087,7 @@ class _AlbumScreenState extends State<_AlbumScreen> {
           ),
           const SizedBox(height: 12),
           if (_tracks.isEmpty)
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(24),
               child: Center(
                 child: Text(
@@ -1157,7 +1157,7 @@ class _ArtistTrackTile extends StatelessWidget {
               width: 26,
               child: Text(
                 '$index',
-                style: const TextStyle(
+                style: TextStyle(
                   color: SpotifyColors.textTertiary,
                   fontSize: 13,
                 ),
@@ -1179,7 +1179,7 @@ class _ArtistTrackTile extends StatelessWidget {
                         color: Colors.black.withOpacity(0.55),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Icon(Icons.graphic_eq_rounded,
+                      child: Icon(Icons.graphic_eq_rounded,
                           size: 20, color: SpotifyColors.highlight),
                     ),
                   ),
@@ -1207,7 +1207,7 @@ class _ArtistTrackTile extends StatelessWidget {
                     song.artist,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: SpotifyColors.textSecondary,
                       fontSize: 12,
                     ),
@@ -1220,13 +1220,13 @@ class _ArtistTrackTile extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 8),
                 child: Text(
                   _fmt(song.duration),
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: SpotifyColors.textTertiary,
                     fontSize: 12,
                   ),
                 ),
               ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 8),
               child: Icon(
                 Icons.play_arrow_rounded,

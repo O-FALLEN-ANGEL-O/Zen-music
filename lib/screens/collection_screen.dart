@@ -95,7 +95,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(_error!,
-              style: const TextStyle(
+              style: TextStyle(
                   color: SpotifyColors.textSecondary, fontSize: 15)),
           const SizedBox(height: 16),
           TextButton(
@@ -150,7 +150,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
                       Container(color: SpotifyColors.surfaceLight),
                   errorWidget: (_, __, ___) => Container(
                     color: SpotifyColors.surfaceLight,
-                    child: const Icon(
+                    child: Icon(
                       Icons.album_rounded,
                       size: 56,
                       color: SpotifyColors.textTertiary,
@@ -168,7 +168,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
             children: [
               Text(
                 c.isAlbum ? 'ALBUM' : 'PLAYLIST',
-                style: const TextStyle(
+                style: TextStyle(
                   color: SpotifyColors.textTertiary,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
@@ -178,7 +178,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
               const SizedBox(height: 4),
               Text(
                 c.title,
-                style: const TextStyle(
+                style: TextStyle(
                   color: SpotifyColors.textPrimary,
                   fontSize: 22,
                   fontWeight: FontWeight.w800,
@@ -252,7 +252,7 @@ class _CollectionScreenState extends State<CollectionScreen> {
             child: InkWell(
               borderRadius: BorderRadius.circular(24),
               onTap: disabled ? null : _shufflePlay,
-              child: const SizedBox(
+              child: SizedBox(
                 height: 48,
                 width: 48,
                 child: Icon(
@@ -314,7 +314,7 @@ class _SongTile extends StatelessWidget {
                   width: 26,
                   child: Text(
                     '$index',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: SpotifyColors.textTertiary,
                       fontSize: 13,
                     ),
@@ -337,7 +337,7 @@ class _SongTile extends StatelessWidget {
                         song.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: SpotifyColors.textPrimary,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
@@ -349,7 +349,7 @@ class _SongTile extends StatelessWidget {
                           song.artist,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: SpotifyColors.textSecondary,
                             fontSize: 12,
                           ),
@@ -358,7 +358,7 @@ class _SongTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(left: 8),
                   child: Icon(
                     Icons.play_arrow_rounded,

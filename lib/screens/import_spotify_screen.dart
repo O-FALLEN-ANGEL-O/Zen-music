@@ -279,7 +279,7 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
       backgroundColor: SpotifyColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text(
+        title: Text(
           'Import Spotify playlist',
           style: TextStyle(
             fontSize: 18,
@@ -293,7 +293,7 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
+            Text(
               'Export your Spotify playlist as CSV (e.g. from '
                   'chosic.com or tunemymusic.com), then import it here. '
                   'Every track is matched on YouTube Music and saved as a '
@@ -336,11 +336,11 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
             TextField(
               controller: _playlistNameController,
               enabled: !_isImporting,
-              style: const TextStyle(color: SpotifyColors.textPrimary),
+              style: TextStyle(color: SpotifyColors.textPrimary),
               decoration: InputDecoration(
                 labelText: 'Playlist name *',
                 labelStyle:
-                const TextStyle(color: SpotifyColors.textSecondary),
+                TextStyle(color: SpotifyColors.textSecondary),
                 filled: true,
                 fillColor: SpotifyColors.surfaceLight,
                 border: OutlineInputBorder(
@@ -355,12 +355,12 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
               enabled: !_isImporting,
               minLines: 8,
               maxLines: 16,
-              style: const TextStyle(
+              style: TextStyle(
                   fontSize: 12, color: SpotifyColors.textPrimary),
               decoration: InputDecoration(
                 labelText: '...or paste the CSV here',
                 labelStyle:
-                const TextStyle(color: SpotifyColors.textSecondary),
+                TextStyle(color: SpotifyColors.textSecondary),
                 alignLabelWithHint: true,
                 filled: true,
                 fillColor: SpotifyColors.surfaceLight,
@@ -405,7 +405,7 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
               Text(
                 '$_processedCount / $_totalCount matched',
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   color: SpotifyColors.textSecondary,
                 ),

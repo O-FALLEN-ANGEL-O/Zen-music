@@ -29,6 +29,31 @@
 > [!NOTE]
 > **Regional availability** - If YouTube Music or JioSaavn is unavailable in your region, that source may not work without a **VPN or proxy** connecting to a supported region.
 
+## What's new in this revamp
+
+**Spotify-style UI**
+- Home: time-of-day greeting, quick-action chips, 2-column quick picks (Liked Songs + recent tracks), and a "Free & independent" shelf.
+- Full-width bottom bar with filled/outlined icons (the floating glass dock is still available in *Settings → Appearance → Navigation bar*).
+- Mini player tinted with the album art's colour, with a hairline progress bar.
+- Bold sans-serif headings throughout.
+
+**Themes** — *Settings → Appearance → Theme*
+- Classic Green, AMOLED Black, Zen Periwinkle, Midnight, Sunset, Ocean, Rose, Forest, Neon Violet.
+- **Match album art**: the whole app re-tints to whatever is playing (optional pure-black background).
+- Every screen switches live, without a restart.
+
+**Free music sources** — *Settings → Driving → Free music sources*
+- **Audius** — full tracks published free by independent artists (optional free API key).
+- **Internet Archive** — live recordings, netlabels, public-domain audio (no key).
+- **Jamendo** — Creative Commons catalogue (needs a free client id from devportal.jamendo.com).
+- **Radio Browser** — 50,000+ internet radio stations (no key).
+- Browse them on the new *Free Music* page, from the Search tab, on Home, and in Android Auto.
+
+**In the car**
+- **Android Auto**: ZenMusic shows up as a media app with Recently played, Liked songs, playlists, Trending, Free music and Radio, plus on-screen search and "Hey Google, play … on ZenMusic". Sideloaded builds need *Unknown sources* turned on in Android Auto's developer settings.
+- **Car Mode** screen: huge controls, screen kept on, portrait or landscape, one-tap Liked / Recent / Radio / Free music.
+- **Automatic**: opens Car Mode when your phone connects to the car's Bluetooth (it asks once to confirm an unrecognised stereo), and can optionally resume playback as soon as you get in. Android does not allow apps to launch themselves from fully closed on a Bluetooth connection, so this works while ZenMusic is running or in the background; with Android Auto the car launches it for you.
+
 <div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
 
 <div align="center">

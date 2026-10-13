@@ -89,7 +89,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
       backgroundColor: SpotifyColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: const Text('Equalizer',
+        title: Text('Equalizer',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -97,7 +97,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
             )),
         actions: [
           IconButton(
-            icon: const Icon(Icons.restart_alt_rounded,
+            icon: Icon(Icons.restart_alt_rounded,
                 color: SpotifyColors.textPrimary),
             tooltip: 'Reset bands',
             onPressed: () async {
@@ -112,10 +112,10 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
         ],
       ),
       body: _isLoading
-          ? const Center(
+          ? Center(
           child: CircularProgressIndicator(color: SpotifyColors.green))
           : _params == null
-          ? const Center(
+          ? Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 40),
           child: Text(
@@ -150,14 +150,14 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
             contentPadding: EdgeInsets.zero,
             title: Text(
               native ? 'Native equalizer' : 'Enable equalizer',
-              style: const TextStyle(
+              style: TextStyle(
                 color: SpotifyColors.textPrimary,
                 fontWeight: FontWeight.w600,
                 fontSize: 15,
               ),
             ),
             subtitle: native
-                ? const Text('15-band DSP on the audio engine',
+                ? Text('15-band DSP on the audio engine',
                 style: TextStyle(
                     color: SpotifyColors.textTertiary, fontSize: 12))
                 : null,
@@ -230,7 +230,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
         const SizedBox(height: 20),
 
         // Presets
-        const Text('Presets',
+        Text('Presets',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
@@ -263,14 +263,14 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
         // Import AutoEq text → projected onto the band centers.
         TextButton.icon(
           onPressed: _importAutoEq,
-          icon: const Icon(Icons.upload_file_rounded,
+          icon: Icon(Icons.upload_file_rounded,
               size: 16, color: SpotifyColors.green),
-          label: const Text('Import AutoEq preset',
+          label: Text('Import AutoEq preset',
               style: TextStyle(fontSize: 13, color: SpotifyColors.green)),
         ),
         if (!native) ...[
           const SizedBox(height: 6),
-          const Text(
+          Text(
             'System equalizer fallback — an approximation. The native '
                 'engine path applies exact 15-band filtering.',
             style: TextStyle(
@@ -291,7 +291,7 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
         backgroundColor: SpotifyColors.surface,
         shape:
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('Import AutoEq preset',
+        title: Text('Import AutoEq preset',
             style: TextStyle(
                 color: SpotifyColors.textPrimary,
                 fontSize: 17,
@@ -299,9 +299,9 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
         content: TextField(
           controller: textCtrl,
           maxLines: 6,
-          style: const TextStyle(
+          style: TextStyle(
               color: SpotifyColors.textPrimary, fontSize: 12.5),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
             hintText: 'Paste AutoEq text — Preamp / Filter lines',
             hintStyle: TextStyle(color: SpotifyColors.textTertiary),
           ),
@@ -309,11 +309,11 @@ class _EqualizerScreenState extends State<EqualizerScreen> {
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(ctx, false),
-              child: const Text('Cancel',
+              child: Text('Cancel',
                   style: TextStyle(color: SpotifyColors.textSecondary))),
           TextButton(
               onPressed: () => Navigator.pop(ctx, true),
-              child: const Text('Apply',
+              child: Text('Apply',
                   style: TextStyle(
                       color: SpotifyColors.green,
                       fontWeight: FontWeight.w700))),

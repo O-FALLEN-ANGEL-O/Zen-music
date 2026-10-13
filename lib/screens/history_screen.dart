@@ -196,9 +196,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           padding: const EdgeInsets.symmetric(vertical: 10),
           children: [
             ListTile(
-              leading: const Icon(Icons.add_rounded,
+              leading: Icon(Icons.add_rounded,
                   color: SpotifyColors.green),
-              title: const Text('New playlist',
+              title: Text('New playlist',
                   style: TextStyle(
                       color: SpotifyColors.textPrimary,
                       fontWeight: FontWeight.w600)),
@@ -212,7 +212,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
               },
             ),
             if (playlists.isNotEmpty)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.fromLTRB(24, 8, 24, 4),
                 child: Text('YOUR PLAYLISTS',
                     style: TextStyle(
@@ -223,13 +223,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
               ),
             for (final p in playlists)
               ListTile(
-                leading: const Icon(Icons.queue_music_rounded,
+                leading: Icon(Icons.queue_music_rounded,
                     color: SpotifyColors.textSecondary),
                 title: Text(p.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: SpotifyColors.textPrimary)),
                 subtitle: Text('${p.count} songs',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontSize: 12,
                         color: SpotifyColors.textSecondary)),
                 onTap: () async {
@@ -259,9 +259,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.playlist_add_rounded,
+              leading: Icon(Icons.playlist_add_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Play next',
+              title: Text('Play next',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
@@ -270,9 +270,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.queue_rounded,
+              leading: Icon(Icons.queue_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Add to queue',
+              title: Text('Add to queue',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
@@ -281,9 +281,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.playlist_add_check_rounded,
+              leading: Icon(Icons.playlist_add_check_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Add to playlist',
+              title: Text('Add to playlist',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(ctx);
@@ -293,7 +293,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ListTile(
               leading: const Icon(Icons.delete_outline_rounded,
                   color: Colors.redAccent),
-              title: const Text('Remove from history',
+              title: Text('Remove from history',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () async {
                 Navigator.pop(ctx);
@@ -357,7 +357,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 _searchCtrl.text.isEmpty
                     ? 'No listening history yet'
                     : 'No results for "${_searchCtrl.text}"',
-                style: const TextStyle(
+                style: TextStyle(
                     color: SpotifyColors.textSecondary,
                     fontSize: 15,
                     fontWeight: FontWeight.w600),
@@ -401,7 +401,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       color: SpotifyColors.background,
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 6),
       child: Text(label,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w800,
               color: SpotifyColors.textPrimary)),
@@ -452,14 +452,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   Text(song.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           color: SpotifyColors.textPrimary)),
                   Text(song.artist,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 12,
                           color: SpotifyColors.textSecondary)),
                 ],
@@ -467,13 +467,13 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             if (_selectMode)
               IconButton(
-                icon: const Icon(Icons.close_rounded,
+                icon: Icon(Icons.close_rounded,
                     size: 20, color: SpotifyColors.textTertiary),
                 onPressed: () => _toggleSelect(song.id),
               )
             else
               IconButton(
-                icon: const Icon(Icons.more_vert_rounded,
+                icon: Icon(Icons.more_vert_rounded,
                     size: 20, color: SpotifyColors.textTertiary),
                 onPressed: () => _songMenu(song),
               ),
@@ -487,10 +487,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
     return AppBar(
       backgroundColor: SpotifyColors.background,
       elevation: 0,
-      iconTheme: const IconThemeData(color: SpotifyColors.textPrimary),
+      iconTheme: IconThemeData(color: SpotifyColors.textPrimary),
       title: _selectMode
           ? Text('${_selection.length} selected',
-          style: const TextStyle(
+          style: TextStyle(
               color: SpotifyColors.textPrimary,
               fontSize: 17,
               fontWeight: FontWeight.w700))
@@ -499,7 +499,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         controller: _searchCtrl,
         focusNode: _focusNode,
         autofocus: true,
-        style: const TextStyle(
+        style: TextStyle(
             color: SpotifyColors.textPrimary, fontSize: 16),
         decoration: InputDecoration(
           isDense: true,
@@ -510,7 +510,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           border: InputBorder.none,
         ),
       )
-          : const Text('History',
+          : Text('History',
           style: TextStyle(
               color: SpotifyColors.textPrimary,
               fontSize: 18,
@@ -564,14 +564,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
               _exitSelect();
               _addToPlaylist(picked);
             },
-            child: const Text('Add',
+            child: Text('Add',
                 style: TextStyle(
                     color: SpotifyColors.green,
                     fontWeight: FontWeight.w700)),
           ),
         ] else if (!_searching)
           IconButton(
-            icon: const Icon(FluentIcons.search_24_regular,
+            icon: Icon(FluentIcons.search_24_regular,
                 color: SpotifyColors.textPrimary),
             onPressed: () {
               setState(() => _searching = true);

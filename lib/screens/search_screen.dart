@@ -17,6 +17,7 @@ import '../services/yt_music_service.dart';
 import '../services/video_preference_service.dart';
 import '../services/youtube_service.dart';
 import '../theme/spotify_theme.dart';
+import 'free_music_screen.dart';
 import '../utilities/zen_transitions.dart';
 import '../widgets/media_shelf.dart';
 import '../widgets/playlist_sheets.dart';
@@ -380,9 +381,9 @@ class _SearchScreenState extends State<SearchScreen>
           children: [
             const SizedBox(height: 8),
             ListTile(
-              leading: const Icon(Icons.ondemand_video_rounded,
+              leading: Icon(Icons.ondemand_video_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Play with video',
+              title: Text('Play with video',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(sheetContext);
@@ -398,9 +399,9 @@ class _SearchScreenState extends State<SearchScreen>
               },
             ),
             ListTile(
-              leading: const Icon(Icons.download_rounded,
+              leading: Icon(Icons.download_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Download',
+              title: Text('Download',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () async {
                 Navigator.pop(sheetContext);
@@ -417,9 +418,9 @@ class _SearchScreenState extends State<SearchScreen>
               },
             ),
             ListTile(
-              leading: const Icon(Icons.playlist_add_rounded,
+              leading: Icon(Icons.playlist_add_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Add to playlist',
+              title: Text('Add to playlist',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(sheetContext);
@@ -427,9 +428,9 @@ class _SearchScreenState extends State<SearchScreen>
               },
             ),
             ListTile(
-              leading: const Icon(Icons.play_arrow_rounded,
+              leading: Icon(Icons.play_arrow_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Play next',
+              title: Text('Play next',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(sheetContext);
@@ -443,9 +444,9 @@ class _SearchScreenState extends State<SearchScreen>
               },
             ),
             ListTile(
-              leading: const Icon(Icons.playlist_add_rounded,
+              leading: Icon(Icons.playlist_add_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Add to queue',
+              title: Text('Add to queue',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () {
                 Navigator.pop(sheetContext);
@@ -600,9 +601,9 @@ class _SearchScreenState extends State<SearchScreen>
               controller: _searchBar,
               focusNode: _inputNode,
               textInputAction: TextInputAction.search,
-              style: const TextStyle(
+              style: TextStyle(
                   color: SpotifyColors.textPrimary, fontSize: 16),
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 hintText: 'Search songs, artists, playlists',
                 hintStyle: TextStyle(color: SpotifyColors.textTertiary),
                 border: InputBorder.none,
@@ -616,14 +617,14 @@ class _SearchScreenState extends State<SearchScreen>
           if (hasText)
             IconButton(
               onPressed: _clearSearch,
-              icon: const Icon(Icons.close_rounded,
+              icon: Icon(Icons.close_rounded,
                   color: SpotifyColors.textSecondary),
             ),
           IconButton(
             onPressed: () =>
                 pushSharedAxisY(context, const RecognizeScreen()),
             tooltip: 'Recognize a song',
-            icon: const Icon(Icons.graphic_eq_rounded,
+            icon: Icon(Icons.graphic_eq_rounded,
                 color: SpotifyColors.textSecondary, size: 22),
           ),
           IconButton(
@@ -698,12 +699,12 @@ class _SearchScreenState extends State<SearchScreen>
             title: Text(song.title,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                     color: SpotifyColors.textPrimary, fontSize: 14)),
             subtitle: Text(song.artist,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                     color: SpotifyColors.textSecondary, fontSize: 12)),
             onTap: () => _playWithRadio(song),
             onLongPress: () => _songActions(song),
@@ -739,13 +740,13 @@ class _SearchScreenState extends State<SearchScreen>
             items[i],
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: SpotifyColors.textPrimary,
               fontSize: 14,
             ),
           ),
           trailing: isSuggestion
-              ? const Icon(Icons.north_west_rounded,
+              ? Icon(Icons.north_west_rounded,
               size: 16, color: SpotifyColors.textTertiary)
               : null,
           onTap: () => _submitSearch(items[i]),
@@ -775,7 +776,7 @@ class _SearchScreenState extends State<SearchScreen>
                 for (final q in _history.take(10))
                   InputChip(
                     label: Text(q,
-                        style: const TextStyle(
+                        style: TextStyle(
                             color: SpotifyColors.textPrimary,
                             fontSize: 12.5)),
                     backgroundColor: SpotifyColors.surface,
@@ -839,14 +840,14 @@ class _SearchScreenState extends State<SearchScreen>
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) => Container(
                             color: SpotifyColors.surfaceLight,
-                            child: const Icon(Icons.album_rounded,
+                            child: Icon(Icons.album_rounded,
                                 size: 40,
                                 color: SpotifyColors.textTertiary),
                           ),
                         )
                             : Container(
                           color: SpotifyColors.surfaceLight,
-                          child: const Icon(Icons.album_rounded,
+                          child: Icon(Icons.album_rounded,
                               size: 40,
                               color: SpotifyColors.textTertiary),
                         ),
@@ -856,14 +857,14 @@ class _SearchScreenState extends State<SearchScreen>
                     Text(album.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: SpotifyColors.textPrimary)),
                     Text(album.subtitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontSize: 11,
                             color: SpotifyColors.textSecondary)),
                   ],
@@ -922,6 +923,36 @@ class _SearchScreenState extends State<SearchScreen>
       // (extendBody).
       padding: const EdgeInsets.only(bottom: 170),
       children: [
+        // Jump into the free catalogues with the same query.
+        if (_searchBar.text.trim().isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
+            child: Material(
+              color: SpotifyColors.surfaceLight,
+              borderRadius: BorderRadius.circular(14),
+              child: ListTile(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                leading: Icon(Icons.public_rounded,
+                    color: SpotifyColors.highlight),
+                title: Text('Search free music for "${_searchBar.text.trim()}"',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        color: SpotifyColors.textPrimary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600)),
+                subtitle: Text('Audius · Internet Archive · Jamendo · Radio',
+                    style: TextStyle(
+                        color: SpotifyColors.textSecondary, fontSize: 12)),
+                trailing: Icon(Icons.chevron_right_rounded,
+                    color: SpotifyColors.textTertiary),
+                onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => FreeMusicScreen(
+                        initialQuery: _searchBar.text.trim()))),
+              ),
+            ),
+          ),
         // YouTube Music — its own always-visible section: the merge
         // into the songs row made it vanish whenever the YTM worker
         // timed out (the "only JioSaavn" complaint).
@@ -941,12 +972,12 @@ class _SearchScreenState extends State<SearchScreen>
               title: Text(s.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.textPrimary, fontSize: 14)),
               subtitle: Text(s.artist,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.textSecondary, fontSize: 12)),
               onTap: () => _playWithRadio(s),
               onLongPress: () => _songActions(s),
@@ -1021,7 +1052,7 @@ class _SearchScreenState extends State<SearchScreen>
                           video.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
                             color: SpotifyColors.textPrimary,
@@ -1031,7 +1062,7 @@ class _SearchScreenState extends State<SearchScreen>
                           video.artist,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 11,
                             color: SpotifyColors.textSecondary,
                           ),

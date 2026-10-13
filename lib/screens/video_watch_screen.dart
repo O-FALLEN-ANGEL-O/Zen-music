@@ -713,7 +713,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
   Future<void> _qualitySheet() async {
     if (_qualities.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           behavior: SnackBarBehavior.floating,
           backgroundColor: SpotifyColors.surfaceLight,
           content: Text('Quality options unavailable for this video',
@@ -753,7 +753,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                   color: _qualityCap == 0
                       ? SpotifyColors.highlight
                       : SpotifyColors.textPrimary),
-              title: const Text('Auto (best)',
+              title: Text('Auto (best)',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               onTap: () => Navigator.pop(sheetContext, 0),
             ),
@@ -772,7 +772,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                         fontWeight: FontWeight.w700)),
                 subtitle: q.kbps > 0
                     ? Text('${q.kbps} kbps',
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: SpotifyColors.textSecondary,
                         fontSize: 12))
                     : null,
@@ -810,7 +810,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
       // Cache missed the height — keep current quality, report.
       setState(() => _switchingQuality = false);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           behavior: SnackBarBehavior.floating,
           backgroundColor: SpotifyColors.surfaceLight,
           content: Text('Could not switch quality — kept current',
@@ -888,9 +888,9 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
             const SizedBox(height: 8),
             SwitchListTile(
               activeColor: SpotifyColors.highlight,
-              secondary: const Icon(Icons.repeat_rounded,
+              secondary: Icon(Icons.repeat_rounded,
                   color: SpotifyColors.textPrimary),
-              title: const Text('Loop video',
+              title: Text('Loop video',
                   style: TextStyle(color: SpotifyColors.textPrimary)),
               value: _loopVideo,
               onChanged: (v) {
@@ -898,7 +898,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                 if (mounted) setState(() {});
               },
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Align(
                 alignment: Alignment.centerLeft,
@@ -1065,7 +1065,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
       ClipboardData(text: 'https://www.youtube.com/watch?v=${song.id}'),
     );
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+      SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: SpotifyColors.surfaceLight,
         content: Text('Link copied',
@@ -1204,7 +1204,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
         ),
 
         if (_mergedBuffering)
-          const Center(
+          Center(
             child: SizedBox(
               width: 44,
               height: 44,
@@ -1217,7 +1217,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
 
         // Quality-switch indicator (distinct state from buffering).
         if (_switchingQuality)
-          const Center(
+          Center(
             child: SizedBox(
               width: 44,
               height: 44,
@@ -1476,7 +1476,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
             child: VideoProgressIndicator(
               c,
               allowScrubbing: true,
-              colors: const VideoProgressColors(
+              colors: VideoProgressColors(
                 playedColor: SpotifyColors.highlight,
                 bufferedColor: Colors.white24,
                 backgroundColor: Colors.white12,
@@ -1520,11 +1520,11 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
             _current!.thumbnail,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) =>
-            const ColoredBox(color: SpotifyColors.surfaceLight),
+            ColoredBox(color: SpotifyColors.surfaceLight),
           )
         else
-          const ColoredBox(color: SpotifyColors.surfaceLight),
-        const Center(
+          ColoredBox(color: SpotifyColors.surfaceLight),
+        Center(
           child: CircularProgressIndicator(color: SpotifyColors.highlight),
         ),
       ],
@@ -1540,16 +1540,16 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
             _current!.thumbnail,
             fit: BoxFit.cover,
             errorBuilder: (_, __, ___) =>
-            const ColoredBox(color: SpotifyColors.surfaceLight),
+            ColoredBox(color: SpotifyColors.surfaceLight),
           )
         else
-          const ColoredBox(color: SpotifyColors.surfaceLight),
+          ColoredBox(color: SpotifyColors.surfaceLight),
         ColoredBox(color: Colors.black.withOpacity(0.65)),
         Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.error_outline_rounded,
                 size: 44,
                 color: SpotifyColors.highlight,
@@ -1560,7 +1560,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                 child: Text(
                   _resolveError ?? 'Playback failed',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.textPrimary, fontSize: 14),
                 ),
               ),
@@ -1597,7 +1597,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                   borderRadius: BorderRadius.circular(23)),
             ),
             onPressed: () => _playFromQueue(_queueIndex),
-            child: const Text('Retry',
+            child: Text('Retry',
                 style: TextStyle(
                     color: SpotifyColors.background,
                     fontWeight: FontWeight.w700)),
@@ -1617,7 +1617,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
       height: size,
       clipBehavior: Clip.antiAlias,
       alignment: Alignment.center,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: SpotifyColors.green,
       ),
@@ -1655,7 +1655,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
       child: Text(v.title,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
+          style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
               height: 1.25,
@@ -1676,7 +1676,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
             child: Text(v.artist,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: FontWeight.w600,
                     color: SpotifyColors.textSecondary)),
@@ -1782,7 +1782,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.fromLTRB(16, 10, 16, 6),
           child: Text('Up next',
               style: TextStyle(
@@ -1791,14 +1791,14 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                   color: SpotifyColors.textPrimary)),
         ),
         if (_loadingRelated && upNext.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.all(24),
             child: Center(
                 child: CircularProgressIndicator(
                     color: SpotifyColors.highlight)),
           )
         else if (upNext.isEmpty)
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(16, 4, 16, 12),
             child: Text('Nothing queued yet.',
                 style: TextStyle(
@@ -1859,7 +1859,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (isFirst)
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(bottom: 2),
                       child: Text('UP NEXT',
                           style: TextStyle(
@@ -1871,7 +1871,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                   Text(s.title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w600,
                           height: 1.2,
@@ -1880,7 +1880,7 @@ class _VideoWatchScreenState extends State<VideoWatchScreen> {
                   Text(s.artist,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 12,
                           color: SpotifyColors.textSecondary)),
                 ],

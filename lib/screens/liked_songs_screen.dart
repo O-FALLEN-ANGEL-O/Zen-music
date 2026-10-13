@@ -81,7 +81,7 @@ class _LikedSongsScreenState extends State<LikedSongsScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Liked songs',
                           style: TextStyle(
                             color: SpotifyColors.textPrimary,
@@ -93,7 +93,7 @@ class _LikedSongsScreenState extends State<LikedSongsScreen> {
                         const SizedBox(height: 4),
                         Text(
                           '${_songs.length} songs',
-                          style: const TextStyle(
+                          style: TextStyle(
                             color: SpotifyColors.textSecondary,
                             fontSize: 13,
                           ),
@@ -133,7 +133,7 @@ class _LikedSongsScreenState extends State<LikedSongsScreen> {
                       SpotifyColors.textTertiary.withOpacity(0.6),
                     ),
                     const SizedBox(height: 12),
-                    const Text(
+                    Text(
                       'Songs you like will appear here',
                       style: TextStyle(
                         color: SpotifyColors.textSecondary,
@@ -182,7 +182,7 @@ class _LikedSongsScreenState extends State<LikedSongsScreen> {
                                   song.title,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: SpotifyColors.textPrimary,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
@@ -193,7 +193,7 @@ class _LikedSongsScreenState extends State<LikedSongsScreen> {
                                   song.artist,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: SpotifyColors.textSecondary,
                                     fontSize: 12,
                                   ),
@@ -204,7 +204,7 @@ class _LikedSongsScreenState extends State<LikedSongsScreen> {
                           IconButton(
                             splashRadius: 20,
                             tooltip: 'Unlike',
-                            icon: const Icon(
+                            icon: Icon(
                               FluentIcons.heart_24_filled,
                               color: SpotifyColors.green,
                               size: 20,

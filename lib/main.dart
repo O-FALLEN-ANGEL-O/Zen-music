@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'audio/car_browse_tree.dart';
 import 'audio/zen_audio_handler.dart';
 import 'models/song.dart';
 import 'screens/home_screen.dart';
@@ -12,6 +13,8 @@ import 'services/diagnostics_service.dart';
 import 'services/share_intent_service.dart';
 import 'services/storage_service.dart';
 import 'services/youtube_service.dart';
+import 'services/car_mode_service.dart';
+import 'screens/car_mode_screen.dart';
 import 'theme/spotify_theme.dart';
 import 'ui/lw/lw_nav_dock.dart';
 import 'ui/lw/lw_shell.dart';
@@ -61,6 +64,10 @@ Future<void> _runApp() async {
   storage = StorageService();
   await storage.init();
 
+  // Restore the user's theme before the first frame so there's no
+  // flash of the default palette.
+  await ZenThemeController.load();
+
   // yt_downloader needs no initialization — video mode is always
   // available.
   YoutubeService.videoEnabled = true;
@@ -88,8 +95,16 @@ Future<void> _runApp() async {
       androidNotificationChannelName: 'ZenMusic Playback',
       androidNotificationOngoing: true,
       androidStopForegroundOnPause: true,
+      // Android Auto / Assistant: browsable library + voice search.
+      androidBrowsableRootExtras: CarBrowseTree.rootExtras,
     ),
   );
+
+  // "Match album art" theme follows the playing track.
+  ZenThemeController.attachSongStream(audioHandler.currentSongStream);
+
+  // Car mode: Android Auto / car Bluetooth detection.
+  CarModeService.instance.init();
 
   runApp(const ZenMusicApp());
 }
@@ -138,12 +153,20 @@ class _ZenMusicAppState extends State<ZenMusicApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => PlayerController(),
-      child: MaterialApp(
-        navigatorKey: navigatorKey,
-        title: 'ZenMusic',
-        debugShowCheckedModeBanner: false,
-        theme: kUseLwTheme ? LwThemes.dark() : SpotifyTheme.dark(),
-        home: kUseLwShell ? const _LwShellHome() : const HomeScreen(),
+      child: ZenThemeScope(
+        child: ValueListenableBuilder<ZenPalette>(
+          valueListenable: ZenThemeController.notifier,
+          builder: (context, palette, _) => MaterialApp(
+            navigatorKey: navigatorKey,
+            title: 'ZenMusic',
+            debugShowCheckedModeBanner: false,
+            theme: kUseLwTheme ? LwThemes.dark() : SpotifyTheme.dark(),
+            themeAnimationDuration: const Duration(milliseconds: 450),
+            home: kUseLwShell ? const _LwShellHome() : const HomeScreen(),
+            builder: (context, child) =>
+                CarModeLauncher(child: child ?? const SizedBox.shrink()),
+          ),
+        ),
       ),
     );
   }

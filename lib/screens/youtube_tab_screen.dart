@@ -123,7 +123,7 @@ class _YoutubeTabState extends State<YoutubeTab> {
             title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: SpotifyColors.textPrimary,
@@ -149,7 +149,7 @@ class _YoutubeTabState extends State<YoutubeTab> {
             color: SpotifyColors.textTertiary.withOpacity(0.6),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'No videos right now',
             style: TextStyle(
               color: SpotifyColors.textSecondary,
@@ -272,13 +272,13 @@ class _VideoCard extends StatelessWidget {
                   width: 32,
                   height: 32,
                   alignment: Alignment.center,
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: SpotifyColors.green,
                   ),
                   child: Text(
                     artist.isNotEmpty ? artist[0].toUpperCase() : '?',
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
                       color: SpotifyColors.background,
@@ -294,7 +294,7 @@ class _VideoCard extends StatelessWidget {
                         video.title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                           height: 1.2,
@@ -306,7 +306,7 @@ class _VideoCard extends StatelessWidget {
                         artist,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 12,
                           color: SpotifyColors.textSecondary,
                         ),

@@ -42,7 +42,7 @@ class ZenToast {
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(
+                style: TextStyle(
                     color: SpotifyColors.textPrimary, fontSize: 14),
               ),
             ),

@@ -289,7 +289,7 @@ class _QueueListViewState extends State<QueueListView> {
                 currentSong?.title ?? 'Queue',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                     color: SpotifyColors.textPrimary,
                     fontSize: 15.5,
                     fontWeight: FontWeight.w700),
@@ -297,7 +297,7 @@ class _QueueListViewState extends State<QueueListView> {
               if (currentSong != null)
                 Text(
                   '${_queue.length} songs · up next',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: SpotifyColors.textSecondary, fontSize: 12),
                 ),
             ],
@@ -334,7 +334,7 @@ class _QueueListViewState extends State<QueueListView> {
           onPressed: _queue.isEmpty || _isGuest
               ? null
               : () => setState(() => _inSelectMode = true),
-          icon: const Icon(
+          icon: Icon(
             FluentIcons.checkmark_square_24_regular,
             color: SpotifyColors.textSecondary,
             size: 20,
@@ -344,7 +344,7 @@ class _QueueListViewState extends State<QueueListView> {
           IconButton(
             tooltip: 'Clear queue',
             onPressed: _showClearDialog,
-            icon: const Icon(
+            icon: Icon(
               FluentIcons.dismiss_24_regular,
               color: SpotifyColors.textSecondary,
               size: 20,
@@ -364,12 +364,12 @@ class _QueueListViewState extends State<QueueListView> {
             _inSelectMode = false;
             _selected.clear();
           }),
-          icon: const Icon(Icons.close_rounded,
+          icon: Icon(Icons.close_rounded,
               color: SpotifyColors.textPrimary, size: 22),
         ),
         Expanded(
           child: Text('$count selected',
-              style: const TextStyle(
+              style: TextStyle(
                   color: SpotifyColors.textPrimary,
                   fontSize: 14.5,
                   fontWeight: FontWeight.w700)),
@@ -413,12 +413,12 @@ class _QueueListViewState extends State<QueueListView> {
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: SpotifyColors.surface,
-        title: const Text('Clear queue?',
+        title: Text('Clear queue?',
             style: TextStyle(
                 color: SpotifyColors.textPrimary,
                 fontSize: 17,
                 fontWeight: FontWeight.w700)),
-        content: const Text('Remove all upcoming songs? You can undo.',
+        content: Text('Remove all upcoming songs? You can undo.',
             style: TextStyle(color: SpotifyColors.textSecondary)),
         actions: [
           TextButton(
@@ -518,7 +518,7 @@ class _QueueListViewState extends State<QueueListView> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   busy
-                      ? const SizedBox(
+                      ? SizedBox(
                     width: 16,
                     height: 16,
                     child: CircularProgressIndicator(
@@ -566,15 +566,15 @@ class _QueueListViewState extends State<QueueListView> {
           children: [
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: SpotifyColors.surface,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(FluentIcons.music_note_1_24_regular,
+              child: Icon(FluentIcons.music_note_1_24_regular,
                   color: SpotifyColors.textTertiary, size: 40),
             ),
             const SizedBox(height: 16),
-            const Text('No songs in queue',
+            Text('No songs in queue',
                 style: TextStyle(color: SpotifyColors.textSecondary)),
           ],
         ),
@@ -756,7 +756,7 @@ class _QueueTile extends StatelessWidget {
                       song.artist,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: SpotifyColors.textSecondary,
                         fontSize: 12,
                       ),
@@ -765,14 +765,14 @@ class _QueueTile extends StatelessWidget {
                 ),
               ),
               if (isCurrentSong) ...[
-                const Icon(FluentIcons.music_note_2_24_regular,
+                Icon(FluentIcons.music_note_2_24_regular,
                     color: SpotifyColors.green, size: 16),
                 const SizedBox(width: 6),
               ],
               if (!inSelectMode && !reorderLocked)
                 ReorderableDragStartListener(
                   index: index,
-                  child: const Padding(
+                  child: Padding(
                     padding:
                     EdgeInsets.symmetric(horizontal: 8, vertical: 14),
                     child: Icon(

@@ -20,7 +20,7 @@ class StartListeningList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.fromLTRB(20, 28, 20, 6),
           child: Text(
             'Jump into a session based on your tastes',
@@ -30,7 +30,7 @@ class StartListeningList extends StatelessWidget {
             ),
           ),
         ),
-        const Padding(
+        Padding(
           padding: EdgeInsets.fromLTRB(20, 0, 20, 14),
           child: Text(
             'Start listening',
@@ -55,7 +55,7 @@ class StartListeningList extends StatelessWidget {
             song.title,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w600,
               color: SpotifyColors.textPrimary,
@@ -65,12 +65,12 @@ class StartListeningList extends StatelessWidget {
             song.artist,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: SpotifyColors.textSecondary,
             ),
           ),
-          trailing: const Icon(
+          trailing: Icon(
             Icons.more_vert,
             color: SpotifyColors.textSecondary,
             size: 20,

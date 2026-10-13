@@ -4,7 +4,10 @@ import 'package:audio_service/audio_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../models/radio_station.dart';
 import '../models/song.dart';
+import '../services/free_sources/free_sources.dart';
+import 'car_browse_tree.dart';
 import '../services/buffered_stream_source.dart';
 import '../services/downloads_service.dart';
 import '../services/listening_stats_service.dart';
@@ -176,7 +179,10 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   }
 
   Future<Song> _resolveSongSource(Song song, int index) async {
-    if (followRemote || song.isFromJiosaavn || storage.getOfflineMode()) {
+    if (followRemote ||
+        song.isFromJiosaavn ||
+        FreeSources.isFreeSong(song) ||
+        storage.getOfflineMode()) {
       return song;
     }
     if (!_strictSources) return song;
@@ -202,7 +208,7 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
       for (var i = 0; i < _queue.length; i++) {
         if (i == _currentIndex) continue;
         final s = _queue[i];
-        if (s.isFromJiosaavn) continue;
+        if (s.isFromJiosaavn || FreeSources.isFreeSong(s)) continue;
         final resolved = await SongSourceResolver.instance.resolve(s);
         if (resolved != null && i < _queue.length && _queue[i].id == s.id) {
           if (resolved.id != s.id) {
@@ -1058,6 +1064,19 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
     final mem = _urlCache[song.id];
     if (mem != null) return mem;
 
+    // Free catalogues (Audius / Internet Archive / Jamendo) hand back a
+    // direct URL — no extraction, no persistent cache needed.
+    if (FreeSources.isFreeSong(song)) {
+      final free = await FreeSources.instance.streamFor(song);
+      if (free == null) {
+        throw Exception('No free stream for ${song.id}');
+      }
+      final result =
+          VideoStreamResult(free.url, free.headers, free.codec, free.kbps);
+      _urlCache[song.id] = result;
+      return result;
+    }
+
     final cached = _staleStreamIds.contains(song.id)
         ? null
         : storage.getCachedStream(song.id);
@@ -1268,6 +1287,17 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
     _isAppending = true;
     try {
       final seed = _queue.last;
+      if (FreeSources.isFreeSong(seed)) {
+        // Stay inside the free catalogue the listener chose.
+        final more = await FreeSources.instance.related(seed);
+        final ids = _queue.map((s) => s.id).toSet();
+        final fresh = more.where((s) => !ids.contains(s.id)).toList();
+        if (fresh.isNotEmpty) {
+          _queue.addAll(fresh);
+          queue.add(_queue.map(_toMediaItem).toList());
+        }
+        return;
+      }
       final related = await _yt.getRelatedSongs(seed);
       final existingIds = _queue.map((s) => s.id).toSet();
 
@@ -1504,6 +1534,57 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
   Stream<List<Song>> get queueStream =>
       Stream.periodic(const Duration(milliseconds: 500))
           .map((_) => List<Song>.unmodifiable(_queue));
+
+  // ═════════════════════════════════════════════
+  // ANDROID AUTO / MEDIA BROWSER
+  // ═════════════════════════════════════════════
+
+  late final CarBrowseTree _carTree = CarBrowseTree(
+    storage: storage,
+    playQueue: (songs, i) => setQueue(songs, startIndex: i),
+    playRadio: (RadioStation st) => playRadioStream(
+      id: st.id,
+      name: st.name,
+      streamUrl: st.streamUrl,
+      image: st.image,
+      genre: st.genre,
+    ),
+  );
+
+  @override
+  Future<List<MediaItem>> getChildren(String parentMediaId,
+      [Map<String, dynamic>? options]) async {
+    try {
+      return await _carTree.children(parentMediaId);
+    } catch (e) {
+      print('Car browse failed for $parentMediaId: $e');
+      return const [];
+    }
+  }
+
+  @override
+  Future<MediaItem?> getMediaItem(String mediaId) => _carTree.item(mediaId);
+
+  @override
+  Future<List<MediaItem>> search(String query,
+      [Map<String, dynamic>? extras]) async {
+    try {
+      return await _carTree.search(query);
+    } catch (e) {
+      print('Car search failed: $e');
+      return const [];
+    }
+  }
+
+  @override
+  Future<void> playFromMediaId(String mediaId,
+      [Map<String, dynamic>? extras]) =>
+      _carTree.play(mediaId);
+
+  @override
+  Future<void> playFromSearch(String query,
+      [Map<String, dynamic>? extras]) =>
+      _carTree.playFromSearch(query);
 
   @override
   Future<void> onTaskRemoved() async {

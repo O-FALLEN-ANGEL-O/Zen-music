@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../main.dart';
 import '../../models/song.dart';
-import '../../screens/listen_together_screen.dart';
 import '../../services/home_service.dart';
 import '../../services/storage_service.dart';
 import '../../theme/spotify_theme.dart';
+import '../../widgets/spotify_home_header.dart';
 import '../../widgets/wave_spinner.dart';
 import 'lw_feed_section.dart';
 
@@ -183,41 +183,12 @@ class _LwFeedHomeState extends State<LwFeedHome>
         controller: _scroll,
         padding: const EdgeInsets.only(top: 12, bottom: 190),
         children: [
-          // Header row: masthead + Listen Together + Settings.
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 14, 16, 10),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'ZenMusic',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: SpotifyColors.textPrimary,
-                      fontSize: 23,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Retro Blendy',
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => const ListenTogetherScreen()));
-                  },
-                  child: const _RingedCircle(
-                      icon: Icons.people_outline),
-                ),
-                const SizedBox(width: 10),
-                GestureDetector(
-                  onTap: widget.onOpenSettings,
-                  child: const _RingedCircle(
-                      icon: Icons.settings_outlined),
-                ),
-              ],
-            ),
+          // Spotify-style header: greeting, chips, quick picks.
+          SpotifyHomeHeader(
+            recent: _recent,
+            onOpenSettings: widget.onOpenSettings,
           ),
+          const SizedBox(height: 22),
           _InfiniteRadioHero(
             seed: _biggestHits.isNotEmpty
                 ? _biggestHits.first
@@ -243,6 +214,8 @@ class _LwFeedHomeState extends State<LwFeedHome>
             _shelf(_recent, (i) => _playQueue(_recent, i)),
           ],
           const SizedBox(height: 24),
+          // Free & legal catalogue picks (Audius / Archive / Jamendo).
+          const FreeMusicShelf(),
           if (_biggestHits.isNotEmpty) ...[
             LwSectionCard(
               child: Column(children: [
@@ -332,7 +305,7 @@ class _LwFeedHomeState extends State<LwFeedHome>
               child: Center(child: WaveSpinner(size: 22)),
             )
           else if (_endReached)
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(vertical: 28),
               child: Center(
                 child: Text(

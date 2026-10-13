@@ -33,7 +33,7 @@ class CollectionCard extends StatelessWidget {
                 width: size,
                 height: size,
                 color: SpotifyColors.surfaceLight,
-                child: const Icon(Icons.library_music_rounded,
+                child: Icon(Icons.library_music_rounded,
                     color: SpotifyColors.textTertiary),
               )
                   : CachedNetworkImage(
@@ -53,7 +53,7 @@ class CollectionCard extends StatelessWidget {
                   width: size,
                   height: size,
                   color: SpotifyColors.surfaceLight,
-                  child: const Icon(Icons.broken_image_rounded,
+                  child: Icon(Icons.broken_image_rounded,
                       color: SpotifyColors.textTertiary),
                 ),
               ),
@@ -63,7 +63,7 @@ class CollectionCard extends StatelessWidget {
               collection.title,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 12.5,
                 fontWeight: FontWeight.w600,
                 color: SpotifyColors.textPrimary,
@@ -74,7 +74,7 @@ class CollectionCard extends StatelessWidget {
                 collection.subtitle,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   color: SpotifyColors.textSecondary,
                 ),

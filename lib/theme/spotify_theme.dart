@@ -1,44 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../ui/lw/lw_scheme.dart';
+import 'theme_controller.dart';
+import 'zen_palette.dart';
 
-/// ZenMusic — LastWave Material You dark palette.
-///
-/// Every constant below is the exact output of LastWave's
-/// Md3SchemeBuilder algorithm (ported to LwScheme, GPL-3.0) for seed
-/// hue 231 — the Material You blue. Chroma levels (primary 30,
-/// secondary 14, tertiary 22, neutral 5, NV 8) and the dark
-/// lightness ladder (bg 6 / sc1 11 / sc2 16 / sc3 20) are
-/// LastWave's exact values.
-///
-/// To re-seed the whole palette: change [seedHex], rebuild the scheme
-/// with LwScheme.dark(seedHex), and re-bake these constants from its
-/// output. All screens (SpotifyColors callers AND Theme.of(context)
-/// consumers) follow together.
+export 'theme_controller.dart' show ZenThemeController, ZenThemeScope;
+export 'zen_palette.dart';
+
+/// App colours. Historically these were compile-time constants; they now
+/// forward to the active [ZenPalette] so the whole app can be re-themed at
+/// runtime (Settings → Appearance → Theme). The member names are kept so
+/// existing screens did not need to change: `green` is the accent fill,
+/// `highlight` the accent for text/icons.
 class SpotifyColors {
-  // Seed used to derive this palette (Material You blue).
-  static const seedHex = '3F51B5';
+  SpotifyColors._();
 
-  // Neutral surfaces (hsl 231, 5%, lightness ladder 6/11/16/20).
-  static const background = Color(0xFF0F0F10);
-  static const surface = Color(0xFF1B1B1D);
-  static const surfaceLight = Color(0xFF27272B); // Card / scHigh
-  static const surfaceLighter = Color(0xFF303136); // scHighest
+  static ZenPalette get _p => ZenThemeController.palette;
 
-  // Primary (hsl 231, 30%, 82%) — soft periwinkle fill.
-  static const green = Color(0xFFC3C7DF); // primary
-  static const greenDark = Color(0xFF475185); // inversePrimary (deep)
-  static const highlight = Color(0xFFD4C1D7); // tertiary accent
+  static Color get background => _p.background;
+  static Color get surface => _p.surface;
+  static Color get surfaceLight => _p.surfaceLight;
+  static Color get surfaceLighter => _p.surfaceLighter;
 
-  // Text (hsl 231, 8%): 90 / 80 / 60 lightness.
-  static const textPrimary = Color(0xFFE3E4E8);
-  static const textSecondary = Color(0xFFC8C8D0);
-  static const textTertiary = Color(0xFF9191A1);
+  static Color get green => _p.primary;
+  static Color get greenDark => _p.primaryDark;
+  static Color get highlight => _p.highlight;
+  static Color get onAccent => _p.onPrimary;
+
+  static Color get textPrimary => _p.textPrimary;
+  static Color get textSecondary => _p.textSecondary;
+  static Color get textTertiary => _p.textTertiary;
 }
 
 class SpotifyTheme {
-  /// Heading font — Playfair Display.
-  static const headingFont = 'PlayfairDisplay';
+  /// Heading font — Inter, set heavy, for the clean Spotify-style look
+  /// (was Playfair Display).
+  static const headingFont = 'Inter';
 
   /// Body/UI font — Inter.
   static const bodyFont = 'Inter';
@@ -47,13 +43,25 @@ class SpotifyTheme {
     // google_fonts: no-argument calls fetch + register both families
     // (version-proof API). Plain fontFamily strings resolve to them.
     GoogleFonts.inter();
-    GoogleFonts.playfairDisplay();
 
-    // The ColorScheme is generated at runtime by LastWave's ported
-    // Md3SchemeBuilder — guaranteed identical to the baked SpotifyColors
-    // above (same algorithm, same seed). Theme.of(context) consumers and
-    // SpotifyColors consumers always agree.
-    final scheme = LwScheme.dark(SpotifyColors.seedHex);
+    final scheme = ColorScheme.dark(
+      primary: SpotifyColors.green,
+      onPrimary: SpotifyColors.onAccent,
+      secondary: SpotifyColors.highlight,
+      onSecondary: SpotifyColors.onAccent,
+      tertiary: SpotifyColors.highlight,
+      surface: SpotifyColors.background,
+      onSurface: SpotifyColors.textPrimary,
+      onSurfaceVariant: SpotifyColors.textSecondary,
+      surfaceContainerLowest: SpotifyColors.background,
+      surfaceContainerLow: SpotifyColors.surface,
+      surfaceContainer: SpotifyColors.surface,
+      surfaceContainerHigh: SpotifyColors.surfaceLight,
+      surfaceContainerHighest: SpotifyColors.surfaceLighter,
+      outline: SpotifyColors.textTertiary,
+      outlineVariant: SpotifyColors.surfaceLighter,
+      inversePrimary: SpotifyColors.greenDark,
+    );
 
     final text = ThemeData.dark(useMaterial3: true).textTheme.apply(
       bodyColor: SpotifyColors.textPrimary,
@@ -75,7 +83,7 @@ class SpotifyTheme {
       scaffoldBackgroundColor: SpotifyColors.background,
       colorScheme: scheme,
       textTheme: headings,
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: SpotifyColors.background,
         elevation: 0,
         centerTitle: false,
@@ -87,7 +95,7 @@ class SpotifyTheme {
         ),
         iconTheme: IconThemeData(color: SpotifyColors.textPrimary),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: SpotifyColors.surface,
         selectedItemColor: SpotifyColors.highlight,
         unselectedItemColor: SpotifyColors.textSecondary,
@@ -96,16 +104,16 @@ class SpotifyTheme {
         selectedLabelStyle: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
         unselectedLabelStyle: TextStyle(fontSize: 11),
       ),
-      sliderTheme: const SliderThemeData(
+      sliderTheme: SliderThemeData(
         trackHeight: 3,
         activeTrackColor: SpotifyColors.highlight,
         inactiveTrackColor: SpotifyColors.surfaceLighter,
         thumbColor: SpotifyColors.highlight,
-        overlayColor: Color(0x33C3C7DF),
+        overlayColor: SpotifyColors.highlight.withAlpha(0x33),
         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 6),
         overlayShape: RoundSliderOverlayShape(overlayRadius: 14),
       ),
-      iconTheme: const IconThemeData(color: SpotifyColors.textPrimary),
+      iconTheme: IconThemeData(color: SpotifyColors.textPrimary),
       dividerColor: SpotifyColors.surfaceLighter,
       // NOTE: no const — this Flutter version's DialogThemeData
       // constructor is not const.
@@ -114,19 +122,19 @@ class SpotifyTheme {
         surfaceTintColor: Colors.transparent,
         elevation: 8,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        titleTextStyle: const TextStyle(
+        titleTextStyle: TextStyle(
           color: SpotifyColors.textPrimary,
           fontSize: 17,
           fontWeight: FontWeight.w700,
           fontFamily: headingFont,
         ),
-        contentTextStyle: const TextStyle(
+        contentTextStyle: TextStyle(
           color: SpotifyColors.textSecondary,
           fontSize: 14,
           height: 1.4,
         ),
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
+      bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: SpotifyColors.surface,
         surfaceTintColor: Colors.transparent,
         modalBackgroundColor: SpotifyColors.surface,
@@ -136,21 +144,21 @@ class SpotifyTheme {
         ),
         showDragHandle: false,
       ),
-      popupMenuTheme: const PopupMenuThemeData(
+      popupMenuTheme: PopupMenuThemeData(
         color: SpotifyColors.surfaceLight,
         surfaceTintColor: Colors.transparent,
         elevation: 8,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16))),
         textStyle: TextStyle(color: SpotifyColors.textPrimary, fontSize: 14),
       ),
-      snackBarTheme: const SnackBarThemeData(
+      snackBarTheme: SnackBarThemeData(
         backgroundColor: SpotifyColors.surfaceLighter,
         contentTextStyle: TextStyle(color: SpotifyColors.textPrimary, fontSize: 14),
         actionTextColor: SpotifyColors.highlight,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(14))),
       ),
-      datePickerTheme: const DatePickerThemeData(
+      datePickerTheme: DatePickerThemeData(
         backgroundColor: SpotifyColors.surface,
         surfaceTintColor: Colors.transparent,
         headerBackgroundColor: SpotifyColors.surfaceLight,
@@ -159,21 +167,21 @@ class SpotifyTheme {
         yearStyle: TextStyle(color: SpotifyColors.textPrimary),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
       ),
-      timePickerTheme: const TimePickerThemeData(
+      timePickerTheme: TimePickerThemeData(
         backgroundColor: SpotifyColors.surface,
         dialBackgroundColor: SpotifyColors.surfaceLight,
         hourMinuteColor: SpotifyColors.surfaceLight,
         hourMinuteTextColor: SpotifyColors.textPrimary,
         dialHandColor: SpotifyColors.highlight,
       ),
-      chipTheme: const ChipThemeData(
+      chipTheme: ChipThemeData(
         backgroundColor: SpotifyColors.surface,
         selectedColor: SpotifyColors.surfaceLighter,
         labelStyle: TextStyle(color: SpotifyColors.textPrimary, fontSize: 13),
         side: BorderSide(color: SpotifyColors.surfaceLighter),
         shape: StadiumBorder(),
       ),
-      tooltipTheme: const TooltipThemeData(
+      tooltipTheme: TooltipThemeData(
         decoration: BoxDecoration(
           color: SpotifyColors.surfaceLighter,
           borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -189,7 +197,7 @@ class SpotifyTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: SpotifyColors.green,
-          foregroundColor: SpotifyColors.background,
+          foregroundColor: SpotifyColors.onAccent,
         ),
       ),
       switchTheme: SwitchThemeData(
@@ -207,9 +215,9 @@ class SpotifyTheme {
         states.contains(WidgetState.selected)
             ? SpotifyColors.green
             : Colors.transparent),
-        side: const BorderSide(color: SpotifyColors.textTertiary, width: 1.5),
+        side: BorderSide(color: SpotifyColors.textTertiary, width: 1.5),
       ),
-      progressIndicatorTheme: const ProgressIndicatorThemeData(
+      progressIndicatorTheme: ProgressIndicatorThemeData(
         color: SpotifyColors.highlight,
         linearTrackColor: SpotifyColors.surfaceLighter,
       ),
@@ -220,12 +228,12 @@ class SpotifyTheme {
 /// A subtle vertical gradient that fades from a tinted top to the background.
 class SpotifyGradient extends StatelessWidget {
   final Widget child;
-  final Color tint;
+  final Color? tint;
 
   const SpotifyGradient({
     super.key,
     required this.child,
-    this.tint = SpotifyColors.surface,
+    this.tint,
   });
 
   @override
@@ -236,7 +244,7 @@ class SpotifyGradient extends StatelessWidget {
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
           colors: [
-            tint,
+            tint ?? SpotifyColors.surface,
             SpotifyColors.background,
           ],
           stops: const [0.0, 0.6],

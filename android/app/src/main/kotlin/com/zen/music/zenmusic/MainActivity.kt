@@ -94,6 +94,8 @@ class MainActivity : AudioServiceActivity() {
         registerAddonChannel(flutterEngine)
         // In-app APK installer channel (OTA updates)
         InstallApkPlugin.register(flutterEngine, this)
+        // Car Mode detection (Android Auto / car Bluetooth) — zen/car.
+        CarConnectionPlugin.register(flutterEngine, this)
         // Native merged-stream video player (video watch page) —
         // platform-view factory; each instance owns the per-view
         // channel zen/video_player_<viewId>.
