@@ -1,13 +1,10 @@
 # ZenMusic Desktop — CI build.
 # Every push to main: builds the Windows exe with the DESKTOP entrypoint
 # (never the mobile entry — audio_service has no Windows implementation)
-# and uploads a zip as a downloadable artifact for testers.
+# and uploads the build folder as a downloadable artifact for testers.
 #
-# Testers: download the artifact from the run page, unzip, run zenmusic.exe.
-# First launch may be slow (extracts mpv/native libs). If the player screen
-# renders blank/white on some GPUs, launch with: zenmusic.exe --no-enable-impeller
-# (that flag is for `flutter run` in dev; for a built exe the renderer is
-# baked in — see the release round for the shipped-backend decision).
+# Testers: download the artifact from the run page (browser unzips it),
+# run zenmusic.exe. First launch may be slow (extracts mpv/native libs).
 
 name: Desktop Build
 
@@ -46,16 +43,9 @@ jobs:
       - name: Build Windows exe (desktop entrypoint)
         run: flutter build windows --release -t lib/desktop/main.dart
 
-      - name: Package portable zip
-        shell: pwsh
-        run: |
-          $out = "ZenMusic-Desktop-${{ github.sha }}.zip"
-          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath $out
-          echo "ZIP=$out" >> $env:GITHUB_ENV
-
-      - name: Upload artifact
+      - name: Upload build folder as artifact
         uses: actions/upload-artifact@v4
         with:
           name: ZenMusic-Desktop-${{ github.sha }}
-          path: ZenMusic-Desktop-*.zip
+          path: build/windows/x64/runner/Release/
           retention-days: 30
