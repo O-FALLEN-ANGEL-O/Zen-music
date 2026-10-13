@@ -1,0 +1,61 @@
+# ZenMusic Desktop — CI build.
+# Every push to main: builds the Windows exe with the DESKTOP entrypoint
+# (never the mobile entry — audio_service has no Windows implementation)
+# and uploads a zip as a downloadable artifact for testers.
+#
+# Testers: download the artifact from the run page, unzip, run zenmusic.exe.
+# First launch may be slow (extracts mpv/native libs). If the player screen
+# renders blank/white on some GPUs, launch with: zenmusic.exe --no-enable-impeller
+# (that flag is for `flutter run` in dev; for a built exe the renderer is
+# baked in — see the release round for the shipped-backend decision).
+
+name: Desktop Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show Flutter version
+        run: flutter --version
+
+      - name: Pub get
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+        continue-on-error: true # report but don't block — tighten at release
+
+      # Path deps (packages/just_audio, packages/youtube_explode_dart) resolve
+      # from the checkout itself; no extra step needed. Native mobile modules
+      # (lossless/, innertube/, etc.) are irrelevant to the Windows build.
+
+      - name: Build Windows exe (desktop entrypoint)
+        run: flutter build windows --release -t lib/desktop/main.dart
+
+      - name: Package portable zip
+        shell: pwsh
+        run: |
+          $out = "ZenMusic-Desktop-${{ github.sha }}.zip"
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath $out
+          echo "ZIP=$out" >> $env:GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZenMusic-Desktop-${{ github.sha }}
+          path: ZenMusic-Desktop-*.zip
+          retention-days: 30
