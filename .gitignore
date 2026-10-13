@@ -98,3 +98,8 @@ Desktop.ini
 
 # Editor directories and folders
 .vscode/
+
+# Stray binaries never belong in assets
+assets/**/*.exe
+assets/**/*.zip
+assets/**/*.msi
