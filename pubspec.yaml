@@ -77,7 +77,6 @@ dependencies:
   rxdart: ^0.28.0
   audio_video_progress_bar: ^2.0.3
   text_scroll: ^0.2.1
-  sliding_up_panel: ^2.0.0+1
   scrollable_positioned_list: ^0.3.8
   loading_indicator_m3e: ^0.1.1
   just_audio_background: ^0.0.1-beta.17
@@ -87,11 +86,15 @@ dependencies:
   duration_picker: ^1.2.0
   flutter_colorpicker: ^1.1.0
   expressive_refresh: ^0.1.2
-  flutter_typeahead: ^5.2.0
   internet_connection_checker_plus: ^2.9.1
+  flutter_staggered_grid_view: ^0.7.0
   html: ^0.15.0
   expandable_page_view: ^1.0.17
   expandable_text: ^2.3.0
+  intl: any
+  path: ^1.9.0
+  collection: ^1.19.1
+  fuzzywuzzy: ^1.2.0
 
 dev_dependencies:
   flutter_test:
@@ -99,6 +102,7 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   hive_generator: ^2.0.1
   build_runner: ^2.4.13
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
@@ -107,3 +111,9 @@ flutter:
     - family: Retro Blendy
       fonts:
         - asset: assets/fonts/Retro Blendy.otf
+
+
+flutter_launcher_icons:
+  image_path: "assets/icon/logo.png"
+  windows:
+    generate: true

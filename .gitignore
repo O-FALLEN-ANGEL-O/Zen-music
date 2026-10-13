@@ -95,3 +95,6 @@ Desktop.ini
 # Flutter ephemeral (per-project)
 **/.flutter-plugins-dependencies
 .flutter-plugins
+
+# Editor directories and folders
+.vscode/

@@ -1,5 +1,0 @@
-Name: soxr
-Description: High quality, one-dimensional sample-rate conversion library
-Version: 0.1.3
-Libs: -LC:/Program Files (x86)/zen_lossless/lib -lsoxr
-Cflags: -IC:/Program Files (x86)/zen_lossless/include

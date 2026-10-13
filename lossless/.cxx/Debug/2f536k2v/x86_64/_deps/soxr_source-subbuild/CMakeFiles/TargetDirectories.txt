@@ -1,3 +1,0 @@
-C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/CMakeFiles/soxr_source-populate.dir
-C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/CMakeFiles/edit_cache.dir
-C:/Users/prata/AndroidStudioProjects/zenmusic/lossless/.cxx/Debug/2f536k2v/x86_64/_deps/soxr_source-subbuild/CMakeFiles/rebuild_cache.dir

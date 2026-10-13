@@ -1,14 +1,17 @@
 // ZenMusic Desktop — ported from Echo Music (GPL-3.0). ZenMusic remains GPL-3.0.
-// PORT: /browse, /chip and /chart_details are top-level stubs for R7e; Echo
-// nests chip/browse/chart_details under the home branch — that nesting
-// returns with the real pages at R8. Library/settings sub-routes at R8+.
-// (Playback harness /smoke removed post-R6b.)
+// PORT: /browse and /chip are TOP-LEVEL (Echo nests them under home — marked
+// deviation, matches the R4 router shape). /chart_details stays stubbed until
+// its screen is pasted. Library/settings sub-routes at R8e. /player = real
+// page (R8d).
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:zenmusic/desktop/screens/home/home_page.dart';
 import 'package:zenmusic/desktop/screens/search/search_page.dart';
+import 'package:zenmusic/desktop/screens/player/player_page.dart';
+import 'package:zenmusic/desktop/screens/browse/browse_page.dart';
+import 'package:zenmusic/desktop/screens/chip/chip_page.dart';
 import 'package:zenmusic/desktop/screens/stubs.dart';
 import 'package:zenmusic/desktop/screens/shell/app_shell.dart';
 
@@ -32,9 +35,10 @@ final router = GoRouter(
         GoRoute(
           path: '/player',
           pageBuilder: (context, state) {
+            final videoId = state.extra as String?;
             return CustomTransitionPage(
               key: state.pageKey,
-              child: const PlayerStub(),
+              child: PlayerPage(videoId: videoId),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {
                 const begin = Offset(0.0, 1.0);
@@ -52,11 +56,23 @@ final router = GoRouter(
         ),
         GoRoute(
           path: '/browse',
-          builder: (context, state) => const BrowseStub(),
+          builder: (context, state) {
+            final args = state.extra as Map<String, dynamic>? ?? {};
+            return BrowsePage(
+              endpoint: args['endpoint'] as Map<String, dynamic> ?? {},
+              isMore: args['isMore'] as bool? ?? false,
+            );
+          },
         ),
         GoRoute(
           path: '/chip',
-          builder: (context, state) => const ChipStub(),
+          builder: (context, state) {
+            final args = state.extra as Map<String, dynamic>? ?? {};
+            return ChipPage(
+              title: args['title'] ?? '',
+              endpoint: args['endpoint'] as Map<String, dynamic>? ?? {},
+            );
+          },
         ),
         GoRoute(
           path: '/chart_details',

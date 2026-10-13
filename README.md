@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="screenshots/garden-jessica-transparent.gif" alt="ZenMusic" width="720" />
+<img src="screenshots/garden-jessica.gif" alt="ZenMusic" width="880" />
 
 <br/>
 
@@ -10,12 +10,14 @@
 
 <br/>
 
-[**Download**](#download-now) · [**Features**](#features) · [**Build**](#building-from-source) · [**Contribute**](#contributing) · [**Legal**](#legal)
+[**Website**](https://vorlon-dev.github.io/Zen-music/) · [**Download**](#download-now) · [**Features**](#features) · [**Build**](#building-from-source) · [**Contribute**](#contributing) · [**Legal**](#legal)
 
 </div>
 
 > [!IMPORTANT]
 > ZenMusic is still in development. Features may change and you may run into bugs. Updates are delivered through GitHub Releases.
+>
+> The **Windows desktop version is available as a preview**: core playback, search, browsing, lyrics and the queue are working, while some screens (Saved, Settings, Equalizer) are still under active development.
 
 > [!TIP]
 > **Future Updates** - Coming in the next update:
@@ -107,6 +109,15 @@
 
 </td>
   </tr>
+  <tr>
+    <td colspan="2" valign="top">
+
+#### Platforms
+- **Android**: full experience (phone and tablet)
+- **Windows**: desktop preview with YouTube Music browsing, search, synced lyrics, queue, downloads and library, in a responsive desktop layout
+
+</td>
+  </tr>
 </table>
 
 </div>
@@ -171,6 +182,10 @@
   </tr>
 </table>
 
+<h2>Windows (Desktop Preview)</h2>
+
+Windows builds are produced automatically on every push. Grab the latest build from the [Actions tab](https://github.com/vorlon-dev/Zen-music/actions): open the most recent green **Desktop Build** run, download the `ZenMusic-Desktop` artifact, unzip it and run `zenmusic.exe`. It is portable, so no installer is needed. Windows builds will ship with official Releases soon.
+
 </div>
 
 <div align="center"><img src="assets/divider.svg" alt="" width="720" /></div>
@@ -181,7 +196,16 @@
 
 </div>
 
-ZenMusic targets **Android only**.
+ZenMusic targets **Android and Windows**.
+
+<div align="center">
+<img src="assets/build-terminal.svg" alt="Build ZenMusic from source" width="720" />
+</div>
+
+<details>
+<summary>Copy the commands</summary>
+
+#### Android
 
 ```bash
 git clone https://github.com/vorlon-dev/Zen-music.git
@@ -196,6 +220,26 @@ Release APKs (what the download badges serve):
 flutter build apk --release --split-per-abi   # per-ABI splits
 flutter build apk --release                   # universal APK
 ```
+
+#### Windows (desktop)
+
+Requires the Visual Studio C++ toolchain (**Desktop development with C++** workload). The desktop app uses its own entrypoint, so always pass `-t lib/desktop/main.dart`:
+
+```bash
+git clone https://github.com/vorlon-dev/Zen-music.git
+cd Zen-music
+flutter pub get
+flutter run -d windows -t lib/desktop/main.dart            # dev run
+flutter build windows --release -t lib/desktop/main.dart   # release exe
+```
+
+On some GPUs (older iGPUs without Vulkan), Flutter's Impeller GL backend can render custom-painted screens blank. If the player screen appears white, run development builds with:
+
+```bash
+flutter run -d windows --no-enable-impeller -t lib/desktop/main.dart
+```
+
+</details>
 
 If no keystore is configured, release builds fall back to debug signing so the build still works. Use your own release keystore for any APK you distribute, because Android only installs updates signed with the same key.
 
@@ -243,7 +287,7 @@ Please keep pull requests focused on a single change, and test on a real device 
     </tr>
     <tr>
       <td align="center"><strong>Echo music</strong></td>
-      <td>UI design language, Listen Together client, recognition engine, Apple Music canvas and welcome dialog</td>
+      <td>UI design language, Listen Together client, recognition engine, Apple Music canvas and welcome dialog; basis of the Windows desktop shell</td>
     </tr>
     <tr>
       <td align="center"><strong>Metrolist / metroserver</strong></td>
@@ -271,8 +315,8 @@ Please keep pull requests focused on a single change, and test on a real device 
       <td>YouTube stream extraction</td>
     </tr>
     <tr>
-      <td align="center"><code>audio_service</code> / <code>just_audio</code></td>
-      <td>Playback engine</td>
+      <td align="center"><code>audio_service</code> / <code>just_audio</code> / <code>media_kit</code></td>
+      <td>Playback engine (Android / Windows)</td>
     </tr>
     <tr>
       <td align="center"><code>flutter_lyric</code></td>
@@ -301,7 +345,7 @@ Please keep pull requests focused on a single change, and test on a real device 
 
 <div align="center">
 
-<img src="assets/banners/contributing.svg" alt="Contributors" width="720" />
+<img src="assets/banners/contributors.svg" alt="Contributors" width="720" />
 
 <h3>This project wouldn't exist without these amazing people!</h3>
 

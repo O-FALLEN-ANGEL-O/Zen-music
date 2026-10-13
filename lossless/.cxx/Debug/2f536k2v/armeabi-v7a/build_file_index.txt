@@ -1,3 +1,0 @@
-C:\Users\prata\AndroidStudioProjects\zenmusic\lossless\.cxx\Debug\2f536k2v\armeabi-v7a\_deps\soxr_source-src\CMakeLists.txt
-C:\Users\prata\AndroidStudioProjects\zenmusic\lossless\.cxx\Debug\2f536k2v\armeabi-v7a\_deps\soxr_source-src\src\CMakeLists.txt
-C:\Users\prata\AndroidStudioProjects\zenmusic\lossless\cpp\CMakeLists.txt

@@ -19,6 +19,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:zenmusic/desktop/core/app_theme.dart';
+import 'package:zenmusic/desktop/services/download_manager.dart';
+import 'package:zenmusic/desktop/services/file_storage.dart';
+import 'package:zenmusic/desktop/services/library.dart';
+import 'package:zenmusic/desktop/services/lyrics.dart';
 import 'package:zenmusic/desktop/services/media_player.dart';
 import 'package:zenmusic/desktop/services/settings_manager.dart';
 import 'package:zenmusic/desktop/services/yt_audio_stream.dart';
@@ -41,7 +45,14 @@ Future<void> main() async {
     JustAudioMediaKit.pitch = true;
   }
 
+  // PORT: Echo calls FileStorage.initialise() here — creates the
+  // Downloads/ZenMusic tree (Music + Back Up dirs) before any consumer.
+  await FileStorage.initialise();
+
   // PORT: Echo's YTMusic construction, verbatim — Hive-backed visitorData.
+  // First sendRequest with empty visitorData triggers resetVisitorId(), which
+  // fetches a real VISITOR_DATA from music.youtube.com and persists it here
+  // via onIdUpdate.
   String? visitorId = await Hive.box('SETTINGS').get('VISITOR_ID');
   YTMusic ytMusic = YTMusic(
     config: YTConfig(
@@ -62,13 +73,28 @@ Future<void> main() async {
   final MediaPlayer mediaPlayer = MediaPlayer();
   GetIt.I.registerSingleton<MediaPlayer>(mediaPlayer);
 
+  final libraryService = LibraryService();
+  GetIt.I.registerSingleton<LibraryService>(libraryService);
+
+  final fileStorage = FileStorage();
+  GetIt.I.registerSingleton<FileStorage>(fileStorage);
+
+  GetIt.I.registerSingleton<DownloadManager>(DownloadManager());
+
+  GetIt.I.registerSingleton<LyricsService>(LyricsService());
+
   GetIt.I.registerSingleton<YTMusic>(ytMusic);
+
+  // PORT: Echo's panelKey GlobalKey is deferred with the screens that
+  // consume it. ImportService is constructed on-demand in the import modal
+  // (Echo pattern, unchanged).
 
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => settingsManager),
         ChangeNotifierProvider(create: (_) => mediaPlayer),
+        ChangeNotifierProvider(create: (_) => libraryService),
       ],
       child: const ZenDesktopApp(),
     ),
