@@ -1,12 +1,24 @@
-name: Desktop Build
+# ZenMusic Desktop — release pipeline.
+# Fires on version tags (v*): builds the Windows exe with the DESKTOP
+# entrypoint (windows-2022 runner — see desktop.yml for the MSVC 14.51 note),
+# zips it, and publishes a GitHub Release with the zip attached.
+#
+# Usage: bump pubspec version -> commit -> git tag v<version> ->
+# git push origin main --tags. The Release appears under the repo's
+# Releases tab with the portable zip attached.
+
+name: Desktop Release
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch: {}
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write # required to create the Release
 
 jobs:
-  build-windows:
+  release-windows:
     runs-on: windows-2022
     steps:
       - name: Checkout
@@ -24,20 +36,38 @@ jobs:
       - name: Pub get
         run: flutter pub get
 
-      - name: Analyze
-        run: flutter analyze
-        continue-on-error: true # report but don't block — tighten at release
-
-      # Path deps (packages/just_audio, packages/youtube_explode_dart) resolve
-      # from the checkout itself; no extra step needed. Native mobile modules
-      # (lossless/, innertube/, etc.) are irrelevant to the Windows build.
-
-      - name: Build Windows exe (desktop entrypoint)
+      - name: Build Windows exe (desktop entrypoint, release)
         run: flutter build windows --release -t lib/desktop/main.dart
 
-      - name: Upload build folder as artifact
-        uses: actions/upload-artifact@v4
+      - name: Extract version from tag
+        id: ver
+        shell: bash
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Package portable zip
+        shell: pwsh
+        run: |
+          $out = "ZenMusic-Desktop-${{ steps.ver.outputs.VERSION }}.zip"
+          Compress-Archive -Path "build/windows/x64/runner/Release/*" -DestinationPath $out
+          echo "ZIP=$out" >> $env:GITHUB_ENV
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: ZenMusic-Desktop-${{ github.sha }}
-          path: build/windows/x64/runner/Release/
-          retention-days: 30
+          name: ZenMusic Desktop v${{ steps.ver.outputs.VERSION }}
+          body: |
+            ## ZenMusic Desktop v${{ steps.ver.outputs.VERSION }}
+
+            Portable Windows build. Download, unzip, run **zenmusic.exe**.
+
+            ### Notes
+            - First launch may be slow (extracts mpv/native libs).
+            - If the UI renders blank/white on some GPUs, update your GPU
+              driver — the shipped renderer is chosen at build time.
+            - Requires Windows 10 or newer (x64).
+
+            See the repository for source and license (GPL-3.0).
+          files: |
+            ${{ env.ZIP }}
+          draft: false
+          prerelease: false
