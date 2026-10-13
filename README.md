@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="screenshots/garden-jessica.gif" alt="ZenMusic" width="880" />
+<img src="screenshots/garden-jessica-transparent" alt="ZenMusic" width="880" />
 
 <br/>
 
