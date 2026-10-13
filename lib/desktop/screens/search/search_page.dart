@@ -1,13 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0), screens/search/search_page.dart.
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-// PORT DEVIATIONS: sl() -> GetIt.I<YTMusic>(); l10n -> 'Search'; TypeAheadField
-// REPLACED with in-tree SearchSuggestField — flutter_typeahead transitively
-// pulls flutter_keyboard_visibility (android-31, breaks the mobile AAR check
-// on modern compileSdk). Behavior matched: suggestions overlay under the
-// field (targetAnchor/followerAnchor), history icon for TEXT entries, tap =
-// submit. Upstream VisualDensity unchanged elsewhere.
-
 import 'dart:async';
 import 'dart:io';
 

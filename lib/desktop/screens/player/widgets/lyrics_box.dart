@@ -1,9 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0), screens/player/widgets/lyrics_box.dart.
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-// NOTE: the file-local AnimatedBuilder class at the bottom intentionally
-// shadows Flutter's — verbatim upstream design, do not remove.
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

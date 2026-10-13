@@ -1,11 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0), screens/home/home_page.dart.
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-// PORT DEVIATIONS: sl() -> GetIt.I<YTMusic>(); title rebranded 'ZenMusic';
-// Echo's first-launch SUPPORT DIALOG dropped (Echo-specific branding +
-// donation URL — a ZenMusic equivalent is a separate decision); l10n import
-// dropped (no S.of usage in this file); unused dart:io kept verbatim.
-
 import 'dart:io';
 
 import 'package:expressive_refresh/expressive_refresh.dart';

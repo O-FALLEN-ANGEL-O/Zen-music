@@ -1,8 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0).
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-// Text styles come from typography.dart (vendored Echo typography, sibling file).
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

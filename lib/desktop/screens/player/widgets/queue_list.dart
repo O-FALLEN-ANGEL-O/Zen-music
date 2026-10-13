@@ -1,9 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0), screens/player/widgets/queue_list.dart.
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-// PORT: S.of(context).Shuffle -> 'Shuffle' (l10n dropped); the shuffle button
-// keeps its Platform.isAndroid gate (hidden on Windows, verbatim upstream).
-
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';

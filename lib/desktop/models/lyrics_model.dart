@@ -1,10 +1,4 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0), models/lyrics_model.dart.
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
-
 enum LyricsProvider {
   lrcnet,
   none,

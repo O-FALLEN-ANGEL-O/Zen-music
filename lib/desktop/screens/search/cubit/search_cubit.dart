@@ -1,10 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0). ZenMusic remains GPL-3.0.
-// PORT DEVIATIONS: Echo's sl() replaced with GetIt.I<YTMusic>().
-// PRESERVED UPSTREAM BUG (verbatim policy): fetchNext() constructs the
-// extended SearchSuccess but never emit()s it — infinite scroll on search
-// is inert in Echo and will be here until we decide to fix it (flagged,
-// one-word fix when you want it).
-
 import 'package:bloc/bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:meta/meta.dart';

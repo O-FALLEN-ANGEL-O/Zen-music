@@ -1,6 +1,8 @@
-// ZenMusic Desktop — route stubs. Saved / Settings / Chart details are under
-// development (R8e+). Carries the user-requested notice: solo-dev project,
-// repo visit / star call-to-action. Browse/Chip stubs retired (real pages, R8).
+// ZenMusic Desktop — route stubs. Saved / Settings sub-pages / Chart details
+// are under development (R8e+). Carries the user-requested notice: solo-dev
+// project, repo visit / star call-to-action. Browse/Chip stubs retired
+// (real pages, R8). SubPageStub is public — router uses it for settings
+// sub-routes until their real screens land.
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,6 +26,15 @@ class _StubScaffold extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Public variant for router-level sub-routes (settings/player, etc.).
+class SubPageStub extends StatelessWidget {
+  final String label;
+  const SubPageStub({super.key, required this.label});
+
+  @override
+  Widget build(BuildContext context) => _StubScaffold(label);
 }
 
 class _UnderDevelopmentNotice extends StatelessWidget {

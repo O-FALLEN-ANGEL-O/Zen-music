@@ -1,5 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0). ZenMusic remains GPL-3.0.
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 

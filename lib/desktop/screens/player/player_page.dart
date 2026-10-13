@@ -1,11 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0), screens/player/player_page.dart.
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-// PORT DEVIATIONS: sliding_up_panel vestigials dropped (endDrawer is the real
-// queue mechanism; also kills the flutter_keyboard_visibility landmine); dead
-// play_pause_buton import dropped; deprecated WillPopScope no-op wrapper
-// removed; dispose() typed void; l10n import dropped (no S.of usage).
-
 import 'dart:math';
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:flutter/material.dart';

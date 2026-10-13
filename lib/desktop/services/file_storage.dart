@@ -2,18 +2,18 @@
 // Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
 // remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
 // PORT DEVIATIONS:
-//  1. loadBackup() STUBBED for R8e — its only caller is the backup/restore
-//     settings UI (not vendored yet), and file_picker 13 restructured its API
-//     surface (unverified). The real implementation lands with R8e against
-//     the package's actual source. All other FileStorage paths are verbatim.
+//  1. loadBackup() restored at R8e, written against file_picker 13's ACTUAL
+//     API (verified from package source): FilePicker.pickFile() ->
+//     Future<PlatformFile?>, FilePickerResult/withData no longer exist.
 //  2. Windows folder 'Echo' -> 'ZenMusic' (branding). The BACKUP FORMAT check
-//     ('name' != 'Echo') stays verbatim — revisit at R8e with the backup UI.
+//     ('name' != 'Echo') stays verbatim for cross-compatibility with Echo backups.
 //  3. Unused upstream imports (http, enhanced_image) kept verbatim — benign
 //     info-level lints.
 
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -148,10 +148,50 @@ class FileStorage {
   }
 
   Future<bool> loadBackup() async {
-    // R8e STUB (see header, deviation 1): caller is the R8e settings/backup UI.
-    // file_picker 13's restructured API must be verified from package source
-    // before this is implemented.
-    throw UnimplementedError('loadBackup arrives with the R8e settings round');
+    if (!(await requestPermissions())) return false;
+    final picked = await FilePicker.pickFile(
+      initialDirectory: storagePaths.backupPath,
+      type: FileType.custom,
+      allowedExtensions: ['json'],
+    );
+    if (picked == null) return false;
+    final filePath = picked.path;
+    if (filePath == null) return false;
+    String data = await File(filePath).readAsString();
+    Map backup = jsonDecode(data);
+    // PORT NOTE: 'Echo' is the backup FORMAT identifier — kept verbatim for
+    // cross-compatibility with Echo backups.
+    if (backup['name'] != 'Echo' && backup['type'] != 'backup') {
+      return false;
+    }
+    Map? settings = backup['data']?['settings'];
+    Map? favourites = backup['data']?['favourites'];
+    Map? playlists = backup['data']?['playlists'];
+    Map? history = backup['data']?['song_history'];
+    Map? downloads = backup['data']?['downloads'];
+    if (settings != null) {
+      await GetIt.I<SettingsManager>().setSettings(settings);
+      await GetIt.I<YTMusic>().refreshHeaders();
+    }
+    if (favourites != null) {
+      await Future.forEach(favourites.entries, (entry) async {
+        Hive.box('FAVOURITES').put(entry.key, entry.value);
+      });
+    }
+    if (playlists != null) {
+      await GetIt.I<LibraryService>().setPlaylists(playlists);
+    }
+    if (history != null) {
+      await Future.forEach(history.entries, (entry) async {
+        Hive.box('SONG_HISTORY').put(entry.key, entry.value);
+      });
+    }
+    if (downloads != null) {
+      await Future.forEach(downloads.entries, (entry) async {
+        Hive.box('DOWNLOADS').put(entry.key, entry.value);
+      });
+    }
+    return true;
   }
 
   static Future<Directory> _getDirectory(String pathString) async {

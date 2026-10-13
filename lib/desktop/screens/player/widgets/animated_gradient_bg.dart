@@ -1,15 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0), screens/player/widgets/animated_gradient_bg.dart.
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-// PORT DEVIATION (marked, rendering-only): upstream paints blobs with
-// BlendMode.plus (additive). Our Windows debug stack is Impeller-on-GL, which
-// has thrown pipeline errors all arc, and additive shader blends are its known
-// weak spot — observed as a blank WHITE page on this machine. Changes:
-//  1. The painter fills a solid black base FIRST (page is dark even if every
-//     blob fails to composite).
-//  2. Blobs composite with BlendMode.srcOver (universally supported) at
-//     reduced alpha — visually near-identical over the dark base.
-
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 

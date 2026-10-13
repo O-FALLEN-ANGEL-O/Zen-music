@@ -44,15 +44,15 @@ class PlayerResponse {
 
   ///
   Duration get videoDuration => Duration(
-        seconds: int.tryParse(
-                root.getJson<String>('videoDetails/lengthSeconds') ?? '') ??
-            0,
-      );
+    seconds: int.tryParse(
+        root.getJson<String>('videoDetails/lengthSeconds') ?? '') ??
+        0,
+  );
 
   ///
   List<String> get videoKeywords =>
       root.getJson<List<dynamic>>('videoDetails/keywords')?.cast<String>() ??
-      const [];
+          const [];
 
   ///
   String get videoDescription =>
@@ -67,14 +67,14 @@ class PlayerResponse {
       root.getJson<String>(
         'playabilityStatus/errorScreen/playerLegacyDesktopYpcTrailerRenderer/trailerVideoId',
       ) ??
-      Uri.splitQueryString(
-        root.getJson<String>(
+          Uri.splitQueryString(
+            root.getJson<String>(
               'playabilityStatus/errorScreen//ypcTrailerRenderer/playerVars',
             ) ??
-            '',
-      )['video_id'] ??
-      root
-          .getJson<String>(
+                '',
+          )['video_id'] ??
+          root
+              .getJson<String>(
             'playabilityStatus/errorScreen/ypcTrailerRenderer/playerResponse',
           )
           // From https://github.com/Tyrrrz/YoutubeExplode
@@ -82,14 +82,14 @@ class PlayerResponse {
           // It's supposed to have JSON inside, but if extracted as is, it contains garbage.
           // Luckily, some of the text gets decoded correctly, which is enough for us to
           // extract the preview video ID using regex.
-          ?.replaceAll('-', '+')
-          .replaceAll('_', '/')
-          .pipe((e) => base64.decode(e))
-          .pipe((e) => utf8.decode(e, allowMalformed: true))
-          .pipe(
-            (value) => RegExp('video_id=(.{11})').firstMatch(value)?.group(1),
+              ?.replaceAll('-', '+')
+              .replaceAll('_', '/')
+              .pipe((e) => base64.decode(e))
+              .pipe((e) => utf8.decode(e, allowMalformed: true))
+              .pipe(
+                (value) => RegExp('video_id=(.{11})').firstMatch(value)?.group(1),
           )
-          ?.nullIfWhitespace;
+              ?.nullIfWhitespace;
 
   ///
   bool get isLive => root.getJson<bool>('videoDetails/isLive') ?? false;
@@ -104,16 +104,16 @@ class PlayerResponse {
 
   ///
   late final List<StreamInfoProvider> muxedStreams = root
-          .getJson<List<dynamic>>('streamingData/formats')
-          ?.map((e) => _StreamInfo(e as JsonMap, StreamSource.muxed))
-          .toList() ??
+      .getJson<List<dynamic>>('streamingData/formats')
+      ?.map((e) => _StreamInfo(e as JsonMap, StreamSource.muxed))
+      .toList() ??
       const <StreamInfoProvider>[];
 
   ///
   late final List<StreamInfoProvider> adaptiveStreams = root
-          .getJson<List<dynamic>>('streamingData/adaptiveFormats')
-          ?.map((e) => _StreamInfo(e as JsonMap, StreamSource.adaptive))
-          .toList() ??
+      .getJson<List<dynamic>>('streamingData/adaptiveFormats')
+      ?.map((e) => _StreamInfo(e as JsonMap, StreamSource.adaptive))
+      .toList() ??
       const [];
 
   ///
@@ -124,17 +124,17 @@ class PlayerResponse {
 
   ///
   late final List<ClosedCaptionTrack> closedCaptionTrack = root
-          .getJson<List<dynamic>>(
-            'captions/playerCaptionsTracklistRenderer/captionTracks',
-          )
-          ?.map((e) => ClosedCaptionTrack(e as JsonMap))
-          .cast<ClosedCaptionTrack>()
-          .toList() ??
+      .getJson<List<dynamic>>(
+    'captions/playerCaptionsTracklistRenderer/captionTracks',
+  )
+      ?.map((e) => ClosedCaptionTrack(e as JsonMap))
+      .cast<ClosedCaptionTrack>()
+      .toList() ??
       const [];
 
   ///
   late final String? videoPlayabilityError =
-      root.getJson<String>('playabilityStatus/reason');
+  root.getJson<String>('playabilityStatus/reason');
 
   PlayerResponse(this.root);
 
@@ -188,12 +188,12 @@ class _StreamInfo extends StreamInfoProvider {
 
   @override
   late final String? signature =
-      Uri.splitQueryString(root.getT<String>('signatureCipher') ?? '')['s'];
+  Uri.splitQueryString(root.getT<String>('signatureCipher') ?? '')['s'];
 
   @override
   late final String? signatureParameter = Uri.splitQueryString(
-        root.getT<String>('cipher') ?? '',
-      )['sp'] ??
+    root.getT<String>('cipher') ?? '',
+  )['sp'] ??
       Uri.splitQueryString(root.getT<String>('signatureCipher') ?? '')['sp'];
 
   @override
@@ -246,6 +246,15 @@ class _StreamInfo extends StreamInfoProvider {
     return null;
   }();
 
+  @override
+  late final bool isDrmProtected = root.containsKey('drmFamilies');
+
+  @override
+  late final bool isOtf = root.getT<String>('type') == 'FORMAT_STREAM_TYPE_OTF';
+
+  @override
+  late final bool isDrc = root.getT<bool>('isDrc') ?? false;
+
   MediaType? _getMimeType() {
     final mime = root.getT<String>('mimeType');
     if (mime == null) {
@@ -258,7 +267,7 @@ class _StreamInfo extends StreamInfoProvider {
 
   @override
   late final String? audioCodec =
-      isAudioOnly ? codecs : _getAudioCodec(codecs?.split(','))?.trim();
+  isAudioOnly ? codecs : _getAudioCodec(codecs?.split(','))?.trim();
 
   String? _getAudioCodec(List<String>? codecs) {
     if (codecs == null) {

@@ -1,11 +1,3 @@
-# ZenMusic Desktop — CI build.
-# Every push to main: builds the Windows exe with the DESKTOP entrypoint
-# (never the mobile entry — audio_service has no Windows implementation)
-# and uploads the build folder as a downloadable artifact for testers.
-#
-# Testers: download the artifact from the run page (browser unzips it),
-# run zenmusic.exe. First launch may be slow (extracts mpv/native libs).
-
 name: Desktop Build
 
 on:
@@ -15,7 +7,7 @@ on:
 
 jobs:
   build-windows:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -1,0 +1,173 @@
+// ZenMusic Desktop — ported from Echo Music (GPL-3.0), screens/settings/services/ytmusic/yt_music_page.dart.
+// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
+// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
+// PORT: l10n -> literals (YTMusic, Country, Language, etc.); Echo's
+// 'DOwnload_Quality' typo in the key corrected to 'Download Quality' label
+// (marked — visible text only).
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:zenmusic/desktop/screens/settings/services/ytmusic/cubit/ytmusic_cubit.dart';
+import 'package:zenmusic/desktop/screens/settings/widgets/setting_item.dart';
+import 'package:zenmusic/desktop/themes/text_styles.dart';
+import 'package:zenmusic/desktop/utils/bottom_modals.dart';
+
+class YTMusicPage extends StatelessWidget {
+  const YTMusicPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => YTMusicCubit(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('YT Music'),
+        ),
+        body: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 1000),
+            child: BlocBuilder<YTMusicCubit, YTMusicState>(
+              builder: (context, state) {
+                final cubit = context.read<YTMusicCubit>();
+
+                return ListView(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  children: [
+                    const GroupTitle(title: "General"),
+
+                    /// Country
+                    SettingTile(
+                      title: 'Country',
+                      leading: const Icon(Icons.location_pin),
+                      isFirst: true,
+                      trailing: DropdownButton<Map<String, String>>(
+                          value: state.location,
+                          items: cubit.locations
+                              .map(
+                                (l) => DropdownMenuItem(
+                              value: l,
+                              child: Text(
+                                l['name']!.trim(),
+                                style: smallTextStyle(context),
+                              ),
+                            ),
+                          )
+                              .toList(),
+                          onChanged: (v) {
+                            if (v != null) {
+                              cubit.setLocation(v);
+                            }
+                          }),
+                    ),
+
+                    /// Language
+                    SettingTile(
+                      title: 'Language',
+                      leading: const Icon(Icons.language),
+                      trailing: DropdownButton(
+                        value: state.language,
+                        items: cubit.languages
+                            .map(
+                              (l) => DropdownMenuItem(
+                            value: l,
+                            child: Text(
+                              l['name']!.trim(),
+                              style: smallTextStyle(context),
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: (v) =>
+                        v != null ? cubit.setLanguage(v) : null,
+                      ),
+                    ),
+
+                    /// Translate lyrics
+                    SettingSwitchTile(
+                      title: 'Translate Lyrics',
+                      leading: const Icon(Icons.translate_outlined),
+                      value: state.translateLyrics,
+                      onChanged: cubit.setTranslateLyrics,
+                    ),
+
+                    /// Autofetch
+                    SettingSwitchTile(
+                      title: 'Autofetch Songs',
+                      leading: const Icon(Icons.autorenew_outlined),
+                      isLast: true,
+                      value: state.autofetchSongs,
+                      onChanged: cubit.setAutofetchSongs,
+                    ),
+
+                    const GroupTitle(title: "Playback & download"),
+
+                    /// Streaming quality
+                    SettingTile(
+                      title: 'Streaming Quality',
+                      leading: const Icon(Icons.speaker_group_rounded),
+                      isFirst: true,
+                      trailing: DropdownButton(
+                        value: state.streamingQuality,
+                        items: cubit.audioQualities
+                            .map(
+                              (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e.name.toUpperCase(),
+                              style: smallTextStyle(context),
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: cubit.setStreamingQuality,
+                      ),
+                    ),
+
+                    /// Download quality
+                    SettingTile(
+                      title: 'Download Quality',
+                      leading: const Icon(Icons.cloud_download_rounded),
+                      isLast: true,
+                      trailing: DropdownButton(
+                        value: state.downloadQuality,
+                        items: cubit.audioQualities
+                            .map(
+                              (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e.name.toUpperCase(),
+                              style: smallTextStyle(context),
+                            ),
+                          ),
+                        )
+                            .toList(),
+                        onChanged: cubit.setDownloadQuality,
+                      ),
+                    ),
+
+                    const GroupTitle(title: "Privacy"),
+
+                    /// Personalised content
+                    SettingSwitchTile(
+                      title: 'Personalised Content',
+                      leading: const Icon(Icons.recommend_outlined),
+                      isFirst: true,
+                      value: state.personalisedContent,
+                      onChanged: (v) async {
+                        Modals.showCenterLoadingModal(context);
+                        await cubit.setPersonalisedContent(v);
+                        if (context.mounted) context.pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

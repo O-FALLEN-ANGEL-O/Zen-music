@@ -1,8 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0), core/widgets/section_item.dart.
-// Echo Music is Copyright (C) the Echo Music authors; this port and ZenMusic
-// remain GPL-3.0 (https://github.com/vorlon-dev/Zen-music).
-// PORT DEVIATIONS: S.of(...) -> English literals (3 sites); l10n import dropped.
-
 import 'dart:io';
 import 'dart:math';
 
@@ -264,6 +259,17 @@ class SongTile extends StatelessWidget {
   final Map song;
   final VoidCallback? onTap;
 
+  /// DEVIATION (marked): Echo assumes every thumbnail entry has 'width'.
+  /// History entries created by the playback harness (and any malformed
+  /// data) may not — null-safe pick with fallback.
+  String _pickThumbnailUrl(List thumbnails) {
+    for (final el in thumbnails) {
+      final w = el['width'];
+      if (w != null && w >= 50) return el['url'];
+    }
+    return thumbnails.first['url'];
+  }
+
   @override
   Widget build(BuildContext context) {
     List thumbnails = song['thumbnails'];
@@ -322,10 +328,7 @@ class SongTile extends StatelessWidget {
         leading: ClipRRect(
           borderRadius: BorderRadius.circular(3),
           child: CachedNetworkImage(
-            imageUrl: thumbnails
-                .where((el) => el['width'] >= 50)
-                .toList()
-                .first['url'],
+            imageUrl: _pickThumbnailUrl(thumbnails),
             height: height,
             width: 50,
             fit: BoxFit.cover,

@@ -1,6 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0). ZenMusic remains GPL-3.0.
-// PORT DEVIATION: Echo's sl() replaced with constructor-injected YTMusic.
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 

@@ -1,5 +1,3 @@
-// ZenMusic Desktop — ported from Echo Music (GPL-3.0). ZenMusic remains GPL-3.0.
-
 part of 'search_cubit.dart';
 
 @immutable
