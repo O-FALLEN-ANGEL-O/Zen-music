@@ -18,8 +18,37 @@ jobs:
         with: { channel: stable }
       - run: flutter pub get
       - name: Analyze (report only)
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings || true
-      - run: flutter build apk --release --split-per-abi
+        run: |
+          flutter analyze --no-fatal-infos --no-fatal-warnings > analyze.txt 2>&1 || true
+          {
+            echo '## flutter analyze errors'
+            echo '```'
+            grep -E '^\s*error ' analyze.txt | head -80 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          grep -E '^\s*error ' analyze.txt | head -10 | while read -r line; do
+            echo "::error title=analyze::$line"
+          done || true
+      - name: Build split APKs
+        run: |
+          set -o pipefail
+          flutter build apk --release --split-per-abi 2>&1 | tee build.txt
+      - name: Report build failure
+        if: failure()
+        run: |
+          {
+            echo '## Build errors'
+            echo '```'
+            grep -nE 'error|Error|FAILED|Exception|e: ' build.txt | grep -v 'Warning' | head -120 || true
+            echo '```'
+            echo '## Build log tail'
+            echo '```'
+            tail -n 120 build.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          grep -E "(error|Error|e: file)" build.txt | head -10 | while read -r line; do
+            echo "::error title=build::$line"
+          done || true
       - run: flutter build apk --release
       - name: Collect APKs
         run: |
