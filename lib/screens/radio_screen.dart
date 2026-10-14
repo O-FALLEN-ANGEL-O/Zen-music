@@ -142,7 +142,7 @@ class _RadioScreenState extends State<RadioScreen> {
                                       fontSize: 14)),
                               if (s.genre != null)
                                 Text(s.genre!,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         color: SpotifyColors
                                             .textSecondary,
                                         fontSize: 12)),

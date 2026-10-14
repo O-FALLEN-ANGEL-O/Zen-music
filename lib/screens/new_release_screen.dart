@@ -173,7 +173,7 @@ class _NewReleaseScreenState extends State<NewReleaseScreen> {
                                       Container(
                                         color: SpotifyColors
                                             .surfaceLight,
-                                        child: const Icon(
+                                        child: Icon(
                                             Icons
                                                 .album_rounded,
                                             size: 40,
@@ -184,7 +184,7 @@ class _NewReleaseScreenState extends State<NewReleaseScreen> {
                                     : Container(
                                   color: SpotifyColors
                                       .surfaceLight,
-                                  child: const Icon(
+                                  child: Icon(
                                       Icons.album_rounded,
                                       size: 40,
                                       color: SpotifyColors
