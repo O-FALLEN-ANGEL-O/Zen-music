@@ -64,6 +64,8 @@ class Collection {
 
   /// Same image[] quality-tier pattern as songs: prefer 500x500,
   /// fall back to the last entry.
+  static String pickImage(dynamic image) => _pickImage(image);
+
   static String _pickImage(dynamic image) {
     if (image is! List || image.isEmpty) return '';
     String? fallback;

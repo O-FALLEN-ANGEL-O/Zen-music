@@ -13,7 +13,11 @@ import '../services/yt_music_service.dart';
 import '../theme/spotify_theme.dart';
 
 class ImportSpotifyScreen extends StatefulWidget {
-  const ImportSpotifyScreen({super.key});
+  const ImportSpotifyScreen({super.key, this.initialCsv, this.initialName});
+
+  /// Pre-filled track list (e.g. from the Spotify page) and name.
+  final String? initialCsv;
+  final String? initialName;
 
   @override
   State<ImportSpotifyScreen> createState() => _ImportSpotifyScreenState();
@@ -32,6 +36,15 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
   String? _fileName;
   int _processedCount = 0;
   int _totalCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialCsv != null) _csvController.text = widget.initialCsv!;
+    if (widget.initialName != null) {
+      _playlistNameController.text = widget.initialName!;
+    }
+  }
 
   @override
   void dispose() {

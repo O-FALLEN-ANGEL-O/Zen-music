@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/radio_station.dart';
 import '../models/song.dart';
 import '../services/free_sources/free_sources.dart';
+import '../services/jiosaavn_service.dart';
 import 'car_browse_tree.dart';
 import '../services/buffered_stream_source.dart';
 import '../services/downloads_service.dart';
@@ -1297,6 +1298,17 @@ class ZenAudioHandler extends BaseAudioHandler with QueueHandler, SeekHandler {
           queue.add(_queue.map(_toMediaItem).toList());
         }
         return;
+      }
+      // JioSaavn seeds continue with JioSaavn's own suggestions.
+      if (seed.isFromJiosaavn) {
+        final more = await JiosaavnService().songSuggestions(seed.jiosaavnId!);
+        final ids = _queue.map((s) => s.id).toSet();
+        final fresh = more.where((s) => !ids.contains(s.id)).take(10).toList();
+        if (fresh.isNotEmpty) {
+          _queue.addAll(fresh);
+          queue.add(_queue.map(_toMediaItem).toList());
+          return;
+        }
       }
       final related = await _yt.getRelatedSongs(seed);
       final existingIds = _queue.map((s) => s.id).toSet();

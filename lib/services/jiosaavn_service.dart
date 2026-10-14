@@ -9,6 +9,13 @@ class PlaylistDetail {
   const PlaylistDetail(this.collection, this.songs);
 }
 
+class SaavnArtist {
+  const SaavnArtist({required this.id, required this.name, required this.imageUrl});
+  final String id;
+  final String name;
+  final String imageUrl;
+}
+
 class JiosaavnService {
   static const _baseUrl = 'https://jiosaavn-api.vorlon-revora.workers.dev';
   final _client = http.Client();
@@ -203,6 +210,68 @@ class JiosaavnService {
       print('JiosaavnService.getAlbum error: $e');
       return null;
     }
+  }
+
+  // ═════════════════════════════════════════════
+  // ARTISTS + SUGGESTIONS
+  // ═════════════════════════════════════════════
+
+  Future<Map<String, dynamic>?> _getJson(String path,
+      [Map<String, String> q = const {}]) async {
+    try {
+      final uri = Uri.parse('$_baseUrl$path')
+          .replace(queryParameters: q.isEmpty ? null : q);
+      final response =
+          await _client.get(uri).timeout(const Duration(seconds: 12));
+      if (response.statusCode != 200) return null;
+      final data = jsonDecode(response.body);
+      return data is Map<String, dynamic> ? data : null;
+    } catch (e) {
+      print('JiosaavnService $path error: $e');
+      return null;
+    }
+  }
+
+  List<Song> _songsFrom(dynamic list) => [
+        if (list is List)
+          for (final item in list)
+            if (item is Map<String, dynamic>) _songFromSaavnJson(item),
+      ];
+
+  Future<List<SaavnArtist>> searchArtists(String query,
+      {int limit = 10}) async {
+    final data = await _getJson('/api/search/artists',
+        {'query': query, 'limit': '$limit', 'page': '0'});
+    final results = data?['data']?['results'];
+    if (results is! List) return [];
+    return [
+      for (final r in results)
+        if (r is Map<String, dynamic> && r['id'] != null)
+          SaavnArtist(
+            id: '${r['id']}',
+            name: _decodeEntities('${r['name'] ?? r['title'] ?? 'Artist'}'),
+            imageUrl: Collection.pickImage(r['image']),
+          ),
+    ];
+  }
+
+  /// An artist's songs, most popular first.
+  Future<List<Song>> artistSongs(String artistId,
+      {int page = 0, String sortBy = 'popularity'}) async {
+    final data = await _getJson('/api/artists/$artistId/songs', {
+      'page': '$page',
+      'sortBy': sortBy,
+      'sortOrder': 'desc',
+    });
+    final payload = data?['data'];
+    return _songsFrom(payload is Map ? payload['songs'] : payload);
+  }
+
+  /// JioSaavn's own "similar songs" for autoplay / radio.
+  Future<List<Song>> songSuggestions(String songId, {int limit = 15}) async {
+    final data =
+        await _getJson('/api/songs/$songId/suggestions', {'limit': '$limit'});
+    return _songsFrom(data?['data']);
   }
 
   // ═════════════════════════════════════════════

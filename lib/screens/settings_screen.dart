@@ -24,6 +24,8 @@ import 'equalizer_screen.dart';
 import 'extensions_screen.dart';
 import 'import_spotify_screen.dart';
 import 'theme_picker_screen.dart';
+import 'spotify_screen.dart';
+import 'jiosaavn_screen.dart';
 import 'car_mode_screen.dart';
 import '../services/car_mode_service.dart';
 import '../services/lock_screen_service.dart';
@@ -1350,6 +1352,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
           await car.setAutoPlayOnConnect(v);
           setState(() {});
         },
+      ),
+      _prefRow(
+        Icons.graphic_eq_rounded,
+        'Spotify',
+        'Sign in to play your playlists and Liked Songs',
+        () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => const SpotifyScreen())),
+      ),
+      _prefRow(
+        Icons.queue_music_rounded,
+        'JioSaavn',
+        'Browse by language, artists, 320 kbps',
+        () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => const JioSaavnScreen())),
       ),
       _prefRow(
         Icons.library_music_rounded,

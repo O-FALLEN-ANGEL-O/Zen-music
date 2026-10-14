@@ -5,6 +5,8 @@ import '../main.dart';
 import '../models/song.dart';
 import '../screens/car_mode_screen.dart';
 import '../screens/downloads_screen.dart';
+import '../screens/jiosaavn_screen.dart';
+import '../screens/spotify_screen.dart';
 import '../screens/import_spotify_screen.dart';
 import '../screens/free_music_screen.dart';
 import '../screens/liked_songs_screen.dart';
@@ -82,6 +84,10 @@ class SpotifyHomeHeader extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
             children: [
+              _Chip('JioSaavn', Icons.queue_music_rounded,
+                  () => _push(context, const JioSaavnScreen())),
+              _Chip('Spotify', Icons.graphic_eq_rounded,
+                  () => _push(context, const SpotifyScreen())),
               _Chip('Free music', Icons.public_rounded,
                   () => _push(context, const FreeMusicScreen())),
               _Chip('Radio', Icons.radio_rounded,
