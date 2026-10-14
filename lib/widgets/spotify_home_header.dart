@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models/song.dart';
 import '../screens/car_mode_screen.dart';
+import '../screens/downloads_screen.dart';
+import '../screens/import_spotify_screen.dart';
 import '../screens/free_music_screen.dart';
 import '../screens/liked_songs_screen.dart';
 import '../screens/listen_together_screen.dart';
@@ -86,6 +88,10 @@ class SpotifyHomeHeader extends StatelessWidget {
                   () => _push(context, const RadioScreen())),
               _Chip('Liked', Icons.favorite_rounded,
                   () => _push(context, const LikedSongsScreen())),
+              _Chip('Downloads', Icons.download_for_offline_rounded,
+                  () => _push(context, const DownloadsScreen())),
+              _Chip('Import from Spotify', Icons.playlist_add_rounded,
+                  () => _push(context, const ImportSpotifyScreen())),
               _Chip('Car Mode', Icons.directions_car_rounded,
                   () => _push(context, const CarModeScreen())),
             ],

@@ -14,6 +14,8 @@ import 'services/share_intent_service.dart';
 import 'services/storage_service.dart';
 import 'services/youtube_service.dart';
 import 'services/car_mode_service.dart';
+import 'services/lock_screen_service.dart';
+import 'services/downloads_service.dart';
 import 'screens/car_mode_screen.dart';
 import 'theme/spotify_theme.dart';
 import 'ui/lw/lw_nav_dock.dart';
@@ -105,6 +107,12 @@ Future<void> _runApp() async {
 
   // Car mode: Android Auto / car Bluetooth detection.
   CarModeService.instance.init();
+
+  // Lock-screen player (shows over the keyguard while music plays).
+  LockScreenService.instance.init();
+
+  // Index offline downloads so 'downloaded' badges work immediately.
+  DownloadsService().init();
 
   runApp(const ZenMusicApp());
 }

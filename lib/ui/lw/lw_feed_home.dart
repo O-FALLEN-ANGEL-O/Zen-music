@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../main.dart';
 import '../../models/song.dart';
 import '../../services/home_service.dart';
@@ -66,7 +68,7 @@ class _LwFeedHomeState extends State<LwFeedHome>
     super.initState();
     _scroll.addListener(_onScroll);
     _pulse.repeat(reverse: true);
-    _loadAll();
+    _loadAll(useCache: true);
   }
 
   @override
@@ -87,29 +89,91 @@ class _LwFeedHomeState extends State<LwFeedHome>
   String _chartTitle(int index) =>
       _chartTitles[index % _chartTitles.length];
 
-  Future<void> _loadAll() async {
-    setState(() {
-      _loading = true;
-      _endReached = false;
-      _loadingMore = false;
-    });
-    if (!_pulse.isAnimating) _pulse.repeat(reverse: true);
+  // ── Instant start: last feed is cached on disk and shown at once,
+  // then replaced by fresh data when the network answers. ──
+  static const _cacheKey = 'home_feed_cache_v1';
+
+  Future<bool> _loadFromCache() async {
     try {
-      final hits = _homeService.getBiggestHits();
-      final trending = _homeService.getTrendingNow();
-      final hot = _homeService.getYtmShelf('top hits this week');
-      final fresh = _homeService.getYtmShelf('new music this week', limit: 12);
-      final charts = _homeService.getTopCharts();
-      _biggestHits = await hits;
-      _trendingNow = await trending;
-      _ytmHot = await hot;
-      _ytmFresh = await fresh;
-      _topCharts = await charts;
+      final p = await SharedPreferences.getInstance();
+      final raw = p.getString(_cacheKey);
+      if (raw == null) return false;
+      final m = jsonDecode(raw) as Map<String, dynamic>;
+      List<Song> read(String k) => [
+            for (final e in (m[k] as List? ?? const []))
+              Song.fromJson(Map<String, dynamic>.from(e as Map)),
+          ];
+      final hits = read('hits');
+      if (hits.isEmpty && read('trending').isEmpty) return false;
+      if (!mounted) return false;
+      setState(() {
+        _biggestHits = hits;
+        _trendingNow = read('trending');
+        _ytmHot = read('hot');
+        _ytmFresh = read('fresh');
+        _topCharts = read('charts');
+        _recent = storage.getPlayedHistory().take(12).toList();
+        _loading = false;
+      });
+      _pulse.stop();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<void> _saveCache() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      List<Map<String, dynamic>> enc(List<Song> l) =>
+          l.take(20).map((s) => s.toJson()).toList();
+      await p.setString(
+          _cacheKey,
+          jsonEncode({
+            'hits': enc(_biggestHits),
+            'trending': enc(_trendingNow),
+            'hot': enc(_ytmHot),
+            'fresh': enc(_ytmFresh),
+            'charts': enc(_topCharts),
+          }));
     } catch (_) {}
+  }
+
+  Future<void> _loadAll({bool useCache = false}) async {
+    final fromCache = useCache && await _loadFromCache();
+    if (!fromCache) {
+      setState(() {
+        _loading = true;
+        _endReached = false;
+        _loadingMore = false;
+      });
+      if (!_pulse.isAnimating) _pulse.repeat(reverse: true);
+    }
+    // Each shelf is fetched in parallel and is allowed to fail alone.
+    Future<List<Song>> safe(Future<List<Song>> f) =>
+        f.timeout(const Duration(seconds: 20)).catchError((_) => <Song>[]);
+    final results = await Future.wait([
+      safe(_homeService.getBiggestHits()),
+      safe(_homeService.getTrendingNow()),
+      safe(_homeService.getYtmShelf('top hits this week')),
+      safe(_homeService.getYtmShelf('new music this week', limit: 12)),
+      safe(_homeService.getTopCharts()),
+    ]);
     if (!mounted) return;
+    // Keep the cached shelves if the network came back empty (offline).
+    final anyFresh = results.any((l) => l.isNotEmpty);
     setState(() {
+      if (anyFresh || !fromCache) {
+        _biggestHits = results[0];
+        _trendingNow = results[1];
+        _ytmHot = results[2];
+        _ytmFresh = results[3];
+        _topCharts = results[4];
+      }
       _recent = storage.getPlayedHistory().take(12).toList();
       _loading = false;
+      _endReached = false;
+      _loadingMore = false;
       // Dedupe seed: everything already on screen never re-appears in
       // an appended shelf.
       _shownSongIds
@@ -122,6 +186,7 @@ class _LwFeedHomeState extends State<LwFeedHome>
       _chartShelves.clear();
     });
     _pulse.stop();
+    if (anyFresh) unawaited(_saveCache());
   }
 
   /// Appends the next chart shelf while scrolling. Stops after the

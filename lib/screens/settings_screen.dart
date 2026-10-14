@@ -26,6 +26,7 @@ import 'import_spotify_screen.dart';
 import 'theme_picker_screen.dart';
 import 'car_mode_screen.dart';
 import '../services/car_mode_service.dart';
+import '../services/lock_screen_service.dart';
 import '../services/free_sources/free_sources_settings.dart';
 
 /// Addon lossless prefs — SharedPreferences-backed shim until
@@ -672,9 +673,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _prefRow(
         Icons.color_lens_rounded,
         'Theme',
-        ZenThemeController.selectedId.value == ZenPalettes.albumId
-            ? 'Match album art'
-            : ZenPalettes.byId(ZenThemeController.selectedId.value).name,
+        switch (ZenThemeController.selectedId.value) {
+          ZenPalettes.albumId => 'Match album art',
+          ZenPalettes.customId => 'Custom colour',
+          final id => ZenPalettes.byId(id).name,
+        },
         () async {
           await Navigator.of(context).push(MaterialPageRoute(
               builder: (_) => const ThemePickerScreen()));
@@ -1020,6 +1023,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
         children: [
           _appearanceCategory(),
+          _lockScreenCategory(),
           _carCategory(),
           _category('Sources', Icons.extension_rounded, [
             _prefRow(
@@ -1251,6 +1255,68 @@ class _SettingsScreenState extends State<SettingsScreen> {
         },
       ),
     );
+  }
+
+  // ── Lock screen ──
+
+  Widget _lockScreenCategory() {
+    final ls = LockScreenService.instance;
+    return _category('Lock screen', Icons.lock_rounded, [
+      _switchRow(
+        Icons.screen_lock_portrait_rounded,
+        'Lock-screen player',
+        'Full-screen player when you wake the phone',
+        ls.enabled.value,
+        (v) async {
+          if (v && !await ls.canDrawOverlays()) {
+            if (!mounted) return;
+            final go = await showDialog<bool>(
+              context: context,
+              builder: (c) => AlertDialog(
+                title: const Text('One permission needed'),
+                content: const Text(
+                    'Android only lets ZenMusic appear on the lock screen '
+                    'if "Display over other apps" is allowed. Turn it on for '
+                    'ZenMusic on the next screen, then come back.'),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.of(c).pop(false),
+                      child: const Text('Cancel')),
+                  TextButton(
+                      onPressed: () => Navigator.of(c).pop(true),
+                      child: const Text('Open settings')),
+                ],
+              ),
+            );
+            if (go == true) await ls.requestOverlay();
+          }
+          await ls.setEnabled(v);
+          if (mounted) setState(() {});
+        },
+      ),
+      _prefRow(
+        Icons.wallpaper_rounded,
+        'Lock-screen style',
+        switch (ls.style.value) {
+          'art' => 'Album colour',
+          'minimal' => 'Minimal',
+          _ => 'Blurred artwork',
+        },
+        () => _showPickerSheet(
+          title: 'Lock-screen style',
+          current: ls.style.value,
+          items: const [
+            (value: 'blur', label: 'Blurred artwork', icon: Icons.blur_on_rounded),
+            (value: 'art', label: 'Album colour', icon: Icons.palette_rounded),
+            (value: 'minimal', label: 'Minimal', icon: Icons.crop_square_rounded),
+          ],
+          onSelect: (v) async {
+            await ls.setStyle(v);
+            setState(() {});
+          },
+        ),
+      ),
+    ]);
   }
 
   // ── Car ──

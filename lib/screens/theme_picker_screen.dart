@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+
 import '../theme/spotify_theme.dart';
 
 /// Settings → Appearance → Theme. A grid of live swatches; tapping one
@@ -47,7 +49,146 @@ class ThemePickerScreen extends StatelessWidget {
                   ),
               ],
             ),
+            const SizedBox(height: 22),
+            _sectionLabel('Community favourites'),
+            GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 1.25,
+              children: [
+                for (final p in ZenPalettes.community)
+                  _PaletteTile(
+                    palette: p,
+                    selected: selected == p.id,
+                    onTap: () => ZenThemeController.select(p.id),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 22),
+            _sectionLabel('Your colour'),
+            _CustomAccentCard(selected: selected == ZenPalettes.customId),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _sectionLabel(String text) => Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 10),
+      child: Text(text,
+          style: TextStyle(
+              color: SpotifyColors.textSecondary,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              letterSpacing: 0.5)),
+    );
+
+class _CustomAccentCard extends StatelessWidget {
+  const _CustomAccentCard({required this.selected});
+  final bool selected;
+
+  static const _swatches = <Color>[
+    Color(0xFF1ED760), Color(0xFF00C2FF), Color(0xFF3D7BFF),
+    Color(0xFF8B5CF6), Color(0xFFE63CFF), Color(0xFFFF4D8D),
+    Color(0xFFFF5A36), Color(0xFFFFB020), Color(0xFFC6F432),
+    Color(0xFF14B8A6), Color(0xFFF5F5F5), Color(0xFFB0835A),
+  ];
+
+  Future<void> _pick(BuildContext context) async {
+    var color = ZenThemeController.customAccent.value;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (c) => AlertDialog(
+        title: const Text('Pick an accent'),
+        content: SingleChildScrollView(
+          child: ColorPicker(
+            pickerColor: color,
+            onColorChanged: (v) => color = v,
+            enableAlpha: false,
+            labelTypes: const [],
+            pickerAreaHeightPercent: 0.7,
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.of(c).pop(false),
+              child: const Text('Cancel')),
+          TextButton(
+              onPressed: () => Navigator.of(c).pop(true),
+              child: const Text('Use colour')),
+        ],
+      ),
+    );
+    if (ok == true) await ZenThemeController.setCustomAccent(color);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: SpotifyColors.surface,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: selected ? SpotifyColors.green : Colors.transparent,
+            width: 2,
+          ),
+        ),
+        child: ValueListenableBuilder<Color>(
+          valueListenable: ZenThemeController.customAccent,
+          builder: (context, current, _) => Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  for (final c in _swatches)
+                    GestureDetector(
+                      onTap: () => ZenThemeController.setCustomAccent(c),
+                      child: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: c,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: selected && c == current
+                                ? Colors.white
+                                : Colors.transparent,
+                            width: 2.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  GestureDetector(
+                    onTap: () => _pick(context),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: SpotifyColors.surfaceLighter,
+                      ),
+                      child: Icon(Icons.colorize_rounded,
+                          size: 18, color: SpotifyColors.textPrimary),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                  'The whole app is built around the colour you pick.',
+                  style: TextStyle(
+                      color: SpotifyColors.textTertiary, fontSize: 12.5)),
+            ],
+          ),
         ),
       ),
     );

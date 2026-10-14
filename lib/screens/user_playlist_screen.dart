@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models/song.dart';
 import '../theme/spotify_theme.dart';
+import '../widgets/download_widgets.dart';
 import '../widgets/song_row.dart';
 import 'player_screen.dart';
 
@@ -52,6 +53,7 @@ class _UserPlaylistScreenState extends State<UserPlaylistScreen> {
           ),
         ),
         actions: [
+          DownloadAllButton(songs: _songs, size: 26),
           IconButton(
             icon: Icon(Icons.delete_outline_rounded,
                 color: SpotifyColors.textSecondary),

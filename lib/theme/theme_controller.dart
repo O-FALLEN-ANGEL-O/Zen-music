@@ -15,6 +15,10 @@ class ZenThemeController {
 
   static const _kPaletteKey = 'zen_palette_id';
   static const _kAmoledAlbumKey = 'zen_album_amoled';
+  static const _kCustomAccentKey = 'zen_custom_accent';
+
+  /// The user's own accent colour for the "Custom" theme.
+  static final customAccent = ValueNotifier<Color>(const Color(0xFF1ED760));
 
   /// The palette every colour lookup resolves against.
   static final notifier = ValueNotifier<ZenPalette>(ZenPalettes.classic);
@@ -36,7 +40,11 @@ class ZenThemeController {
     final p = await SharedPreferences.getInstance();
     selectedId.value = p.getString(_kPaletteKey) ?? ZenPalettes.classic.id;
     albumAmoled.value = p.getBool(_kAmoledAlbumKey) ?? false;
-    if (selectedId.value != ZenPalettes.albumId) {
+    final c = p.getInt(_kCustomAccentKey);
+    if (c != null) customAccent.value = Color(c);
+    if (selectedId.value == ZenPalettes.customId) {
+      notifier.value = _customPalette();
+    } else if (selectedId.value != ZenPalettes.albumId) {
       notifier.value = ZenPalettes.byId(selectedId.value);
     }
   }
@@ -57,7 +65,9 @@ class ZenThemeController {
     selectedId.value = id;
     final p = await SharedPreferences.getInstance();
     await p.setString(_kPaletteKey, id);
-    if (id == ZenPalettes.albumId) {
+    if (id == ZenPalettes.customId) {
+      notifier.value = _customPalette();
+    } else if (id == ZenPalettes.albumId) {
       if (_lastAlbumPalette != null) notifier.value = _lastAlbumPalette!;
       final url = _lastArtUrl;
       if (url != null) await _applyAlbumArt(url);
@@ -66,10 +76,28 @@ class ZenThemeController {
     }
   }
 
+  static ZenPalette _customPalette() => ZenPalette.fromAccent(
+        customAccent.value,
+        id: ZenPalettes.customId,
+        name: 'Custom',
+        amoled: albumAmoled.value,
+      );
+
+  static Future<void> setCustomAccent(Color c) async {
+    customAccent.value = c;
+    final p = await SharedPreferences.getInstance();
+    await p.setInt(_kCustomAccentKey, c.toARGB32());
+    await select(ZenPalettes.customId);
+  }
+
   static Future<void> setAlbumAmoled(bool v) async {
     albumAmoled.value = v;
     final p = await SharedPreferences.getInstance();
     await p.setBool(_kAmoledAlbumKey, v);
+    if (selectedId.value == ZenPalettes.customId) {
+      notifier.value = _customPalette();
+      return;
+    }
     final url = _lastArtUrl;
     if (selectedId.value == ZenPalettes.albumId && url != null) {
       _lastAlbumPalette = null;

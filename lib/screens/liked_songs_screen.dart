@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models/song.dart';
 import '../theme/spotify_theme.dart';
+import '../widgets/download_widgets.dart';
 import '../widgets/youtube_thumbnail.dart';
 import 'player_screen.dart';
 
@@ -101,6 +102,10 @@ class _LikedSongsScreenState extends State<LikedSongsScreen> {
                       ],
                     ),
                   ),
+                  if (_songs.isNotEmpty) ...[
+                    DownloadAllButton(songs: _songs),
+                    const SizedBox(width: 8),
+                  ],
                   if (_songs.isNotEmpty)
                     Material(
                       color: SpotifyColors.green,

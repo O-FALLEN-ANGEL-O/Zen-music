@@ -25,6 +25,7 @@ import '../widgets/wave_spinner.dart';
 import '../widgets/welcome_dialog.dart';
 import '../widgets/youtube_thumbnail.dart';
 import 'equalizer_screen.dart';
+import 'downloads_screen.dart';
 import 'history_screen.dart';
 import 'import_spotify_screen.dart';
 import 'liked_songs_screen.dart';
@@ -1134,7 +1135,10 @@ class _LibraryTabState extends State<LibraryTab> {
             ),
           if (!_loadingDownloads && _downloads.isNotEmpty) ...[
             const SizedBox(height: 8),
-            Padding(
+            InkWell(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const DownloadsScreen())),
+              child: Padding(
               padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
               child: Row(
                 children: [
@@ -1151,6 +1155,7 @@ class _LibraryTabState extends State<LibraryTab> {
                   ),
                 ],
               ),
+            ),
             ),
             SizedBox(
               height: 180,

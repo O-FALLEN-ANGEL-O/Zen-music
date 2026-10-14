@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import '../main.dart';
 import '../models/song.dart';
+import '../services/spotify_link_importer.dart';
 import '../services/yt_music_service.dart';
 import '../theme/spotify_theme.dart';
 
@@ -24,6 +25,8 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
   static const _batchPause = Duration(milliseconds: 150);
 
   final _csvController = TextEditingController();
+  final _linkController = TextEditingController();
+  bool _fetchingLink = false;
   final _playlistNameController = TextEditingController();
   bool _isImporting = false;
   String? _fileName;
@@ -33,6 +36,7 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
   @override
   void dispose() {
     _csvController.dispose();
+    _linkController.dispose();
     _playlistNameController.dispose();
     super.dispose();
   }
@@ -42,6 +46,31 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(message), duration: const Duration(seconds: 3)),
     );
+  }
+
+  Future<void> _fetchFromLink() async {
+    final link = _linkController.text.trim();
+    if (SpotifyLinkImporter.parse(link) == null) {
+      _toast('Paste a Spotify playlist, album or track link');
+      return;
+    }
+    setState(() => _fetchingLink = true);
+    try {
+      final r = await SpotifyLinkImporter.fetch(link);
+      if (!mounted) return;
+      setState(() {
+        _csvController.text = SpotifyLinkImporter.toCsv(r.tracks);
+        if (_playlistNameController.text.trim().isEmpty) {
+          _playlistNameController.text = r.name;
+        }
+        _fileName = null;
+      });
+      _toast('Found ${r.tracks.length} tracks — tap Import to match them');
+    } catch (e) {
+      _toast('Couldn\'t read that link: ${e.toString().replaceFirst('Exception: ', '')}');
+    } finally {
+      if (mounted) setState(() => _fetchingLink = false);
+    }
   }
 
   Future<void> _chooseFile() async {
@@ -293,8 +322,69 @@ class _ImportSpotifyScreenState extends State<ImportSpotifyScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            // ── Fastest path: paste a link ──
             Text(
-              'Export your Spotify playlist as CSV (e.g. from '
+              'Paste a Spotify playlist or album link',
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: SpotifyColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _linkController,
+                    enabled: !_isImporting && !_fetchingLink,
+                    style: TextStyle(color: SpotifyColors.textPrimary),
+                    decoration: InputDecoration(
+                      hintText: 'https://open.spotify.com/playlist/…',
+                      hintStyle:
+                          TextStyle(color: SpotifyColors.textTertiary),
+                      filled: true,
+                      fillColor: SpotifyColors.surfaceLight,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton.filledTonal(
+                  tooltip: 'Paste',
+                  onPressed: () async {
+                    final d = await Clipboard.getData(Clipboard.kTextPlain);
+                    if (d?.text != null) _linkController.text = d!.text!;
+                  },
+                  icon: const Icon(Icons.content_paste_rounded),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            FilledButton.icon(
+              onPressed:
+                  _isImporting || _fetchingLink ? null : _fetchFromLink,
+              icon: _fetchingLink
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2))
+                  : const Icon(Icons.link_rounded),
+              label: Text(_fetchingLink ? 'Reading…' : 'Get tracks'),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Works with public playlists and albums. Very long playlists may '
+              'be cut short — use a CSV export for those.',
+              style: TextStyle(
+                  fontSize: 12, color: SpotifyColors.textTertiary, height: 1.4),
+            ),
+            const SizedBox(height: 22),
+            Text(
+              'Or export your Spotify playlist as CSV (e.g. from '
                   'chosic.com or tunemymusic.com), then import it here. '
                   'Every track is matched on YouTube Music and saved as a '
                   'playlist in your library.',

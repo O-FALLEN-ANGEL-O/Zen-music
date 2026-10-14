@@ -57,6 +57,7 @@ class MainActivity : AudioServiceActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        LockScreenPlugin.handleIntent(this, intent)
 
         // Full-screen under the display cutout (notch) — no black
         // status-bar strip when the system bars are hidden. Flutter
@@ -73,6 +74,12 @@ class MainActivity : AudioServiceActivity() {
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
                 }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        LockScreenPlugin.handleIntent(this, intent)
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -96,6 +103,8 @@ class MainActivity : AudioServiceActivity() {
         InstallApkPlugin.register(flutterEngine, this)
         // Car Mode detection (Android Auto / car Bluetooth) — zen/car.
         CarConnectionPlugin.register(flutterEngine, this)
+        // Lock-screen player — zen/lockscreen.
+        LockScreenPlugin.register(flutterEngine, this)
         // Native merged-stream video player (video watch page) —
         // platform-view factory; each instance owns the per-view
         // channel zen/video_player_<viewId>.

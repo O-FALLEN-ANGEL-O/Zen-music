@@ -11,6 +11,8 @@
     <!-- Car Mode: recognise the car's Bluetooth by device class. -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30"/>
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+    <!-- Lock-screen player: lets the app come to the front on screen-off. -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:label="zenmusic"

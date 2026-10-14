@@ -232,8 +232,135 @@ class ZenPalettes {
     textTertiary: Color(0xFF7D728C),
   );
 
+  // ── Community favourites (popular Spicetify colour schemes) ──
+
+  static const catppuccin = ZenPalette(
+    id: 'catppuccin',
+    name: 'Catppuccin Mocha',
+    background: Color(0xFF1E1E2E),
+    surface: Color(0xFF181825),
+    surfaceLight: Color(0xFF313244),
+    surfaceLighter: Color(0xFF45475A),
+    primary: Color(0xFFCBA6F7),
+    primaryDark: Color(0xFF8C6BC8),
+    highlight: Color(0xFFF5C2E7),
+    onPrimary: Color(0xFF1E1E2E),
+    textPrimary: Color(0xFFCDD6F4),
+    textSecondary: Color(0xFFA6ADC8),
+    textTertiary: Color(0xFF6C7086),
+  );
+
+  static const nord = ZenPalette(
+    id: 'nord',
+    name: 'Nord',
+    background: Color(0xFF2E3440),
+    surface: Color(0xFF3B4252),
+    surfaceLight: Color(0xFF434C5E),
+    surfaceLighter: Color(0xFF4C566A),
+    primary: Color(0xFF88C0D0),
+    primaryDark: Color(0xFF5E81AC),
+    highlight: Color(0xFF8FBCBB),
+    onPrimary: Color(0xFF2E3440),
+    textPrimary: Color(0xFFECEFF4),
+    textSecondary: Color(0xFFD8DEE9),
+    textTertiary: Color(0xFF9AA3B5),
+  );
+
+  static const dracula = ZenPalette(
+    id: 'dracula',
+    name: 'Dracula',
+    background: Color(0xFF282A36),
+    surface: Color(0xFF21222C),
+    surfaceLight: Color(0xFF343746),
+    surfaceLighter: Color(0xFF44475A),
+    primary: Color(0xFFBD93F9),
+    primaryDark: Color(0xFF8A63D2),
+    highlight: Color(0xFFFF79C6),
+    onPrimary: Color(0xFF282A36),
+    textPrimary: Color(0xFFF8F8F2),
+    textSecondary: Color(0xFFC9CBD6),
+    textTertiary: Color(0xFF6272A4),
+  );
+
+  static const gruvbox = ZenPalette(
+    id: 'gruvbox',
+    name: 'Gruvbox',
+    background: Color(0xFF282828),
+    surface: Color(0xFF32302F),
+    surfaceLight: Color(0xFF3C3836),
+    surfaceLighter: Color(0xFF504945),
+    primary: Color(0xFFFABD2F),
+    primaryDark: Color(0xFFD79921),
+    highlight: Color(0xFF8EC07C),
+    onPrimary: Color(0xFF282828),
+    textPrimary: Color(0xFFEBDBB2),
+    textSecondary: Color(0xFFD5C4A1),
+    textTertiary: Color(0xFF928374),
+  );
+
+  static const tokyoNight = ZenPalette(
+    id: 'tokyo',
+    name: 'Tokyo Night',
+    background: Color(0xFF1A1B26),
+    surface: Color(0xFF1F2335),
+    surfaceLight: Color(0xFF292E42),
+    surfaceLighter: Color(0xFF3B4261),
+    primary: Color(0xFF7AA2F7),
+    primaryDark: Color(0xFF3D59A1),
+    highlight: Color(0xFFBB9AF7),
+    onPrimary: Color(0xFF1A1B26),
+    textPrimary: Color(0xFFC0CAF5),
+    textSecondary: Color(0xFFA9B1D6),
+    textTertiary: Color(0xFF565F89),
+  );
+
+  static const rosePine = ZenPalette(
+    id: 'rosepine',
+    name: 'Rosé Pine',
+    background: Color(0xFF191724),
+    surface: Color(0xFF1F1D2E),
+    surfaceLight: Color(0xFF26233A),
+    surfaceLighter: Color(0xFF403D52),
+    primary: Color(0xFFEBBCBA),
+    primaryDark: Color(0xFFB4637A),
+    highlight: Color(0xFFC4A7E7),
+    onPrimary: Color(0xFF191724),
+    textPrimary: Color(0xFFE0DEF4),
+    textSecondary: Color(0xFF908CAA),
+    textTertiary: Color(0xFF6E6A86),
+  );
+
+  static const everforest = ZenPalette(
+    id: 'everforest',
+    name: 'Everforest',
+    background: Color(0xFF2D353B),
+    surface: Color(0xFF343F44),
+    surfaceLight: Color(0xFF3D484D),
+    surfaceLighter: Color(0xFF475258),
+    primary: Color(0xFFA7C080),
+    primaryDark: Color(0xFF7A8F5C),
+    highlight: Color(0xFF83C092),
+    onPrimary: Color(0xFF2D353B),
+    textPrimary: Color(0xFFD3C6AA),
+    textSecondary: Color(0xFFB8AD94),
+    textTertiary: Color(0xFF859289),
+  );
+
   /// Sentinel id: palette follows the playing song's artwork.
   static const albumId = 'album';
+
+  /// Sentinel id: palette built from the user's own accent colour.
+  static const customId = 'custom';
+
+  static const community = <ZenPalette>[
+    catppuccin,
+    nord,
+    dracula,
+    tokyoNight,
+    rosePine,
+    gruvbox,
+    everforest,
+  ];
 
   static const all = <ZenPalette>[
     classic,
@@ -247,6 +374,6 @@ class ZenPalettes {
     violet,
   ];
 
-  static ZenPalette byId(String id) =>
-      all.firstWhere((p) => p.id == id, orElse: () => classic);
+  static ZenPalette byId(String id) => [...all, ...community]
+      .firstWhere((p) => p.id == id, orElse: () => classic);
 }

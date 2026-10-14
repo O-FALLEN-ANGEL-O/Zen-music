@@ -9,6 +9,7 @@ import '../models/song.dart';
 import '../services/free_sources/free_sources.dart';
 import '../services/free_sources/free_sources_settings.dart';
 import '../theme/spotify_theme.dart';
+import '../widgets/download_widgets.dart';
 
 /// Browse + search the free catalogues (Audius, Internet Archive,
 /// Jamendo) and Radio Browser.
@@ -222,6 +223,7 @@ class _SourceSection extends StatelessWidget {
                             fontSize: 20,
                             fontWeight: FontWeight.w800)),
                   ),
+                  if (songs.isNotEmpty) DownloadAllButton(songs: songs, size: 26),
                   if (songs.isNotEmpty)
                     IconButton(
                       tooltip: 'Play all',
